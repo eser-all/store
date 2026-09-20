@@ -197,6 +197,29 @@
 
         <!-- Table & Inventory Stock Summary Panel -->
         <div class="col-lg-8">
+          <!-- Date Filter & Search Bar Row -->
+          <div class="card card-custom p-3 mb-3">
+            <div class="row g-2 align-items-center">
+              <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">শুরুর তারিখ</label>
+                <input type="date" id="startDate" class="form-control form-control-sm" onchange="renderUI()">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">শেষের তারিখ</label>
+                <input type="date" id="endDate" class="form-control form-control-sm" onchange="renderUI()">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">সার্চ করুন</label>
+                <input type="text" id="searchInput" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="🔍 পণ্য বা নাম...">
+              </div>
+              <div class="col-md-3 text-md-end mt-4">
+                <button onclick="resetFilter()" class="btn btn-outline-secondary btn-sm fw-bold w-100">
+                  <i class="fa-solid fa-rotate-right me-1"></i> রিসেট ফিল্টার
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Live Current Stock Summary Table -->
           <div class="card card-custom p-3 mb-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -221,8 +244,8 @@
 
           <!-- Transaction History Table -->
           <div class="card card-custom p-3">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-              <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 200px;" placeholder="🔍 খুঁজুন...">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>লেনদেনের ইতিহাস</h6>
               <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
                 <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
               </button>
@@ -253,7 +276,7 @@
 
 <footer class="app-footer">
   <div class="container">
-    <p class="mb-0 fw-semibold">ISP Inventory Management System | Shared Store (Gawar & Mollartek)</p>
+    <p class="mb-0 fw-semibold">ISP Inventory Management System | Developed by <span>Antu</span></p>
   </div>
 </footer>
 
@@ -344,7 +367,6 @@
     _auth.signOut();
   }
 
-  // Common store database entry
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!_user) return;
@@ -368,7 +390,6 @@
 
     toggleLoader(true);
     try {
-      // কমন স্টোরেজ পাথ (common_store) ব্যবহার করা হয়েছে যাতে সবাই একই ডাটা দেখতে ও এডিট করতে পারে
       await _db.ref(`common_store/zones/${_currentZone}/transactions`).push(payload);
       document.getElementById('transactionForm').reset();
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
@@ -381,7 +402,6 @@
 
   function fetchTransactions() {
     if (!_user) return;
-    // কমন স্টোর পাথ থেকে রিয়েলটাইমে ডাটা ফেচ করা
     _db.ref(`common_store/zones/${_currentZone}/transactions`).on('value', (snap) => {
       _cache = [];
       const val = snap.val();
@@ -397,7 +417,45 @@
     });
   }
 
+  // Helper to format/normalize date string to YYYY-MM-DD for comparison
+  function parseDateString(str) {
+    if (!str) return '';
+    // If format is DD.MM.YY or DD.MM.YYYY from excel
+    if (str.includes('.')) {
+      const parts = str.split('.');
+      if (parts.length === 3) {
+        let day = parts[0];
+        let month = parts[1];
+        let year = parts[2];
+        if (year.length === 2) year = '20' + year;
+        return `${year}-${month}-${day}`;
+      }
+    }
+    return str; // already YYYY-MM-DD
+  }
+
   function renderUI() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const searchQ = document.getElementById('searchInput').value.toLowerCase().trim();
+
+    // Filter data based on Date Range and Search query
+    const filteredCache = _cache.filter(item => {
+      const itemDateFormatted = parseDateString(item.date);
+      
+      // Date filtering check
+      if (startDate && itemDateFormatted < startDate) return false;
+      if (endDate && itemDateFormatted > endDate) return false;
+
+      // Search query check
+      if (searchQ) {
+        const rowText = `${item.date} ${item.type} ${item.itemName} ${item.quantity} ${item.reName} ${item.userId}`.toLowerCase();
+        if (!rowText.includes(searchQ)) return false;
+      }
+
+      return true;
+    });
+
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
 
@@ -405,7 +463,7 @@
     let totalOutCount = 0;
     const stockMap = {};
 
-    _cache.forEach(item => {
+    filteredCache.forEach(item => {
       const qty = Number(item.quantity) || 0;
       const iName = item.itemName || 'N/A';
 
@@ -431,7 +489,7 @@
     const itemKeys = Object.keys(stockMap);
 
     if (itemKeys.length === 0) {
-      summaryBody.innerHTML = `<tr><td colspan="4" class="text-muted small">কোনো মালামাল এন্ট্রি করা হয়নি</td></tr>`;
+      summaryBody.innerHTML = `<tr><td colspan="4" class="text-muted small">এই তারিখের মধ্যে কোনো মালামাল নেই</td></tr>`;
     } else {
       itemKeys.forEach(name => {
         const ins = stockMap[name].in;
@@ -448,12 +506,12 @@
       });
     }
 
-    if (_cache.length === 0) {
+    if (filteredCache.length === 0) {
       tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">কোনো ট্রানজাকশন পাওয়া যায়নি</td></tr>`;
       return;
     }
 
-    _cache.forEach(item => {
+    filteredCache.forEach(item => {
       const badge = item.type === 'Stock In' 
         ? `<span class="badge bg-success">স্টক ইন</span>` 
         : `<span class="badge bg-danger">স্টক আউট</span>`;
@@ -474,13 +532,11 @@
     });
   }
 
-  function filterTransactions() {
-    const q = document.getElementById('searchInput').value.toLowerCase().trim();
-    const rows = document.querySelectorAll('#tableBody tr');
-    rows.forEach(row => {
-      const text = row.innerText.toLowerCase();
-      row.style.display = text.includes(q) ? '' : 'none';
-    });
+  function resetFilter() {
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('searchInput').value = '';
+    renderUI();
   }
 
   async function deleteTx(id) {
@@ -497,11 +553,27 @@
   }
 
   function exportToExcel() {
-    if (_cache.length === 0) {
-      alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!");
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const searchQ = document.getElementById('searchInput').value.toLowerCase().trim();
+
+    const filteredCache = _cache.filter(item => {
+      const itemDateFormatted = parseDateString(item.date);
+      if (startDate && itemDateFormatted < startDate) return false;
+      if (endDate && itemDateFormatted > endDate) return false;
+      if (searchQ) {
+        const rowText = `${item.date} ${item.type} ${item.itemName} ${item.quantity} ${item.reName} ${item.userId}`.toLowerCase();
+        if (!rowText.includes(searchQ)) return false;
+      }
+      return true;
+    });
+
+    if (filteredCache.length === 0) {
+      alert("এক্সপোর্ট করার মতো কোনো ফিল্টার করা ডাটা নেই!");
       return;
     }
-    const dataToExport = _cache.map(item => ({
+    
+    const dataToExport = filteredCache.map(item => ({
       "তারিখ": item.date,
       "ধরন": item.type,
       "পণ্যের নাম": item.itemName,
