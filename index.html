@@ -1,142 +1,67 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" data-bs-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Permissions-Policy" content="unload=(self)">
-  <title>ISP বিলিং, এক্সেল ও MikroTik লাইভ মনিটরিং সিস্টেম</title>
+  <title>আইএসপি মালামাল হিসাব ও ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- SheetJS for Excel Import/Export -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
     :root {
       --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      --accent-color: #0d6efd;
+    }
+    [data-bs-theme="dark"] {
+      --primary-gradient: linear-gradient(135deg, #141e30 0%, #243b55 100%);
     }
     body { 
-      background-color: #f4f7f6; 
+      background-color: var(--bs-body-bg); 
       font-family: 'Hind Siliguri', sans-serif; 
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
     .content-wrapper { flex: 1; }
-    .header-banner { background: var(--primary-gradient); color: white; padding: 20px 0; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
-    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .stat-card { border-left: 5px solid; }
-    .stat-total { border-color: #0d6efd; }
-    .stat-paid { border-color: #198754; }
-    .stat-unpaid { border-color: #dc3545; }
-    .stat-online { border-color: #0dcaf0; }
-    .table-container { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .auth-container { max-width: 400px; margin: 60px auto; border-top: 5px solid #0d6efd; }
-    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; color: white; }
-    .app-footer { background: var(--primary-gradient); color: white; text-align: center; padding: 12px 0; font-size: 0.9rem; margin-top: auto; }
-    .upload-box { border: 2px dashed #0d6efd; border-radius: 10px; padding: 15px; text-align: center; background: #eef5ff; cursor: pointer; transition: 0.3s; }
-    .upload-box:hover { background: #dbeaff; }
-    .status-badge { font-size: 0.8rem; padding: 4px 10px; border-radius: 15px; }
-    .pulse-online {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #198754;
-      box-shadow: 0 0 0 rgba(25, 135, 84, 0.4);
-      animation: pulse 1.5s infinite;
-      margin-right: 4px;
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); }
-      70% { box-shadow: 0 0 0 6px rgba(25, 135, 84, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
-    }
+    .header-banner { background: var(--primary-gradient); color: white; padding: 18px 0; border-radius: 0 0 20px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
+    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.25s ease-in-out; }
+    .stat-card { border-left: 5px solid; padding: 12px !important; }
+    .stat-in { border-color: #198754; }
+    .stat-out { border-color: #dc3545; }
+    .stat-balance { border-color: #0d6efd; }
+    .auth-container { max-width: 420px; margin: 70px auto; border-top: 5px solid #0d6efd; }
+    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
+    .app-footer { background: var(--primary-gradient); color: #ffffff; text-align: center; padding: 12px 0; font-size: 0.9rem; margin-top: auto; }
+    .app-footer span { color: #00d2ff; }
   </style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISP Billing & MikroTik Management Dashboard</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SweetAlert2 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    
-    <style>
-        body {
-            background-color: #f4f6f9;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .navbar-brand {
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        .card-counter {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            transition: .3s;
-        }
-        .card-counter:hover {
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-        .card-counter i {
-            font-size: 2.5em;
-            opacity: 0.3;
-        }
-        .card-counter .count-numbers {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .card-counter .count-name {
-            opacity: 0.6;
-            text-transform: capitalize;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .status-badge {
-            font-size: 0.75rem;
-            padding: 5px 10px;
-            border-radius: 50px;
-        }
-        .table-container {
-            background: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-        .search-box {
-            max-width: 300px;
-        }
-    </style>
 </head>
 <body>
 
 <div id="loader" class="loading-overlay">
-  <div class="spinner-border text-light mb-2" style="width: 3rem; height: 3rem;" role="status"></div>
-  <h6 id="loaderText" class="fw-bold">ডাটা প্রসেস হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</h6>
+  <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status"></div>
 </div>
 
 <div class="content-wrapper">
   <!-- Auth Section -->
   <div id="authSection" class="container">
-    <div class="card card-custom p-4 auth-container bg-white">
+    <div class="card card-custom p-4 auth-container">
       <div class="text-center mb-4">
         <i class="fa-solid fa-network-wired fa-3x text-primary mb-2"></i>
-        <h4 class="fw-bold">ISP এডমিন লগইন</h4>
-        <p class="text-muted small">বিলিং ও মাইক্রোটিক প্যানেলে প্রবেশ করুন</p>
+        <h4 class="fw-bold">আইএসপি স্টক পোর্টাল</h4>
+        <p class="text-muted small">সিস্টেমে প্রবেশ করতে আপনার লগইন তথ্য দিন</p>
       </div>
       <form id="authForm">
         <div class="mb-3">
           <label class="form-label fw-semibold">ইমেইল এড্রেস</label>
-          <input type="email" id="authEmail" class="form-control" placeholder="admin@isp.com" required>
+          <input type="email" id="authEmail" class="form-control" placeholder="name@domain.com" required>
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold">পাসওয়ার্ড</label>
-          <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
+          <input type="password" id="authPassword" class="form-control" placeholder="••••••••" minlength="6" required>
         </div>
         <div id="authError" class="alert alert-danger py-2 small mb-3 text-center" style="display: none;"></div>
         <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">প্রবেশ করুন</button>
@@ -146,13 +71,22 @@
 
   <!-- Dashboard Section -->
   <div id="dashboardSection" style="display: none;">
-    <div class="header-banner mb-4">
+    <div class="header-banner mb-3">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
         <div>
-          <h3 class="fw-bold mb-0"><i class="fa-solid fa-wifi me-2"></i>ISP বিলিং ও মাইক্রোটিক মনিটরিং</h3>
-          <p class="mb-0 opacity-75 small" id="currentMonthLabel">চলতি মাসের বিলিং রেকর্ডস</p>
+          <h4 class="fw-bold mb-0"><i class="fa-solid fa-boxes-stacked me-2"></i>আইএসপি মালামাল ও ইনভেন্টরি হিসাব</h4>
+          <p class="mb-0 opacity-75 small">রিয়েলটাইম স্টক ট্র্যাকিং এবং জোন ভিত্তিক ম্যানেজমেন্ট</p>
         </div>
         <div class="d-flex align-items-center gap-2">
+          <!-- Zone Selector -->
+          <select id="activeZone" onchange="switchZone()" class="form-select form-select-sm fw-bold bg-light text-dark" style="width: 160px;">
+            <option value="Gawar">গাওয়ার জোন</option>
+            <option value="Mollartek">মোল্লারটেক জোন</option>
+          </select>
+
+          <button onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold">
+            <i class="fa-solid fa-moon me-1"></i> মোড
+          </button>
           <span id="userDisplayEmail" class="badge bg-light text-dark d-none d-md-inline-block py-2 px-3"></span>
           <button onclick="logout()" class="btn btn-outline-light btn-sm fw-bold">
             <i class="fa-solid fa-power-off me-1"></i> লগআউট
@@ -162,202 +96,157 @@
     </div>
 
     <div class="container-fluid px-md-4">
-      <!-- Summary Cards -->
-      <div class="row g-3 mb-4 text-center">
-        <div class="col-6 col-lg-3">
-          <div class="card card-custom p-3 bg-white stat-card stat-total">
-            <div class="text-muted small fw-bold">মোট গ্রাহক</div>
-            <h4 class="text-primary fw-bold mt-2 mb-0" id="statTotalClients">0</h4>
+      
+      <div id="offlineAlert" class="alert alert-warning py-1 px-3 mb-2 small" style="display:none;">
+        <i class="fa-solid fa-wifi me-1"></i> আপনি অফলাইনে আছেন। ডাটা লোকালি সংরক্ষিত হচ্ছে এবং অনলাইন হলে সিঙ্ক হবে।
+      </div>
+
+      <!-- Summary Statistics Row -->
+      <div class="row g-2 mb-3 text-center">
+        <div class="col-md-4">
+          <div class="card card-custom stat-card stat-in">
+            <div class="text-muted small fw-bold">মোট স্টক ইন (Stock In)</div>
+            <h5 class="text-success fw-bold mt-1 mb-0" id="statTotalIn">0 Pcs</h5>
           </div>
         </div>
-        <div class="col-6 col-lg-3">
-          <div class="card card-custom p-3 bg-white stat-card stat-paid">
-            <div class="text-muted small fw-bold">মোট আদায় (Paid)</div>
-            <h4 class="text-success fw-bold mt-2 mb-0" id="statTotalPaid">৳ 0.00</h4>
+        <div class="col-md-4">
+          <div class="card card-custom stat-card stat-out">
+            <div class="text-muted small fw-bold">মোট স্টক আউট (Stock Out)</div>
+            <h5 class="text-danger fw-bold mt-1 mb-0" id="statTotalOut">0 Pcs</h5>
           </div>
         </div>
-        <div class="col-6 col-lg-3">
-          <div class="card card-custom p-3 bg-white stat-card stat-unpaid">
-            <div class="text-muted small fw-bold">বকেয়া বিল (Unpaid)</div>
-            <h4 class="text-danger fw-bold mt-2 mb-0" id="statTotalUnpaid">৳ 0.00</h4>
+        <div class="col-md-4">
+          <div class="card card-custom stat-card stat-balance">
+            <div class="text-muted small fw-bold">বর্তমান স্টক ব্যালেন্স (Stock Balance)</div>
+            <h5 class="text-primary fw-bold mt-1 mb-0" id="statTotalBalance">0 Pcs</h5>
           </div>
-        </div>
-        <div class="col-6 col-lg-3">
-          <div class="card card-custom p-3 bg-white stat-card stat-online">
-            <div class="text-muted small fw-bold">মাইক্রোটিক অনলাইন</div>
-            <h4 class="text-info fw-bold mt-2 mb-0" id="statOnlineCount">0 / 0</h4>
-          </div>
-    <!-- Top Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fa-solid fa-network-wired me-2"></i>ISP Billing Panel</a>
-            <span class="badge bg-light text-primary fw-semibold" id="server-status">Connecting Backend...</span>
         </div>
       </div>
 
       <div class="row">
-        <!-- Sidebar Controls -->
+        <!-- Input & Management Panel -->
         <div class="col-lg-4 mb-4">
-          <!-- Excel Import Card -->
-          <div class="card card-custom p-4 mb-3">
-            <h5 class="fw-bold text-dark mb-2"><i class="fa-solid fa-file-csv me-2 text-success"></i>Excel / CSV ফাইল আপলোড</h5>
-            <p class="text-muted small mb-3">নতুন ফাইল আপলোড করলে আগের ডাটা হারাবে না, নতুন ও পুরাতন ডাটা মার্জ হয়ে যাবে।</p>
-            <div class="upload-box" onclick="document.getElementById('excelFileInput').click()">
-              <i class="fa-solid fa-cloud-arrow-up fa-2x text-primary mb-2"></i>
-              <div class="fw-bold small">ফাইল নির্বাচন করতে ক্লিক করুন</div>
-              <div class="text-muted small" id="fileNameDisplay">.csv বা .xlsx ফাইল</div>
-    </nav>
-
-    <!-- Main Container -->
-    <div class="container-fluid my-4 px-4">
-        
-        <!-- Summary Cards -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-3">
-                <div class="card-counter border-start border-primary border-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="count-numbers text-primary" id="total-users">0</span>
-                            <span class="count-name d-block">মোট গ্রাহক (Total Secrets)</span>
-                        </div>
-                        <i class="fa-solid fa-users text-primary"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card-counter border-start border-success border-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="count-numbers text-success" id="online-users">0</span>
-                            <span class="count-name d-block">অনলাইন গ্রাহক (Active)</span>
-                        </div>
-                        <i class="fa-solid fa-signal text-success"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card-counter border-start border-secondary border-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="count-numbers text-secondary" id="offline-users">0</span>
-                            <span class="count-name d-block">অফলাইন গ্রাহক</span>
-                        </div>
-                        <i class="fa-solid fa-power-off text-secondary"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card-counter border-start border-danger border-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="count-numbers text-danger" id="disabled-users">0</span>
-                            <span class="count-name d-block">ব্লক/ডিজেবলড লাইন</span>
-                        </div>
-                        <i class="fa-solid fa-ban text-danger"></i>
-                    </div>
-                </div>
-            </div>
-            <input type="file" id="excelFileInput" accept=".csv, .xlsx, .xls" style="display: none;" onchange="handleFileUpload(event)">
-          </div>
-
-          <!-- Add Single Client Form -->
-          <div class="card card-custom p-4">
-            <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-user-plus me-2 text-primary"></i>নতুন ক্লায়েন্ট এন্ট্রি</h5>
-            <form id="clientForm">
+          <div class="card card-custom p-3 mb-3">
+            <h6 class="fw-bold mb-3"><i class="fa-solid fa-square-plus me-2 text-primary"></i>নতুন মালামাল এন্ট্রি</h6>
+            <form id="transactionForm">
               <div class="mb-2">
-                <label class="form-label fw-semibold small">MikroTik Username / ID</label>
-                <input type="text" id="clientId" class="form-control form-control-sm" placeholder="যেমন: 41younus88" required>
-              </div>
-              <div class="mb-2">
-                <label class="form-label fw-semibold small">গ্রাহকের নাম</label>
-                <input type="text" id="clientName" class="form-control form-control-sm" placeholder="যেমন: Younus" required>
-              </div>
-              <div class="mb-2">
-                <label class="form-label fw-semibold small">মোবাইল নম্বর</label>
-                <input type="text" id="clientPhone" class="form-control form-control-sm" placeholder="01920060010" required>
-              </div>
-              <div class="mb-2">
-                <label class="form-label fw-semibold small">প্যাকেজ (Package)</label>
-                <input type="text" id="clientPackage" class="form-control form-control-sm" placeholder="যেমন: SAM_630TK_I_Vat" required>
-              </div>
-              <div class="mb-2">
-                <label class="form-label fw-semibold small">মাসিক বিল (৳)</label>
-                <input type="number" id="billAmount" class="form-control form-control-sm" placeholder="630" min="0" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-semibold small">বিলিং স্ট্যাটাস</label>
-                <select id="paymentStatus" class="form-select form-select-sm" required>
-                  <option value="Paid">Paid</option>
-                  <option value="Unpaid">Unpaid</option>
+                <label class="form-label fw-semibold small mb-1">লেনদেনের ধরন</label>
+                <select id="txType" class="form-select form-select-sm shadow-sm" required>
+                  <option value="Stock In">স্টক ইন (গ্রহণ / ক্রয়)</option>
+                  <option value="Stock Out">স্টক আউট (প্রদান / ব্যবহার)</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2">
-                <i class="fa-solid fa-cloud-arrow-up me-1"></i> সেভ করুন
+
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1">তারিখ</label>
+                <input type="date" id="txDate" class="form-control form-control-sm shadow-sm" required>
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1">পণ্যের নাম (Item Name)</label>
+                <input type="text" id="itemName" class="form-control form-control-sm shadow-sm" list="itemListOptions" placeholder="যেমন: Onu, SC P. Cord, F. 4 Core" required>
+                <datalist id="itemListOptions">
+                  <option value="Onu">
+                  <option value="Giga Onu">
+                  <option value="SC P. Cord">
+                  <option value="TG 2 port">
+                  <option value="TG 4 port">
+                  <option value="TG 8 Port">
+                  <option value="TG 10 Port">
+                  <option value="SP 1*2">
+                  <option value="SP 1*4">
+                  <option value="SP 1*8">
+                  <option value="SP 1*16">
+                  <option value="F. 2 Core">
+                  <option value="F. 4 Core">
+                  <option value="F. 6 Core">
+                  <option value="F. 12 Core">
+                  <option value="Switch">
+                  <option value="Router">
+                  <option value="Tie">
+                </datalist>
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1">পরিমাণ (Qty)</label>
+                <input type="number" id="txQty" class="form-control form-control-sm shadow-sm" placeholder="পরিমাণ লিখুন" min="1" required>
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1">প্রদানকারী / রিসিভারের নাম (Re. Name)</label>
+                <input type="text" id="reName" class="form-control form-control-sm shadow-sm" placeholder="যেমন: Malek GW / Antor GW">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold small mb-1">ইউজার আইডি (User Id)</label>
+                <input type="text" id="userId" class="form-control form-control-sm shadow-sm" placeholder="যেমন: B Side / sm776">
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm btn-sm py-2">
+                <i class="fa-solid fa-cloud-arrow-up me-1"></i> এন্ট্রি সেভ করুন
               </button>
             </form>
           </div>
+
+          <!-- Excel Import Card -->
+          <div class="card card-custom p-3">
+            <h6 class="fw-bold mb-2"><i class="fa-solid fa-file-excel text-success me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
+            <p class="text-muted small mb-2">আপনার এক্সেল ফাইল থেকে সরাসরি মালামালের হিসাব আপলোড করুন।</p>
+            <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="form-control form-control-sm mb-2">
+            <button onclick="importExcel()" class="btn btn-outline-success btn-sm w-100 fw-bold">
+              <i class="fa-solid fa-upload me-1"></i> এক্সেল ডাটা ইমপোর্ট করুন
+            </button>
+          </div>
         </div>
 
-        <!-- Table Display Area -->
+        <!-- Table & Inventory Stock Summary Panel -->
         <div class="col-lg-8">
-          <div class="table-container mb-4">
+          <!-- Live Current Stock Summary Table -->
+          <div class="card card-custom p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0"><i class="fa-solid fa-warehouse text-success me-2"></i>বর্তমান স্টক সামারি (<span id="currentZoneTitle">গাওয়ার জোন</span>)</h6>
+            </div>
+            <div class="table-responsive" style="max-height: 200px;">
+              <table class="table table-sm table-bordered text-center align-middle mb-0 small">
+                <thead class="table-light sticky-top">
+                  <tr>
+                    <th>পণ্যের নাম</th>
+                    <th>মোট স্টক ইন</th>
+                    <th>মোট স্টক আউট</th>
+                    <th>স্টক ব্যালেন্স</th>
+                  </tr>
+                </thead>
+                <tbody id="inventorySummaryBody">
+                  <tr><td colspan="4" class="text-muted small">কোনো ডাটা নেই</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Transaction History Table -->
+          <div class="card card-custom p-3">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-              <input type="text" id="searchInput" onkeyup="filterData()" class="form-control form-control-sm shadow-sm" style="width: 240px;" placeholder="🔍 খুঁজুন (Username, Phone)...">
-              <div class="d-flex gap-2">
-                <button onclick="fetchMikrotikLiveStatus()" class="btn btn-outline-info btn-sm fw-bold">
-                  <i class="fa-solid fa-arrows-rotate me-1"></i> MikroTik Sync
-                </button>
-                <button onclick="exportExcel()" class="btn btn-outline-success btn-sm fw-bold">
-                  <i class="fa-solid fa-file-excel me-1"></i> Excel ডাউনলোড
-                </button>
-              </div>
-        <!-- Table Controls & Search -->
-        <div class="table-container">
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                <h5 class="fw-bold mb-0 text-secondary"><i class="fa-solid fa-list me-2"></i>গ্রাহক তালিকা ও লাইভ স্ট্যাটাস</h5>
-                <div class="d-flex gap-2">
-                    <input type="text" id="searchInput" onkeyup="filterTable()" class="form-control search-box" placeholder="ইউজারনেম বা IP দিয়ে খুঁজুন...">
-                    <button class="btn btn-outline-primary" onclick="fetchMikrotikLiveStatus()"><i class="fa-solid fa-rotate me-1"></i> রিফ্রেশ</button>
-                </div>
+              <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 200px;" placeholder="🔍 খুঁজুন...">
+              <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
+                <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
+              </button>
             </div>
 
-            <!-- Client List Table -->
-            <div class="table-responsive">
-              <table class="table table-hover align-middle" id="clientTable">
-                <thead class="table-light">
+            <div class="table-responsive" style="max-height: 350px;">
+              <table class="table table-hover align-middle small" id="transactionTable">
+                <thead class="table-light sticky-top">
                   <tr>
-                    <th>Username / ID</th>
-                    <th>নাম & ফোন</th>
-                    <th>প্যাকেজ</th>
-                    <th>বিল</th>
-                    <th>বিল স্ট্যাটাস</th>
-                    <th>লাইভ নেট</th>
+                    <th>তারিখ</th>
+                    <th>টাইপ</th>
+                    <th>পণ্য</th>
+                    <th>পরিমাণ</th>
+                    <th>রিসিভার/নাম</th>
+                    <th>ইউজার আইডি</th>
                     <th class="text-center">অ্যাকশন</th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
               </table>
-                <table class="table table-hover align-middle" id="clientTable">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>ইউজারনেম (Secret)</th>
-                            <th>IP এড্রেস</th>
-                            <th>আপটাইম (Uptime)</th>
-                            <th>স্ট্যাটাস</th>
-                            <th>লাস্ট সিন (Last Seen)</th>
-                            <th class="text-center">অ্যাকশন</th>
-                        </tr>
-                    </thead>
-                    <tbody id="clientTableBody">
-                        <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">
-                                <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 d-block"></i>
-                                মাইক্রোটিক থেকে ডাটা লোড হচ্ছে...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
           </div>
         </div>
@@ -368,27 +257,25 @@
 
 <footer class="app-footer">
   <div class="container">
-    <p class="mb-0 fw-semibold">ISP Billing & MikroTik Live Management System</p>
+    <p class="mb-0 fw-semibold">ISP Inventory Management System | Zones: <span>Gawar & Mollartek</span></p>
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  const MIKROTIK_API_URL = 'http://localhost:5000/api/mikrotik/users-status';
-
-  // Firebase Configuration
+  // নতুন প্রদত্ত ফায়ারবেস কনফিগারেশন
   const firebaseConfig = {
-    apiKey: "AIzaSyAfq988qijqN69xjUiZPRdiXlfN3-Dtngs",
-    authDomain: "isp-billing-92ce2.firebaseapp.com",
-    databaseURL: "https://isp-billing-92ce2-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "isp-billing-92ce2",
-    storageBucket: "isp-billing-92ce2.firebasestorage.app",
-    messagingSenderId: "951649795315",
-    appId: "1:951649795315:web:f9a80ca1520d41b22c0b86",
-    measurementId: "G-FCSWY5X5B8"
+    apiKey: "AIzaSyAVj1wFqK5ZJ86aimbFJvdzbSbfBu6EH6g",
+    authDomain: "store-91df0.firebaseapp.com",
+    projectId: "store-91df0",
+    storageBucket: "store-91df0.firebasestorage.app",
+    messagingSenderId: "306926140347",
+    appId: "1:306926140347:web:c518359f06163d7ed7a29e",
+    measurementId: "G-0P51G2JWPK"
   };
 
   firebase.initializeApp(firebaseConfig);
@@ -397,40 +284,47 @@
 
   let _user = null;
   let _cache = [];
-  let _mikrotikStatusMap = {};
+  let _currentZone = 'Gawar';
 
-  const toggleLoader = (val, text = "ডাটা প্রসেস হচ্ছে...") => {
-    document.getElementById('loaderText').innerText = text;
-    document.getElementById('loader').style.display = val ? 'flex' : 'none';
-  };
+  const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
-  function getCurrentMonthKey() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  function toggleDarkMode() {
+    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+    const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-bs-theme', targetTheme);
+    localStorage.setItem('appTheme', targetTheme);
   }
 
-  // Auth Listener
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('appTheme') || 'light';
+    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+    
+    // Default date to today
+    const todayStr = new Date().toISOString().split('T')[0];
+    const dateEl = document.getElementById('txDate');
+    if(dateEl) dateEl.value = todayStr;
+  });
+
+  function switchZone() {
+    _currentZone = document.getElementById('activeZone').value;
+    document.getElementById('currentZoneTitle').innerText = _currentZone === 'Gawar' ? 'গাওয়ার জোন' : 'মোল্লারটেক জোন';
+    fetchTransactions();
+  }
+
   _auth.onAuthStateChanged(async (u) => {
     toggleLoader(true);
-    try {
-      if (u) {
-        _user = u;
-        document.getElementById('authSection').style.display = 'none';
-        document.getElementById('dashboardSection').style.display = 'block';
-        document.getElementById('userDisplayEmail').innerText = _user.email;
-        document.getElementById('currentMonthLabel').innerText = `মাসিক সেশন: ${getCurrentMonthKey()}`;
-        loadClients();
-        fetchMikrotikLiveStatus();
-      } else {
-        _user = null;
-        document.getElementById('authSection').style.display = 'block';
-        document.getElementById('dashboardSection').style.display = 'none';
-      }
-    } catch (err) {
-      alert("ডাটাবেজ সমস্যা: " + err.message);
-    } finally {
-      toggleLoader(false);
+    if (u) {
+      _user = u;
+      document.getElementById('authSection').style.display = 'none';
+      document.getElementById('dashboardSection').style.display = 'block';
+      document.getElementById('userDisplayEmail').innerText = _user.email;
+      fetchTransactions();
+    } else {
+      _user = null;
+      document.getElementById('authSection').style.display = 'block';
+      document.getElementById('dashboardSection').style.display = 'none';
     }
+    toggleLoader(false);
   });
 
   document.getElementById('authForm').addEventListener('submit', async (e) => {
@@ -446,437 +340,249 @@
       );
     } catch (e) {
       errorEl.style.display = 'block';
-      errorEl.innerText = e.code === 'auth/operation-not-allowed' 
-        ? "Firebase Console-এ Email/Password অপশনটি Enable করুন!" 
-        : "লগইন তথ্য ভুল হয়েছে!";
+      errorEl.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক ইমেইল ও পাসওয়ার্ড দিন।";
     } finally {
       toggleLoader(false);
     }
   });
 
-  function logout() { _auth.signOut(); }
-
-  // Load Firebase Clients Real-time
-  function loadClients() {
-    if (_user) {
-      _db.ref(`users/${_user.uid}/isp_clients`).on('value', (snap) => {
-        const val = snap.val();
-        _cache = val ? Object.values(val) : [];
-        filterData();
-      });
-    }
+  function logout() {
+    _auth.signOut();
   }
 
-  // Fetch MikroTik Status
-  async function fetchMikrotikLiveStatus() {
+  // এন্ট্রি সাবমিট ফর্ম
+  document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!_user) return;
+
+    const txType = document.getElementById('txType').value;
+    const txDate = document.getElementById('txDate').value;
+    const itemName = document.getElementById('itemName').value.trim();
+    const txQty = parseInt(document.getElementById('txQty').value) || 0;
+    const reName = document.getElementById('reName').value.trim();
+    const userId = document.getElementById('userId').value.trim();
+
+    const payload = {
+      date: txDate,
+      type: txType,
+      itemName: itemName,
+      quantity: txQty,
+      reName: reName,
+      userId: userId,
+      timestamp: Date.now()
+    };
+
+    toggleLoader(true);
     try {
-      const res = await fetch(MIKROTIK_API_URL);
-      const result = await res.json();
-      if (result.success) {
-        _mikrotikStatusMap = {};
-        result.data.forEach(item => {
-          _mikrotikStatusMap[item.username] = item;
-        });
-        filterData();
-      }
-    } catch (e) {
-      console.warn("MikroTik Node Server Connection Failed:", e.message);
+      await _db.ref(`users/${_user.uid}/zones/${_currentZone}/transactions`).push(payload);
+      document.getElementById('transactionForm').reset();
+      document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+    } catch (err) {
+      alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + err.message);
+    } finally {
+      toggleLoader(false);
     }
+  });
+
+  function fetchTransactions() {
+    if (!_user) return;
+    _db.ref(`users/${_user.uid}/zones/${_currentZone}/transactions`).on('value', (snap) => {
+      _cache = [];
+      const val = snap.val();
+      if (val) {
+        Object.keys(val).forEach(k => {
+          let item = val[k];
+          item.id = k;
+          _cache.push(item);
+        });
+        _cache.sort((a, b) => b.timestamp - a.timestamp);
+      }
+      renderUI();
+    });
   }
 
-  // Render Table
-  function renderTable(records) {
+  function renderUI() {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
-    let totalPaid = 0, totalUnpaid = 0;
 
-    const renderLimit = Math.min(records.length, 200);
+    let totalInCount = 0;
+    let totalOutCount = 0;
+    const stockMap = {};
 
-    for (let i = 0; i < renderLimit; i++) {
-      const item = records[i];
-      const mkData = _mikrotikStatusMap[item.id];
-      const isOnline = mkData && mkData.status === 'Online';
+    _cache.forEach(item => {
+      const qty = Number(item.quantity) || 0;
+      const iName = item.itemName || 'N/A';
 
-      const billBadge = item.status === 'Paid' 
-        ? '<span class="badge bg-success">Paid</span>' 
-        : '<span class="badge bg-danger">Unpaid</span>';
+      if (!stockMap[iName]) {
+        stockMap[iName] = { in: 0, out: 0 };
+      }
 
-      const liveBadge = isOnline
-        ? `<span class="badge status-badge bg-success-subtle text-success border border-success"><i class="pulse-online"></i> Online</span>`
-        : `<span class="badge status-badge bg-secondary-subtle text-secondary">Offline</span>`;
-
-      const row = `
-        <tr>
-          <td>
-            <div class="fw-bold text-dark">${item.id}</div>
-            <small class="text-muted">${item.pop || ''}</small>
-          </td>
-          <td>
-            <div class="fw-semibold">${item.name}</div>
-            <small class="text-muted">${item.phone || 'N/A'}</small>
-          </td>
-          <td><span class="badge bg-info text-dark">${item.package}</span></td>
-          <td class="fw-bold">৳ ${item.billAmount.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-          <td>${billBadge}</td>
-          <td>${liveBadge}</td>
-          <td class="text-center">
-            <button onclick="toggleStatus('${item.id}', '${item.status}')" class="btn btn-sm btn-outline-primary me-1" title="স্ট্যাটাস পরিবর্তন">
-              <i class="fa-solid fa-arrows-rotate"></i>
-            </button>
-            <button onclick="deleteClient('${item.id}')" class="btn btn-sm btn-outline-danger" title="ডিলিট">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      `;
-      tbody.innerHTML += row;
-    }
-
-    records.forEach(item => {
-      if (item.status === 'Paid') totalPaid += item.billAmount;
-      else totalUnpaid += item.billAmount;
+      if (item.type === 'Stock In') {
+        totalInCount += qty;
+        stockMap[iName].in += qty;
+      } else {
+        totalOutCount += qty;
+        stockMap[iName].out += qty;
+      }
     });
 
-    document.getElementById('statTotalClients').innerText = records.length;
-    document.getElementById('statTotalPaid').innerText = `৳ ${totalPaid.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    document.getElementById('statTotalUnpaid').innerText = `৳ ${totalUnpaid.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    document.getElementById('statOnlineCount').innerText = `${Object.values(_mikrotikStatusMap).filter(u=>u.status==='Online').length} / ${records.length}`;
+    document.getElementById('statTotalIn').innerText = `${totalInCount} Pcs`;
+    document.getElementById('statTotalOut').innerText = `${totalOutCount} Pcs`;
+    document.getElementById('statTotalBalance').innerText = `${totalInCount - totalOutCount} Pcs`;
+
+    // Render Inventory Summary Table
+    const summaryBody = document.getElementById('inventorySummaryBody');
+    summaryBody.innerHTML = '';
+    const itemKeys = Object.keys(stockMap);
+
+    if (itemKeys.length === 0) {
+      summaryBody.innerHTML = `<tr><td colspan="4" class="text-muted small">কোনো মালামাল এন্ট্রি করা হয়নি</td></tr>`;
+    } else {
+      itemKeys.forEach(name => {
+        const ins = stockMap[name].in;
+        const outs = stockMap[name].out;
+        const bal = ins - outs;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="fw-bold">${name}</td>
+          <td class="text-success">${ins}</td>
+          <td class="text-danger">${outs}</td>
+          <td class="fw-bold text-primary">${bal}</td>
+        `;
+        summaryBody.appendChild(tr);
+      });
+    }
+
+    // Render Transactions Table
+    if (_cache.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">কোনো ট্রানজাকশন পাওয়া যায়নি</td></tr>`;
+      return;
+    }
+
+    _cache.forEach(item => {
+      const badge = item.type === 'Stock In' 
+        ? `<span class="badge bg-success">স্টক ইন</span>` 
+        : `<span class="badge bg-danger">স্টক আউট</span>`;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.date || ''}</td>
+        <td>${badge}</td>
+        <td class="fw-bold">${item.itemName || ''}</td>
+        <td class="fw-bold">${item.quantity || 0}</td>
+        <td>${item.reName || '-'}</td>
+        <td>${item.userId || '-'}</td>
+        <td class="text-center">
+          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger py-0"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
   }
 
-  // Upload Large Excel File (MERGE EXISTING DATA USING UPDATE)
-  function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+  function filterTransactions() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(q) ? '' : 'none';
+    });
+  }
 
-    document.getElementById('fileNameDisplay').innerText = file.name;
-    toggleLoader(true, "ফাইল ডাটা প্রসেস হচ্ছে...");
+  async function deleteTx(id) {
+    if (!confirm('আপনি কি এই এন্ট্রিটি মুছে ফেলতে চান?')) return;
+    if (!_user) return;
+    toggleLoader(true);
+    try {
+      await _db.ref(`users/${_user.uid}/zones/${_currentZone}/transactions/${id}`).remove();
+    } catch (e) {
+      alert("মুছে ফেলতে ব্যর্থ হয়েছে: " + e.message);
+    } finally {
+      toggleLoader(false);
+    }
+  }
 
+  // Excel Export
+  function exportToExcel() {
+    if (_cache.length === 0) {
+      alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!");
+      return;
+    }
+    const dataToExport = _cache.map(item => ({
+      "তারিখ": item.date,
+      "ধরন": item.type,
+      "পণ্যের নাম": item.itemName,
+      "পরিমাণ": item.quantity,
+      "রিসিভার/নাম": item.reName || '',
+      "ইউজার আইডি": item.userId || ''
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, `${_currentZone}_Stock`);
+    XLSX.writeFile(workbook, `ISP_Stock_${_currentZone}_Report.xlsx`);
+  }
+
+  // Excel Import
+  function importExcel() {
+    const fileInput = document.getElementById('excelFile');
+    if (fileInput.files.length === 0) {
+      alert("অনুগ্রহ করে একটি এক্সেল ফাইল সিলেক্ট করুন!");
+      return;
+    }
+
+    const file = fileInput.files[0];
     const reader = new FileReader();
-    reader.onload = async function(e) {
+
+    reader.onload = async function (e) {
       try {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(sheet);
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
 
-        if (jsonData.length === 0) return alert("ফাইলটি খালি!");
-
-        const currentMonth = getCurrentMonthKey();
-        const chunkSize = 1000;
-        const totalRows = jsonData.length;
-
-        for (let i = 0; i < totalRows; i += chunkSize) {
-          const chunk = jsonData.slice(i, i + chunkSize);
-          const updates = {};
-
-          chunk.forEach(row => {
-            const username = (row['Username'] || row['Customer ID'] || row['id'] || '').toString().trim();
-            if (!username) return;
-
-            const name = row['Name'] || 'N/A';
-            const mobile = (row['Mobile'] || row['Phone'] || '').toString().trim();
-            const pkg = row['Package'] || 'Basic';
-            const billAmount = Number(parseFloat(row['Bill Amount'] || 0).toFixed(2)) || 0;
-            const statusRaw = row['Status'] || 'Enabled';
-            const status = (statusRaw.toLowerCase() === 'enabled') ? 'Paid' : 'Unpaid';
-
-            // Firebase path targeted specifically per user to preserve other users
-            updates[`users/${_user.uid}/isp_clients/${username}`] = {
-              id: username,
-              name: name,
-              phone: mobile,
-              package: pkg,
-              billAmount: billAmount,
-              status: status,
-              address: row['Address'] || '',
-              pop: row['POP'] || '',
-              lastUpdatedMonth: currentMonth,
-              updatedAt: Date.now()
-            };
-          });
-
-          toggleLoader(true, `মার্জ ও সেভ হচ্ছে: ${Math.min(i + chunkSize, totalRows)} / ${totalRows}...`);
-          
-          // Using update() ensures existing records stay untouched unless overwritten by matching Username
-          await _db.ref().update(updates);
-    <!-- External JS Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        // ব্যাকএন্ড API URL (আপনার পিসির Node.js Server)
-        const BACKEND_URL = 'http://localhost:5000';
-
-        let globalUserData = [];
-
-        // ১. MikroTik ডাটা ফেচিং ফাংশন
-        async function fetchMikrotikLiveStatus() {
-            try {
-                const response = await fetch(`${BACKEND_URL}/api/mikrotik/users-status`);
-                const result = await response.json();
-
-                if (result.success) {
-                    document.getElementById('server-status').className = 'badge bg-success fw-semibold';
-                    document.getElementById('server-status').innerText = 'Server Connected';
-
-                    globalUserData = result.data;
-                    renderTable(globalUserData);
-                    updateCounters(globalUserData);
-                } else {
-                    showServerError(result.message);
-                }
-            } catch (error) {
-                showServerError("Node.js ব্যাকএন্ড সার্ভারের সাথে কানেক্ট করা যাচ্ছে না!");
-            }
+        if (json.length === 0) {
+          alert("এক্সেল ফাইলে কোনো ডাটা পাওয়া যায়নি!");
+          return;
         }
 
-        alert(`সফলভাবে ${totalRows} জন ক্লায়েন্টের ডাটা Firebase-এ যুক্ত (Merge) হয়েছে! আগের ডাটা অক্ষত রয়েছে।`);
+        toggleLoader(true);
+        const updates = {};
+        
+        json.forEach(row => {
+          // Flexibility in excel column names matching your document
+          const date = row['Date'] || row['তারিখ'] || new Date().toISOString().split('T')[0];
+          const itemName = row['Item Name'] || row['পণ্যের নাম'] || 'Unknown';
+          const qty = parseInt(row['Qty.'] || row['Qty'] || row['পরিমাণ'] || 1);
+          const reName = row['Re. Name'] || row['রিসিভার'] || '';
+          const userId = row['User Id'] || row['ইউজার আইডি'] || '';
+          const type = row['Type'] || row['টাইপ'] || (row['Stock In'] ? 'Stock In' : 'Stock Out');
+
+          const newRef = _db.ref(`users/${_user.uid}/zones/${_currentZone}/transactions`).push();
+          updates[newRef.key] = {
+            date: String(date),
+            type: type.includes('In') ? 'Stock In' : 'Stock Out',
+            itemName: String(itemName),
+            quantity: isNaN(qty) ? 1 : qty,
+            reName: String(reName),
+            userId: String(userId),
+            timestamp: Date.now()
+          };
+        });
+
+        await _db.ref(`users/${_user.uid}/zones/${_currentZone}/transactions`).update(updates);
+        alert("এক্সেল ফাইল থেকে সফলভাবে মালামাল ইমপোর্ট করা হয়েছে!");
+        fileInput.value = '';
       } catch (err) {
-        alert("ত্রুটি: " + err.message);
+        alert("ইমপোর্ট করতে সমস্যা হয়েছে: " + err.message);
       } finally {
         toggleLoader(false);
-        document.getElementById('excelFileInput').value = '';
       }
     };
 
     reader.readAsArrayBuffer(file);
   }
-
-  // Form Submit (Single User)
-  document.getElementById('clientForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!_user) return;
-    toggleLoader(true);
-
-    const clientData = {
-      id: document.getElementById('clientId').value.trim(),
-      name: document.getElementById('clientName').value.trim(),
-      phone: document.getElementById('clientPhone').value.trim(),
-      package: document.getElementById('clientPackage').value.trim(),
-      billAmount: Number(parseFloat(document.getElementById('billAmount').value).toFixed(2)) || 0,
-      status: document.getElementById('paymentStatus').value,
-      lastUpdatedMonth: getCurrentMonthKey(),
-      updatedAt: Date.now()
-    };
-
-    try {
-      await _db.ref(`users/${_user.uid}/isp_clients/${clientData.id}`).update(clientData);
-      document.getElementById('clientForm').reset();
-    } catch (err) {
-      alert("ত্রুটি: " + err.message);
-    } finally {
-      toggleLoader(false);
-    }
-  });
-        // ২. টেবিল রেন্ডার করা
-        function renderTable(data) {
-            const tbody = document.getElementById('clientTableBody');
-            tbody.innerHTML = '';
-
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">কোনো কাস্টমার ডাটা পাওয়া যায়নি।</td></tr>';
-                return;
-            }
-
-            data.forEach((user, index) => {
-                const isOnline = user.status === 'Online';
-                const isDisabled = user.disabled;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td class="fw-bold">${user.username}</td>
-                    <td><code>${user.address}</code></td>
-                    <td>${user.uptime}</td>
-                    <td>
-                        ${isDisabled 
-                            ? '<span class="badge bg-danger status-badge"><i class="fa-solid fa-ban me-1"></i>Disabled</span>'
-                            : (isOnline 
-                                ? '<span class="badge bg-success status-badge"><i class="fa-solid fa-circle me-1"></i>Online</span>' 
-                                : '<span class="badge bg-secondary status-badge"><i class="fa-solid fa-circle me-1"></i>Offline</span>')
-                        }
-                    </td>
-                    <td><small class="text-muted">${user.lastSeen}</small></td>
-                    <td class="text-center">
-                        <button onclick="toggleLine('${user.username}', ${isDisabled ? '\'enable\'' : '\'disable\''})" 
-                                class="btn btn-sm ${isDisabled ? 'btn-success' : 'btn-outline-danger'} me-1" 
-                                title="${isDisabled ? 'লাইন চালু করুন' : 'লাইন বন্ধ করুন'}">
-                            <i class="fa-solid ${isDisabled ? 'fa-plug' : 'fa-power-off'}"></i>
-                        </button>
-                        <button onclick="sendBillSMS('${user.username}')" 
-                                class="btn btn-sm btn-outline-info" 
-                                title="বকেয়া বিলের SMS পাঠান">
-                            <i class="fa-solid fa-comment-sms"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-  async function toggleStatus(id, currentStatus) {
-    if (!_user) return;
-    const newStatus = currentStatus === 'Paid' ? 'Unpaid' : 'Paid';
-    toggleLoader(true);
-    try {
-      await _db.ref(`users/${_user.uid}/isp_clients/${id}`).update({ status: newStatus });
-    } catch (e) { alert("ত্রুটি: " + e.message); } 
-    finally { toggleLoader(false); }
-  }
-        // ৩. সামারি কাউন্টার আপডেট
-        function updateCounters(data) {
-            const total = data.length;
-            const online = data.filter(u => u.status === 'Online' && !u.disabled).length;
-            const disabled = data.filter(u => u.disabled).length;
-            const offline = total - online - disabled;
-
-            document.getElementById('total-users').innerText = total;
-            document.getElementById('online-users').innerText = online;
-            document.getElementById('offline-users').innerText = offline;
-            document.getElementById('disabled-users').innerText = disabled;
-        }
-
-  async function deleteClient(id) {
-    if (confirm("ক্লায়েন্টের ডাটা ডিলিট করতে চান?")) {
-      toggleLoader(true);
-      try {
-        await _db.ref(`users/${_user.uid}/isp_clients/${id}`).remove();
-      } catch (e) { alert("ত্রুটি: " + e.message); } 
-      finally { toggleLoader(false); }
-    }
-  }
-        // ৪. মাইক্রোটিকে লাইন চালু/বন্ধ করা
-        async function toggleLine(username, action) {
-            const actionText = action === 'disable' ? 'বন্ধ (Disable)' : 'চালু (Enable)';
-            
-            const confirm = await Swal.fire({
-                title: 'আপনি কি নিশ্চিত?',
-                text: `${username}-এর ইন্টারনেট লাইন ${actionText} করা হবে!`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: action === 'disable' ? '#d33' : '#198754',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: `হ্যাঁ, ${actionText} করুন`,
-                cancelButtonText: 'বাতিল'
-            });
-
-            if (!confirm.isConfirmed) return;
-
-            try {
-                Swal.showLoading();
-                const res = await fetch(`${BACKEND_URL}/api/mikrotik/toggle-user`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, action })
-                });
-
-                const result = await res.json();
-                if (result.success) {
-                    Swal.fire('সফল!', `কাস্টমার লাইন সফলভাবে ${actionText} করা হয়েছে।`, 'success');
-                    fetchMikrotikLiveStatus();
-                } else {
-                    Swal.fire('এরর!', result.message, 'error');
-                }
-            } catch (e) {
-                Swal.fire('ত্রুটি!', 'সার্ভারে কানেক্ট করা সম্ভব হয়নি।', 'error');
-            }
-        }
-
-  function filterData() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = _cache.filter(item => 
-      item.name.toLowerCase().includes(q) ||
-      item.id.toLowerCase().includes(q) ||
-      (item.phone && item.phone.includes(q))
-    );
-    renderTable(filtered);
-  }
-        // ৫. বিলিং SMS পাঠানো
-        async function sendBillSMS(username) {
-            const { value: phone } = await Swal.fire({
-                title: `${username}-কে SMS পাঠান`,
-                input: 'text',
-                inputLabel: 'গ্রাহকের মোবাইল নম্বর দিন',
-                inputPlaceholder: '017XXXXXXXX',
-                showCancelButton: true,
-                confirmButtonText: 'SMS পাঠান',
-                cancelButtonText: 'বাতিল',
-                inputValidator: (value) => {
-                    if (!value) return 'মোবাইল নম্বর দেওয়া বাধ্যতামূলক!';
-                }
-            });
-
-            if (!phone) return;
-
-            const message = `প্রিয় ${username}, আপনার চলতি মাসের ইন্টারনেট বিল বকেয়া রয়েছে। বিচ্ছিন্নতা এড়াতে দ্রুাত পরিশোধ করুন। ধন্যবাদ!`;
-
-            try {
-                Swal.showLoading();
-                const res = await fetch(`${BACKEND_URL}/api/sms/send`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone, message })
-                });
-
-                const result = await res.json();
-                if (result.success) {
-                    Swal.fire('পাঠানো হয়েছে!', 'গ্রাহকের মোবাইলে SMS চলে গেছে।', 'success');
-                } else {
-                    Swal.fire('এরর!', result.message, 'error');
-                }
-            } catch (e) {
-                Swal.fire('ত্রুটি!', 'SMS পাঠানোর সার্ভিস অফলাইন রয়েছে।', 'error');
-            }
-        }
-
-  function exportExcel() {
-    if (_cache.length === 0) return alert("ডাটা নেই!");
-    const dataToExport = _cache.map(item => ({
-      "Customer ID": item.id,
-      "Username": item.id,
-      "Name": item.name,
-      "Mobile": item.phone,
-      "Package": item.package,
-      "Bill Amount": item.billAmount,
-      "Status": item.status === 'Paid' ? 'Enabled' : 'Disabled',
-      "Address": item.address || '',
-      "POP": item.pop || ''
-    }));
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "ISPClients");
-    XLSX.writeFile(workbook, `radcheck_export_${getCurrentMonthKey()}.xlsx`);
-  }
-        // ৬. টেবিল ফিল্টার/সার্চ
-        function filterTable() {
-            const input = document.getElementById("searchInput").value.toLowerCase();
-            const filtered = globalUserData.filter(u => 
-                u.username.toLowerCase().includes(input) || 
-                u.address.toLowerCase().includes(input)
-            );
-            renderTable(filtered);
-        }
-
-  setInterval(fetchMikrotikLiveStatus, 15000);
 </script>
-        // ৭. সার্ভার এরর প্রদর্শন
-        function showServerError(msg) {
-            document.getElementById('server-status').className = 'badge bg-danger fw-semibold';
-            document.getElementById('server-status').innerText = 'Server Offline';
-            document.getElementById('clientTableBody').innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center text-danger py-4">
-                        <i class="fa-solid fa-triangle-exclamation fa-2x mb-2"></i><br>
-                        ${msg}<br>
-                        <small class="text-muted">দয়া করে আপনার পিসিতে <code>node server.js</code> রান করা আছে কি না চেক করুন।</small>
-                    </td>
-                </tr>
-            `;
-        }
-
-        // পেজ লোড হওয়ার সাথে সাথে ডাটা ফেচ হবে এবং প্রতি ১৫ সেকেন্ড পর পর লাইভ রিফ্রেশ হবে
-        fetchMikrotikLiveStatus();
-        setInterval(fetchMikrotikLiveStatus, 15000);
-    </script>
 </body>
 </html>
