@@ -1,49 +1,273 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" data-bs-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>স্টোর ডাটা রিসেট বা ডিলিট টুল</title>
+  <title>সেন্ট্রাল ও জোন ভিত্তিক ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <style>
-    body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8f9fa; height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .card-box { max-width: 450px; width: 100%; border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    :root {
+      --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    }
+    [data-bs-theme="dark"] {
+      --primary-gradient: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+    }
+    body { 
+      background-color: var(--bs-body-bg); 
+      font-family: 'Hind Siliguri', sans-serif; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .content-wrapper { flex: 1; }
+    .header-banner { background: var(--primary-gradient); color: white; padding: 18px 0; border-radius: 0 0 20px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
+    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .stat-card { border-left: 5px solid; padding: 12px !important; }
+    .stat-in { border-color: #198754; }
+    .stat-out { border-color: #dc3545; }
+    .stat-balance { border-color: #0d6efd; }
+    .auth-container { max-width: 420px; margin: 70px auto; border-top: 5px solid #0d6efd; }
+    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
+    .app-footer { background: var(--primary-gradient); color: #ffffff; text-align: center; padding: 12px 0; font-size: 0.9rem; margin-top: auto; }
+    .app-footer span { color: #00d2ff; }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="card card-box p-4 bg-white text-center mx-auto">
-    <div class="mb-3">
-      <i class="fa-solid fa-triangle-exclamation fa-3x text-danger mb-2"></i>
-      <h4 class="fw-bold text-danger">স্টোর ডাটা ক্লিয়ার বা ডিলিট</h4>
-      <p class="text-muted small">সাবধান! এই বাটনে ক্লিক করলে ফায়ারবেস থেকে আপনার সিলেক্ট করা জোনের সমস্ত পুরোনো ট্রানজাকশন বা ডাটা স্থায়ীভাবে মুছে যাবে।</p>
+<div id="loader" class="loading-overlay">
+  <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status"></div>
+</div>
+
+<div class="content-wrapper">
+  <!-- Auth Section -->
+  <div id="authSection" class="container">
+    <div class="card card-custom p-4 auth-container">
+      <div class="text-center mb-4">
+        <i class="fa-solid fa-warehouse fa-3x text-primary mb-2"></i>
+        <h4 class="fw-bold">সেন্ট্রাল স্টক পোর্টাল</h4>
+        <p class="text-muted small">সিস্টেমে প্রবেশ করতে আপনার লগইন তথ্য দিন</p>
+      </div>
+      <form id="authForm">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">ইমেইল এড্রেস</label>
+          <input type="email" id="authEmail" class="form-control" placeholder="name@domain.com" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">পাসওয়ার্ড</label>
+          <input type="password" id="authPassword" class="form-control" placeholder="••••••••" minlength="6" required>
+        </div>
+        <div id="authError" class="alert alert-danger py-2 small mb-3 text-center" style="display: none;"></div>
+        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">প্রবেশ করুন</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div id="dashboardSection" style="display: none;">
+    <div class="header-banner mb-3">
+      <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h4 class="fw-bold mb-0"><i class="fa-solid fa-boxes-stacked me-2"></i>সেন্ট্রাল ও জোন ভিত্তিক স্টক ম্যানেজমেন্ট</h4>
+          <p class="mb-0 opacity-75 small">সেন্ট্রাল গুদাম থেকে মালামাল রিসিভ ও দুই জোনে বন্টন ব্যবস্থা</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <!-- View / Target Selector -->
+          <select id="activeTarget" onchange="switchTarget()" class="form-select form-select-sm fw-bold bg-light text-dark" style="width: 180px;">
+            <option value="Central">সেন্ট্রাল গুদাম (Central Stock)</option>
+            <option value="Gawar">গাওয়ার জোন (Gawar Zone)</option>
+            <option value="Mollartek">মোল্লারটেক জোন (Mollartek)</option>
+          </select>
+
+          <button onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <span id="userDisplayEmail" class="badge bg-light text-dark d-none d-md-inline-block py-2 px-3"></span>
+          <button onclick="logout()" class="btn btn-outline-light btn-sm fw-bold">
+            <i class="fa-solid fa-power-off"></i> লগআউট
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="mb-3 text-start">
-      <label class="form-label fw-semibold small">জোন সিলেক্ট করুন:</label>
-      <select id="targetZone" class="form-select fw-bold">
-        <option value="Gawar">গাওয়ার জোন (Gawar)</option>
-        <option value="Mollartek">মোল্লারটেক জোন (Mollartek)</option>
-      </select>
-    </div>
+    <div class="container-fluid px-md-4">
+      
+      <!-- Summary Statistics Row -->
+      <div class="row g-2 mb-3 text-center">
+        <div class="col-md-4">
+          <div class="card card-custom stat-card stat-in">
+            <div class="text-muted small fw-bold" id="labelTotalIn">মোট স্টক ইন</div>
+            <h5 class="text-success fw-bold mt-1 mb-0" id="statTotalIn">0 Pcs</h5>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-custom stat-card stat-out">
+            <div class="text-muted small fw-bold" id="labelTotalOut">মোট বিতরণ / আউট</div>
+            <h5 class="text-danger fw-bold mt-1 mb-0" id="statTotalOut">0 Pcs</h5>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-custom stat-card stat-balance">
+            <div class="text-muted small fw-bold">বর্তমান স্টক ব্যালেন্স</div>
+            <h5 class="text-primary fw-bold mt-1 mb-0" id="statTotalBalance">0 Pcs</h5>
+          </div>
+        </div>
+      </div>
 
-    <button onclick="clearAllData()" class="btn btn-danger fw-bold py-2 w-100 shadow-sm">
-      <i class="fa-solid fa-trash-can me-2"></i> সমস্ত ডাটা এক ক্লিকে ডিলিট করুন
-    </button>
-    
-    <div id="statusMessage" class="mt-3 small fw-bold"></div>
+      <div class="row">
+        <!-- Input Panel -->
+        <div class="col-lg-4 mb-4">
+          <div class="card card-custom p-3 mb-3">
+            <h6 class="fw-bold mb-3" id="formTitle"><i class="fa-solid fa-square-plus me-2 text-primary"></i>সেন্ট্রালে নতুন মালামাল এন্ট্রি</h6>
+            <form id="transactionForm">
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1">লেনদেনের ধরন</label>
+                <select id="txType" class="form-select form-select-sm shadow-sm" required onchange="updateFormLabels()">
+                  <option value="Stock In">স্টক ইন (কেনাকাটা / রিসিভ)</option>
+                  <option value="Stock Out">স্টক আউট / জোন ট্রান্সফার</option>
+                </select>
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1">তারিখ</label>
+                <input type="date" id="txDate" class="form-control form-control-sm shadow-sm" required>
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1">পণ্যের নাম (Item Name)</label>
+                <input type="text" id="itemName" class="form-control form-control-sm shadow-sm" list="itemListOptions" placeholder="যেমন: Onu, SC P. Cord" required>
+                <datalist id="itemListOptions">
+                  <option value="Onu"><option value="Giga Onu"><option value="SC P. Cord"><option value="TG 2 port"><option value="TG 4 port"><option value="TG 8 Port"><option value="SP 1*2"><option value="SP 1*4"><option value="F. 2 Core"><option value="F. 4 Core"><option value="Switch"><option value="Router"><option value="Tie">
+                </datalist>
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1">পরিমাণ (Qty)</label>
+                <input type="number" id="txQty" class="form-control form-control-sm shadow-sm" placeholder="পরিমাণ লিখুন" min="1" required>
+              </div>
+
+              <div class="mb-2" id="sourceReceiverField">
+                <label class="form-label fw-semibold small mb-1" id="reNameLabel">প্রদানকারী / রিসিভারের নাম</label>
+                <input type="text" id="reName" class="form-control form-control-sm shadow-sm" placeholder="নাম লিখুন">
+              </div>
+
+              <div class="mb-3" id="userIdField">
+                <label class="form-label fw-semibold small mb-1">ইউজার আইডি / লোকেশন</label>
+                <input type="text" id="userId" class="form-control form-control-sm shadow-sm" placeholder="আইডি বা নোট">
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm btn-sm py-2">
+                <i class="fa-solid fa-cloud-arrow-up me-1"></i> এন্ট্রি সেভ করুন
+              </button>
+            </form>
+          </div>
+
+          <!-- Excel Import Card -->
+          <div class="card card-custom p-3">
+            <h6 class="fw-bold mb-2"><i class="fa-solid fa-file-excel text-success me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
+            <p class="text-muted small mb-2">এক্সেল শিট থেকে সরাসরি ডাটা আপলোড করুন।</p>
+            <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="form-control form-control-sm mb-2">
+            <button onclick="importExcel()" class="btn btn-outline-success btn-sm w-100 fw-bold">
+              <i class="fa-solid fa-upload me-1"></i> এক্সেল ইমপোর্ট করুন
+            </button>
+          </div>
+        </div>
+
+        <!-- Table & Stock Summary Panel -->
+        <div class="col-lg-8">
+          <!-- Filter Row -->
+          <div class="card card-custom p-3 mb-3">
+            <div class="row g-2 align-items-center">
+              <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">শুরুর তারিখ</label>
+                <input type="date" id="startDate" class="form-control form-control-sm" onchange="renderUI()">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">শেষের তারিখ</label>
+                <input type="date" id="endDate" class="form-control form-control-sm" onchange="renderUI()">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1">সার্চ করুন</label>
+                <input type="text" id="searchInput" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="🔍 পণ্য বা নাম...">
+              </div>
+              <div class="col-md-3 text-md-end mt-4">
+                <button onclick="resetFilter()" class="btn btn-outline-secondary btn-sm fw-bold w-100">
+                  <i class="fa-solid fa-rotate-right me-1"></i> রিসেট ফিল্টার
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Stock Summary Table -->
+          <div class="card card-custom p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0"><i class="fa-solid fa-warehouse text-success me-2"></i>স্টক সামারি (<span id="currentTargetTitle">সেন্ট্রাল গুদাম</span>)</h6>
+            </div>
+            <div class="table-responsive" style="max-height: 200px;">
+              <table class="table table-sm table-bordered text-center align-middle mb-0 small">
+                <thead class="table-light sticky-top">
+                  <tr>
+                    <th>পণ্যের নাম</th>
+                    <th id="thIn">মোট ইন</th>
+                    <th id="thOut">মোট আউট</th>
+                    <th>স্টক ব্যালেন্স</th>
+                  </tr>
+                </thead>
+                <tbody id="inventorySummaryBody">
+                  <tr><td colspan="4" class="text-muted small">কোনো ডাটা নেই</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Transaction History Table -->
+          <div class="card card-custom p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>লেনদেনের ইতিহাস</h6>
+              <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
+                <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
+              </button>
+            </div>
+
+            <div class="table-responsive" style="max-height: 320px;">
+              <table class="table table-hover align-middle small" id="transactionTable">
+                <thead class="table-light sticky-top">
+                  <tr>
+                    <th>তারিখ</th>
+                    <th>টাইপ</th>
+                    <th>পণ্য</th>
+                    <th>পরিমাণ</th>
+                    <th>নাম/উৎস</th>
+                    <th>ইউজার আইডি/নোট</th>
+                    <th class="text-center">অ্যাকশন</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Firebase SDKs -->
+<footer class="app-footer">
+  <div class="container">
+    <p class="mb-0 fw-semibold">ISP Inventory System | Central & Zone Management</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  // আপনার ফায়ারবেস কনফিগারেশন
   const firebaseConfig = {
     apiKey: "AIzaSyAVj1wFqK5ZJ86aimbFJvdzbSbfBu6EH6g",
     authDomain: "store-91df0.firebaseapp.com",
@@ -55,29 +279,315 @@
   };
 
   firebase.initializeApp(firebaseConfig);
+  const _auth = firebase.auth();
   const _db = firebase.database();
 
-  async function clearAllData() {
-    const zone = document.getElementById('targetZone').value;
-    const statusEl = document.getElementById('statusMessage');
+  let _user = null;
+  let _cache = [];
+  let _currentTarget = 'Central';
+
+  const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
+
+  function toggleDarkMode() {
+    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+    const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-bs-theme', targetTheme);
+    localStorage.setItem('appTheme', targetTheme);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('appTheme') || 'light';
+    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+    const todayStr = new Date().toISOString().split('T')[0];
+    const dateEl = document.getElementById('txDate');
+    if(dateEl) dateEl.value = todayStr;
+  });
+
+  function switchTarget() {
+    _currentTarget = document.getElementById('activeTarget').value;
+    const titles = { 'Central': 'সেন্ট্রাল গুদাম', 'Gawar': 'গাওয়ার জোন', 'Mollartek': 'মোল্লারটেক জোন' };
+    document.getElementById('currentTargetTitle').innerText = titles[_currentTarget];
     
-    let confirmDelete = confirm(`আপনি কি নিশ্চিতভাবে ${zone === 'Gawar' ? 'গাওয়ার জোন' : 'মোল্লারটেক জোন'}-এর সমস্ত ডাটা ডিলিট করতে চান?`);
-    if (!confirmDelete) return;
+    // Adjust labels based on view
+    if(_currentTarget === 'Central') {
+      document.getElementById('labelTotalIn').innerText = 'মোট স্টক ইন (ক্রয়/রিসিভ)';
+      document.getElementById('labelTotalOut').innerText = 'মোট জোন ট্রান্সফার (আউট)';
+      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-square-plus me-2 text-primary"></i>সেন্ট্রালে নতুন মালামাল এন্ট্রি`;
+    } else {
+      document.getElementById('labelTotalIn').innerText = 'সেন্ট্রাল থেকে প্রাপ্তি (In)';
+      document.getElementById('labelTotalOut').innerText = 'ব্যবহার / বিতরণ (Out)';
+      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-square-plus me-2 text-primary"></i>${titles[_currentTarget]}-এ এন্ট্রি`;
+    }
+    fetchTransactions();
+  }
 
-    statusEl.className = "mt-3 small fw-bold text-info";
-    statusEl.innerText = "ডিলিট হচ্ছে, দয়া করে অপেক্ষা করুন...";
-
-    try {
-      // নির্দিষ্ট জোনের transactions নোড পুরোপুরি রিমুভ করা
-      await _db.ref(`common_store/zones/${zone}/transactions`).remove();
-      statusEl.className = "mt-3 small fw-bold text-success";
-      statusEl.innerText = "সফলভাবে সমস্ত ডাটা মুছে ফেলা হয়েছে!";
-    } catch (error) {
-      statusEl.className = "mt-3 small fw-bold text-danger";
-      statusEl.innerText = "সমস্যা হয়েছে: " + error.message;
+  function updateFormLabels() {
+    const type = document.getElementById('txType').value;
+    if(_currentTarget === 'Central') {
+      document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'সরবরাহকারী / ভেন্ডরের নাম' : 'কোন জোনে পাঠানো হলো (যেমন: Gawar)';
+    } else {
+      document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'উৎস / সেন্ট্রাল রেফারেন্স' : 'রিসিভার বা টেকনিশিয়ানের নাম';
     }
   }
-</script>
 
+  _auth.onAuthStateChanged(async (u) => {
+    toggleLoader(true);
+    if (u) {
+      _user = u;
+      document.getElementById('authSection').style.display = 'none';
+      document.getElementById('dashboardSection').style.display = 'block';
+      document.getElementById('userDisplayEmail').innerText = _user.email;
+      fetchTransactions();
+    } else {
+      _user = null;
+      document.getElementById('authSection').style.display = 'block';
+      document.getElementById('dashboardSection').style.display = 'none';
+    }
+    toggleLoader(false);
+  });
+
+  document.getElementById('authForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    toggleLoader(true);
+    try {
+      await _auth.signInWithEmailAndPassword(
+        document.getElementById('authEmail').value,
+        document.getElementById('authPassword').value
+      );
+    } catch (e) {
+      const errorEl = document.getElementById('authError');
+      errorEl.style.display = 'block';
+      errorEl.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক তথ্য দিন।";
+    } finally {
+      toggleLoader(false);
+    }
+  });
+
+  function logout() { _auth.signOut(); }
+
+  document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!_user) return;
+
+    const payload = {
+      date: document.getElementById('txDate').value,
+      type: document.getElementById('txType').value,
+      itemName: document.getElementById('itemName').value.trim(),
+      quantity: parseInt(document.getElementById('txQty').value) || 0,
+      reName: document.getElementById('reName').value.trim(),
+      userId: document.getElementById('userId').value.trim(),
+      timestamp: Date.now()
+    };
+
+    toggleLoader(true);
+    try {
+      await _db.ref(`isp_inventory/${_currentTarget}/transactions`).push(payload);
+      document.getElementById('transactionForm').reset();
+      document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+    } catch (err) {
+      alert("সমস্যা হয়েছে: " + err.message);
+    } finally {
+      toggleLoader(false);
+    }
+  });
+
+  function fetchTransactions() {
+    if (!_user) return;
+    _db.ref(`isp_inventory/${_currentTarget}/transactions`).on('value', (snap) => {
+      _cache = [];
+      const val = snap.val();
+      if (val) {
+        Object.keys(val).forEach(k => {
+          let item = val[k];
+          item.id = k;
+          _cache.push(item);
+        });
+        _cache.sort((a, b) => b.timestamp - a.timestamp);
+      }
+      renderUI();
+    });
+  }
+
+  function parseDateString(str) {
+    if (!str) return '';
+    let s = String(str).trim();
+    if (s.includes('.')) {
+      const parts = s.split('.');
+      if (parts.length === 3) {
+        let day = parts[0].padStart(2, '0');
+        let month = parts[1].padStart(2, '0');
+        let year = parts[2];
+        if (year.length === 2) year = '20' + year;
+        return `${year}-${month}-${day}`;
+      }
+    }
+    return s;
+  }
+
+  function renderUI() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const searchQ = document.getElementById('searchInput').value.toLowerCase().trim();
+
+    const filteredCache = _cache.filter(item => {
+      const itemDateFormatted = parseDateString(item.date);
+      if (startDate && itemDateFormatted < startDate) return false;
+      if (endDate && itemDateFormatted > endDate) return false;
+      if (searchQ) {
+        const rowText = `${item.date} ${item.type} ${item.itemName} ${item.quantity} ${item.reName} ${item.userId}`.toLowerCase();
+        if (!rowText.includes(searchQ)) return false;
+      }
+      return true;
+    });
+
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    let totalInCount = 0;
+    let totalOutCount = 0;
+    const stockMap = {};
+
+    filteredCache.forEach(item => {
+      const qty = Number(item.quantity) || 0;
+      const iName = item.itemName || 'N/A';
+
+      if (!stockMap[iName]) stockMap[iName] = { in: 0, out: 0 };
+
+      if (item.type === 'Stock In') {
+        totalInCount += qty;
+        stockMap[iName].in += qty;
+      } else {
+        totalOutCount += qty;
+        stockMap[iName].out += qty;
+      }
+    });
+
+    document.getElementById('statTotalIn').innerText = `${totalInCount} Pcs`;
+    document.getElementById('statTotalOut').innerText = `${totalOutCount} Pcs`;
+    document.getElementById('statTotalBalance').innerText = `${totalInCount - totalOutCount} Pcs`;
+
+    const summaryBody = document.getElementById('inventorySummaryBody');
+    summaryBody.innerHTML = '';
+    const itemKeys = Object.keys(stockMap);
+
+    if (itemKeys.length === 0) {
+      summaryBody.innerHTML = `<tr><td colspan="4" class="text-muted small">কোনো ডাটা পাওয়া যায়নি</td></tr>`;
+    } else {
+      itemKeys.forEach(name => {
+        const ins = stockMap[name].in;
+        const outs = stockMap[name].out;
+        const bal = ins - outs;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="fw-bold">${name}</td>
+          <td class="text-success">${ins}</td>
+          <td class="text-danger">${outs}</td>
+          <td class="fw-bold text-primary">${bal}</td>
+        `;
+        summaryBody.appendChild(tr);
+      });
+    }
+
+    if (filteredCache.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">কোনো রেকর্ড নেই</td></tr>`;
+      return;
+    }
+
+    filteredCache.forEach(item => {
+      const badge = item.type === 'Stock In' 
+        ? `<span class="badge bg-success">ইন / রিসিভ</span>` 
+        : `<span class="badge bg-danger">আউট / ট্রান্সফার</span>`;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.date || ''}</td>
+        <td>${badge}</td>
+        <td class="fw-bold">${item.itemName || ''}</td>
+        <td class="fw-bold">${item.quantity || 0}</td>
+        <td>${item.reName || '-'}</td>
+        <td>${item.userId || '-'}</td>
+        <td class="text-center">
+          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger py-0"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function resetFilter() {
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('searchInput').value = '';
+    renderUI();
+  }
+
+  async function deleteTx(id) {
+    if (!confirm('মুছে ফেলতে চান?')) return;
+    if (!_user) return;
+    toggleLoader(true);
+    try {
+      await _db.ref(`isp_inventory/${_currentTarget}/transactions/${id}`).remove();
+    } catch (e) {
+      alert("ত্রুটি: " + e.message);
+    } finally {
+      toggleLoader(false);
+    }
+  }
+
+  function exportToExcel() {
+    if (_cache.length === 0) { alert("ডাটা নেই!"); return; }
+    const dataToExport = _cache.map(item => ({
+      "তারিখ": item.date, "ধরন": item.type, "পণ্যের নাম": item.itemName,
+      "পরিমাণ": item.quantity, "নাম/উৎস": item.reName || '', "নোট/আইডি": item.userId || ''
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, `${_currentTarget}_Stock`);
+    XLSX.writeFile(workbook, `ISP_${_currentTarget}_Report.xlsx`);
+  }
+
+  function importExcel() {
+    const fileInput = document.getElementById('excelFile');
+    if (fileInput.files.length === 0) { alert("ফাইল সিলেক্ট করুন!"); return; }
+    
+    const reader = new FileReader();
+    reader.onload = async function (e) {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+
+        toggleLoader(true);
+        const updates = {};
+        let count = 0;
+
+        for (let i = 1; i < rows.length; i++) {
+          let r = rows[i];
+          if (!r || r.length === 0) continue;
+          let newRef = _db.ref(`isp_inventory/${_currentTarget}/transactions`).push();
+          updates[newRef.key] = {
+            date: String(r[0] || new Date().toISOString().split('T')[0]),
+            type: String(r[1] || '').toLowerCase().includes('out') ? 'Stock Out' : 'Stock In',
+            itemName: String(r[2] || 'Item'),
+            quantity: parseInt(r[3]) || 0,
+            reName: String(r[4] || ''),
+            userId: String(r[5] || ''),
+            timestamp: Date.now() + count
+          };
+          count++;
+        }
+
+        await _db.ref(`isp_inventory/${_currentTarget}/transactions`).update(updates);
+        alert(`সফলভাবে ${count}টি এন্ট্রি ইমপোর্ট হয়েছে!`);
+        fileInput.value = '';
+      } catch (err) {
+        alert("সমস্যা হয়েছে: " + err.message);
+      } finally {
+        toggleLoader(false);
+      }
+    };
+    reader.readAsArrayBuffer(fileInput.files[0]);
+  }
+</script>
 </body>
 </html>
