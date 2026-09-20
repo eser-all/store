@@ -166,7 +166,7 @@
             </form>
           </div>
 
-          <!-- Excel Import & Clear Data Card -->
+          <!-- Excel Import Card -->
           <div class="card card-custom p-3 mb-3">
             <h6 class="fw-bold mb-2"><i class="fa-solid fa-file-excel text-success me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
             <p class="text-muted small mb-2">এক্সেল শিট থেকে সরাসরি ডাটা আপলোড করুন।</p>
@@ -176,12 +176,20 @@
             </button>
           </div>
 
-          <!-- Clear All Data Card -->
-          <div class="card card-custom p-3 border-danger">
-            <h6 class="fw-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation me-2"></i>সমস্ত ডাটা মুছুন</h6>
-            <p class="text-muted small mb-2">বর্তমান সিলেক্টেড জোন বা সেন্ট্রালের সমস্ত রেকর্ড চিরতরে ডিলিট করতে:</p>
-            <button onclick="clearAllData()" class="btn btn-outline-danger btn-sm w-100 fw-bold">
-              <i class="fa-solid fa-trash-can me-1"></i> সমস্ত ডাটা ডিলিট করুন
+          <!-- Clear Selected Target Data -->
+          <div class="card card-custom p-3 mb-3 border-danger">
+            <h6 class="fw-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation me-2"></i>সিলেক্টেড জোন ডাটা মুছুন</h6>
+            <button onclick="clearCurrentTargetData()" class="btn btn-outline-danger btn-sm w-100 fw-bold">
+              <i class="fa-solid fa-trash-can me-1"></i> বর্তমান জোনের সব ডাটা মুছুন
+            </button>
+          </div>
+
+          <!-- Clear Entire Dashboard (All Zones) Data -->
+          <div class="card card-custom p-3 bg-danger text-white">
+            <h6 class="fw-bold mb-2"><i class="fa-solid fa-bomb me-2"></i>সম্পূর্ণ ড্যাশবোর্ড রিসেট</h6>
+            <p class="small mb-2 opacity-75">সেন্ট্রাল, গাওয়ার এবং মোল্লারটেক—সব জোনের সমস্ত ডাটা চিরতরে ডিলিট করতে:</p>
+            <button onclick="clearEntireDashboardData()" class="btn btn-light btn-sm w-100 fw-bold text-danger">
+              <i class="fa-solid fa-skull-crossbones me-1"></i> পুরো ড্যাশবোর্ডের সব ডাটা ডিলিট করুন
             </button>
           </div>
         </div>
@@ -542,21 +550,37 @@
     }
   }
 
-  // Clear All Data Function for Current Target
-  async function clearAllData() {
+  // Clear Current Target Data
+  async function clearCurrentTargetData() {
     const titles = { 'Central': 'সেন্ট্রাল গুদাম', 'Gawar': 'গাওয়ার জোন', 'Mollartek': 'মোল্লারটেক জোন' };
     const currentName = titles[_currentTarget];
 
-    let confirmClear = confirm(`সতর্কতা! আপনি কি নিশ্চিতভাবে ${currentName}-এর সমস্ত ডাটা চিরতরে ডিলিট করতে চান?`);
-    if (!confirmClear) return;
+    if (!confirm(`সতর্কতা! ${currentName}-এর সমস্ত ডাটা ডিলিট করতে চান?`)) return;
 
     if (!_user) return;
     toggleLoader(true);
     try {
       await _db.ref(`isp_inventory/${_currentTarget}/transactions`).remove();
-      alert(`${currentName}-এর সমস্ত ডাটা সফলভাবে মুছে ফেলা হয়েছে!`);
+      alert(`${currentName}-এর সমস্ত ডাটা মুছে ফেলা হয়েছে!`);
     } catch (e) {
-      alert("ডিলিট করতে সমস্যা হয়েছে: " + e.message);
+      alert("সমস্যা হয়েছে: " + e.message);
+    } finally {
+      toggleLoader(false);
+    }
+  }
+
+  // Clear Entire Dashboard Data (All Zones)
+  async function clearEntireDashboardData() {
+    if (!confirm(`অত্যন্ত সতর্কবার্তা! সম্পূর্ণ ড্যাশবোর্ডের সেন্ট্রাল, গাওয়ার এবং মোল্লারটেক—সব জোনের সমস্ত ডাটা চিরতরে মুছে যাবে। আপনি কি নিশ্চিত?`)) return;
+
+    if (!_user) return;
+    toggleLoader(true);
+    try {
+      await _db.ref('isp_inventory').remove();
+      alert("পুরো ড্যাশবোর্ডের সমস্ত ডাটা সফলভাবে মুছে ফেলা হয়েছে!");
+      window.location.reload();
+    } catch (e) {
+      alert("সমস্যা হয়েছে: " + e.message);
     } finally {
       toggleLoader(false);
     }
@@ -574,39 +598,168 @@
     XLSX.writeFile(workbook, `ISP_${_currentTarget}_Report.xlsx`);
   }
 
+  // --- Smart Excel Import Function ---
   function importExcel() {
     const fileInput = document.getElementById('excelFile');
     if (fileInput.files.length === 0) { alert("ফাইল সিলেক্ট করুন!"); return; }
-    
+
     const reader = new FileReader();
     reader.onload = async function (e) {
       try {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+
+        if (!rows || rows.length === 0) {
+          alert("এক্সেল শিটে কোনো ডাটা পাওয়া যায়নি!");
+          return;
+        }
+
+        // 1. Search for Side-by-Side header (Multiple "Item Name" headers in one row)
+        let sbsHeaderIdx = -1;
+        for (let i = 0; i < rows.length; i++) {
+          const rowStr = rows[i].map(c => String(c).toLowerCase());
+          const itemMatchCount = rowStr.filter(c => c.includes('item') || c.includes('পণ্য')).length;
+          if (itemMatchCount >= 2) {
+            sbsHeaderIdx = i;
+            break;
+          }
+        }
+
+        let transactionsToUpload = [];
+
+        if (sbsHeaderIdx !== -1) {
+          // --- Side-by-Side Format (Stock In & Stock Out in same row) ---
+          const headerRow = rows[sbsHeaderIdx].map(c => String(c).toLowerCase());
+          const itemCols = [];
+          headerRow.forEach((c, idx) => {
+            if (c.includes('item') || c.includes('পণ্য')) itemCols.push(idx);
+          });
+
+          const inItemCol = itemCols[0];
+          const outItemCol = itemCols.length > 1 ? itemCols[1] : -1;
+
+          for (let i = sbsHeaderIdx + 1; i < rows.length; i++) {
+            const r = rows[i];
+            if (!r || r.length === 0) continue;
+
+            // Extract Stock In item
+            if (inItemCol < r.length) {
+              const itemName = String(r[inItemCol] || '').trim();
+              if (itemName && !['nan', 'null', 'undefined', 'item name', 'পণ্য'].includes(itemName.toLowerCase())) {
+                const date = String(inItemCol > 0 ? r[inItemCol - 1] : '').trim();
+                const qty = parseInt(r[inItemCol + 1]) || 0;
+                if (qty > 0) {
+                  transactionsToUpload.push({
+                    date: date || new Date().toISOString().split('T')[0],
+                    type: 'Stock In',
+                    itemName: itemName,
+                    quantity: qty,
+                    reName: '',
+                    userId: ''
+                  });
+                }
+              }
+            }
+
+            // Extract Stock Out item
+            if (outItemCol !== -1 && outItemCol < r.length) {
+              const itemName = String(r[outItemCol] || '').trim();
+              if (itemName && !['nan', 'null', 'undefined', 'item name', 'পণ্য'].includes(itemName.toLowerCase())) {
+                const date = String(outItemCol > 0 ? r[outItemCol - 1] : '').trim();
+                const qty = parseInt(r[outItemCol + 1]) || 0;
+                const reName = String(r[outItemCol + 2] || '').trim();
+                const userId = String(r[outItemCol + 3] || '').trim();
+                if (qty > 0) {
+                  transactionsToUpload.push({
+                    date: date || new Date().toISOString().split('T')[0],
+                    type: 'Stock Out',
+                    itemName: itemName,
+                    quantity: qty,
+                    reName: ['nan', 'null', 'undefined'].includes(reName.toLowerCase()) ? '' : reName,
+                    userId: ['nan', 'null', 'undefined'].includes(userId.toLowerCase()) ? '' : userId
+                  });
+                }
+              }
+            }
+          }
+        } else {
+          // --- Standard / Single Group Format ---
+          let headerIdx = -1;
+          for (let i = 0; i < rows.length; i++) {
+            const rowStr = rows[i].map(c => String(c).toLowerCase());
+            if (rowStr.some(c => c.includes('item') || c.includes('পণ্য'))) {
+              headerIdx = i;
+              break;
+            }
+          }
+
+          let startIdx = 0;
+          let dateCol = 0, itemCol = 1, qtyCol = 2, typeCol = -1, reCol = -1, userCol = -1;
+
+          if (headerIdx !== -1) {
+            startIdx = headerIdx + 1;
+            const header = rows[headerIdx].map(c => String(c).toLowerCase());
+            dateCol = header.findIndex(c => c.includes('date') || c.includes('তারিখ'));
+            itemCol = header.findIndex(c => c.includes('item') || c.includes('পণ্য') || c.includes('name') || c.includes('নাম'));
+            qtyCol = header.findIndex(c => c.includes('qty') || c.includes('quantity') || c.includes('পরিমাণ'));
+            typeCol = header.findIndex(c => c.includes('type') || c.includes('ধরন'));
+            reCol = header.findIndex(c => c.includes('re.') || c.includes('re name') || c.includes('receiver') || c.includes('প্রাপক') || c.includes('উৎস'));
+            userCol = header.findIndex(c => c.includes('user') || c.includes('id') || c.includes('লোকেশন'));
+
+            if (dateCol === -1) dateCol = 0;
+            if (itemCol === -1) itemCol = 1;
+            if (qtyCol === -1) qtyCol = 2;
+          }
+
+          for (let i = startIdx; i < rows.length; i++) {
+            const r = rows[i];
+            if (!r || r.length <= itemCol) continue;
+
+            const itemName = String(r[itemCol] || '').trim();
+            if (!itemName || ['nan', 'null', 'undefined', 'item name', 'পণ্য'].includes(itemName.toLowerCase())) continue;
+
+            const date = String(dateCol !== -1 && dateCol < r.length ? r[dateCol] : '').trim();
+            const qty = parseInt(r[qtyCol !== -1 && qtyCol < r.length ? r[qtyCol] : 0]) || 0;
+            let rawType = typeCol !== -1 && typeCol < r.length ? String(r[typeCol]) : '';
+            const type = rawType.toLowerCase().includes('out') ? 'Stock Out' : 'Stock In';
+            
+            const reName = reCol !== -1 && reCol < r.length ? String(r[reCol] || '').trim() : '';
+            const userId = userCol !== -1 && userCol < r.length ? String(r[userCol] || '').trim() : '';
+
+            if (qty > 0) {
+              transactionsToUpload.push({
+                date: date || new Date().toISOString().split('T')[0],
+                type: type,
+                itemName: itemName,
+                quantity: qty,
+                reName: ['nan', 'null', 'undefined'].includes(reName.toLowerCase()) ? '' : reName,
+                userId: ['nan', 'null', 'undefined'].includes(userId.toLowerCase()) ? '' : userId
+              });
+            }
+          }
+        }
+
+        if (transactionsToUpload.length === 0) {
+          alert("কোনো বৈধ পণ্যের ডাটা পাওয়া যায়নি!");
+          return;
+        }
 
         toggleLoader(true);
         const updates = {};
         let count = 0;
+        const now = Date.now();
 
-        for (let i = 1; i < rows.length; i++) {
-          let r = rows[i];
-          if (!r || r.length === 0) continue;
+        transactionsToUpload.forEach((tx) => {
           let newRef = _db.ref(`isp_inventory/${_currentTarget}/transactions`).push();
-          updates[newRef.key] = {
-            date: String(r[0] || new Date().toISOString().split('T')[0]),
-            type: String(r[1] || '').toLowerCase().includes('out') ? 'Stock Out' : 'Stock In',
-            itemName: String(r[2] || 'Item'),
-            quantity: parseInt(r[3]) || 0,
-            reName: String(r[4] || ''),
-            userId: String(r[5] || ''),
-            timestamp: Date.now() + count
-          };
+          tx.timestamp = now + count;
+          updates[newRef.key] = tx;
           count++;
-        }
+        });
 
         await _db.ref(`isp_inventory/${_currentTarget}/transactions`).update(updates);
-        alert(`সফলভাবে ${count}টি এন্ট্রি ইমপোর্ট হয়েছে!`);
+        alert(`সফলভাবে ${count} টি পণ্যের ডাটা ইমপোর্ট হয়েছে!`);
         fileInput.value = '';
       } catch (err) {
         alert("সমস্যা হয়েছে: " + err.message);
