@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>সেন্ট্রাল ও জোন ভিত্তিক ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
+  <title>আইএসপি মালামাল হিসাব ও ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- SheetJS for Excel Import/Export -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
     :root {
       --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      --accent-color: #0d6efd;
     }
     [data-bs-theme="dark"] {
       --primary-gradient: linear-gradient(135deg, #141e30 0%, #243b55 100%);
@@ -26,7 +28,7 @@
     }
     .content-wrapper { flex: 1; }
     .header-banner { background: var(--primary-gradient); color: white; padding: 18px 0; border-radius: 0 0 20px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
-    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.25s ease-in-out; }
     .stat-card { border-left: 5px solid; padding: 12px !important; }
     .stat-in { border-color: #198754; }
     .stat-out { border-color: #dc3545; }
@@ -48,8 +50,8 @@
   <div id="authSection" class="container">
     <div class="card card-custom p-4 auth-container">
       <div class="text-center mb-4">
-        <i class="fa-solid fa-warehouse fa-3x text-primary mb-2"></i>
-        <h4 class="fw-bold">সেন্ট্রাল স্টক পোর্টাল</h4>
+        <i class="fa-solid fa-network-wired fa-3x text-primary mb-2"></i>
+        <h4 class="fw-bold">আইএসপি স্টক পোর্টাল</h4>
         <p class="text-muted small">সিস্টেমে প্রবেশ করতে আপনার লগইন তথ্য দিন</p>
       </div>
       <form id="authForm">
@@ -72,23 +74,22 @@
     <div class="header-banner mb-3">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
         <div>
-          <h4 class="fw-bold mb-0"><i class="fa-solid fa-boxes-stacked me-2"></i>সেন্ট্রাল ও জোন ভিত্তিক স্টক ম্যানেজমেন্ট</h4>
-          <p class="mb-0 opacity-75 small">সেন্ট্রাল গুদাম থেকে মালামাল রিসিভ ও দুই জোনে বন্টন ব্যবস্থা</p>
+          <h4 class="fw-bold mb-0"><i class="fa-solid fa-boxes-stacked me-2"></i>আইএসপি মালামাল ও ইনভেন্টরি হিসাব</h4>
+          <p class="mb-0 opacity-75 small">রিয়েলটাইম স্টক ট্র্যাকিং এবং জোন ভিত্তিক ম্যানেজমেন্ট</p>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <!-- View / Target Selector -->
-          <select id="activeTarget" onchange="switchTarget()" class="form-select form-select-sm fw-bold bg-light text-dark" style="width: 180px;">
-            <option value="Central">সেন্ট্রাল গুদাম (Central Stock)</option>
-            <option value="Gawar">গাওয়ার জোন (Gawar Zone)</option>
-            <option value="Mollartek">মোল্লারটেক জোন (Mollartek)</option>
+          <!-- Zone Selector -->
+          <select id="activeZone" onchange="switchZone()" class="form-select form-select-sm fw-bold bg-light text-dark" style="width: 160px;">
+            <option value="Gawar">গাওয়ার জোন</option>
+            <option value="Mollartek">মোল্লারটেক জোন</option>
           </select>
 
           <button onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold">
-            <i class="fa-solid fa-moon"></i>
+            <i class="fa-solid fa-moon me-1"></i> মোড
           </button>
           <span id="userDisplayEmail" class="badge bg-light text-dark d-none d-md-inline-block py-2 px-3"></span>
           <button onclick="logout()" class="btn btn-outline-light btn-sm fw-bold">
-            <i class="fa-solid fa-power-off"></i> লগআউট
+            <i class="fa-solid fa-power-off me-1"></i> লগআউট
           </button>
         </div>
       </div>
@@ -100,35 +101,35 @@
       <div class="row g-2 mb-3 text-center">
         <div class="col-md-4">
           <div class="card card-custom stat-card stat-in">
-            <div class="text-muted small fw-bold" id="labelTotalIn">মোট স্টক ইন</div>
+            <div class="text-muted small fw-bold">মোট স্টক ইন (Stock In)</div>
             <h5 class="text-success fw-bold mt-1 mb-0" id="statTotalIn">0 Pcs</h5>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card card-custom stat-card stat-out">
-            <div class="text-muted small fw-bold" id="labelTotalOut">মোট বিতরণ / আউট</div>
+            <div class="text-muted small fw-bold">মোট স্টক আউট (Stock Out)</div>
             <h5 class="text-danger fw-bold mt-1 mb-0" id="statTotalOut">0 Pcs</h5>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card card-custom stat-card stat-balance">
-            <div class="text-muted small fw-bold">বর্তমান স্টক ব্যালেন্স</div>
+            <div class="text-muted small fw-bold">বর্তমান স্টক ব্যালেন্স (Stock Balance)</div>
             <h5 class="text-primary fw-bold mt-1 mb-0" id="statTotalBalance">0 Pcs</h5>
           </div>
         </div>
       </div>
 
       <div class="row">
-        <!-- Input Panel -->
+        <!-- Input & Management Panel -->
         <div class="col-lg-4 mb-4">
           <div class="card card-custom p-3 mb-3">
-            <h6 class="fw-bold mb-3" id="formTitle"><i class="fa-solid fa-square-plus me-2 text-primary"></i>সেন্ট্রালে নতুন মালামাল এন্ট্রি</h6>
+            <h6 class="fw-bold mb-3"><i class="fa-solid fa-square-plus me-2 text-primary"></i>নতুন মালামাল এন্ট্রি</h6>
             <form id="transactionForm">
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">লেনদেনের ধরন</label>
-                <select id="txType" class="form-select form-select-sm shadow-sm" required onchange="updateFormLabels()">
-                  <option value="Stock In">স্টক ইন (কেনাকাটা / রিসিভ)</option>
-                  <option value="Stock Out">স্টক আউট / জোন ট্রান্সফার</option>
+                <select id="txType" class="form-select form-select-sm shadow-sm" required>
+                  <option value="Stock In">স্টক ইন (গ্রহণ / ক্রয়)</option>
+                  <option value="Stock Out">স্টক আউট (প্রদান / ব্যবহার)</option>
                 </select>
               </div>
 
@@ -139,9 +140,26 @@
 
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">পণ্যের নাম (Item Name)</label>
-                <input type="text" id="itemName" class="form-control form-control-sm shadow-sm" list="itemListOptions" placeholder="যেমন: Onu, SC P. Cord" required>
+                <input type="text" id="itemName" class="form-control form-control-sm shadow-sm" list="itemListOptions" placeholder="যেমন: Onu, SC P. Cord, F. 4 Core" required>
                 <datalist id="itemListOptions">
-                  <option value="Onu"><option value="Giga Onu"><option value="SC P. Cord"><option value="TG 2 port"><option value="TG 4 port"><option value="TG 8 Port"><option value="SP 1*2"><option value="SP 1*4"><option value="F. 2 Core"><option value="F. 4 Core"><option value="Switch"><option value="Router"><option value="Tie">
+                  <option value="Onu">
+                  <option value="Giga Onu">
+                  <option value="SC P. Cord">
+                  <option value="TG 2 port">
+                  <option value="TG 4 port">
+                  <option value="TG 8 Port">
+                  <option value="TG 10 Port">
+                  <option value="SP 1*2">
+                  <option value="SP 1*4">
+                  <option value="SP 1*8">
+                  <option value="SP 1*16">
+                  <option value="F. 2 Core">
+                  <option value="F. 4 Core">
+                  <option value="F. 6 Core">
+                  <option value="F. 12 Core">
+                  <option value="Switch">
+                  <option value="Router">
+                  <option value="Tie">
                 </datalist>
               </div>
 
@@ -150,14 +168,14 @@
                 <input type="number" id="txQty" class="form-control form-control-sm shadow-sm" placeholder="পরিমাণ লিখুন" min="1" required>
               </div>
 
-              <div class="mb-2" id="sourceReceiverField">
-                <label class="form-label fw-semibold small mb-1" id="reNameLabel">প্রদানকারী / রিসিভারের নাম</label>
-                <input type="text" id="reName" class="form-control form-control-sm shadow-sm" placeholder="নাম লিখুন">
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1">প্রদানকারী / রিসিভারের নাম (Re. Name)</label>
+                <input type="text" id="reName" class="form-control form-control-sm shadow-sm" placeholder="যেমন: Malek GW / Antor GW">
               </div>
 
-              <div class="mb-3" id="userIdField">
-                <label class="form-label fw-semibold small mb-1">ইউজার আইডি / লোকেশন</label>
-                <input type="text" id="userId" class="form-control form-control-sm shadow-sm" placeholder="আইডি বা নোট">
+              <div class="mb-3">
+                <label class="form-label fw-semibold small mb-1">ইউজার আইডি (User Id)</label>
+                <input type="text" id="userId" class="form-control form-control-sm shadow-sm" placeholder="যেমন: B Side / sm776">
               </div>
 
               <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm btn-sm py-2">
@@ -167,70 +185,30 @@
           </div>
 
           <!-- Excel Import Card -->
-          <div class="card card-custom p-3 mb-3">
+          <div class="card card-custom p-3">
             <h6 class="fw-bold mb-2"><i class="fa-solid fa-file-excel text-success me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
-            <p class="text-muted small mb-2">এক্সেল শিট থেকে সরাসরি ডাটা আপলোড করুন।</p>
+            <p class="text-muted small mb-2">আপনার এক্সেল ফাইল থেকে সরাসরি মালামালের হিসাব আপলোড করুন।</p>
             <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="form-control form-control-sm mb-2">
             <button onclick="importExcel()" class="btn btn-outline-success btn-sm w-100 fw-bold">
-              <i class="fa-solid fa-upload me-1"></i> এক্সেল ইমপোর্ট করুন
-            </button>
-          </div>
-
-          <!-- Clear Selected Target Data -->
-          <div class="card card-custom p-3 mb-3 border-danger">
-            <h6 class="fw-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation me-2"></i>সিলেক্টেড জোন ডাটা মুছুন</h6>
-            <button onclick="clearCurrentTargetData()" class="btn btn-outline-danger btn-sm w-100 fw-bold">
-              <i class="fa-solid fa-trash-can me-1"></i> বর্তমান জোনের সব ডাটা মুছুন
-            </button>
-          </div>
-
-          <!-- Clear Entire Dashboard (All Zones) Data -->
-          <div class="card card-custom p-3 bg-danger text-white">
-            <h6 class="fw-bold mb-2"><i class="fa-solid fa-bomb me-2"></i>সম্পূর্ণ ড্যাশবোর্ড রিসেট</h6>
-            <p class="small mb-2 opacity-75">সেন্ট্রাল, গাওয়ার এবং মোল্লারটেক—সব জোনের সমস্ত ডাটা চিরতরে ডিলিট করতে:</p>
-            <button onclick="clearEntireDashboardData()" class="btn btn-light btn-sm w-100 fw-bold text-danger">
-              <i class="fa-solid fa-skull-crossbones me-1"></i> পুরো ড্যাশবোর্ডের সব ডাটা ডিলিট করুন
+              <i class="fa-solid fa-upload me-1"></i> এক্সেল ডাটা ইমপোর্ট করুন
             </button>
           </div>
         </div>
 
-        <!-- Table & Stock Summary Panel -->
+        <!-- Table & Inventory Stock Summary Panel -->
         <div class="col-lg-8">
-          <!-- Filter Row -->
-          <div class="card card-custom p-3 mb-3">
-            <div class="row g-2 align-items-center">
-              <div class="col-md-3">
-                <label class="form-label small fw-bold mb-1">শুরুর তারিখ</label>
-                <input type="date" id="startDate" class="form-control form-control-sm" onchange="renderUI()">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label small fw-bold mb-1">শেষের তারিখ</label>
-                <input type="date" id="endDate" class="form-control form-control-sm" onchange="renderUI()">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label small fw-bold mb-1">সার্চ করুন</label>
-                <input type="text" id="searchInput" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="🔍 পণ্য বা নাম...">
-              </div>
-              <div class="col-md-3 text-md-end mt-4">
-                <button onclick="resetFilter()" class="btn btn-outline-secondary btn-sm fw-bold w-100">
-                  <i class="fa-solid fa-rotate-right me-1"></i> রিসেট ফিল্টার
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Live Stock Summary Table -->
+          <!-- Live Current Stock Summary Table -->
           <div class="card card-custom p-3 mb-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="fw-bold mb-0"><i class="fa-solid fa-warehouse text-success me-2"></i>স্টক সামারি (<span id="currentTargetTitle">সেন্ট্রাল গুদাম</span>)</h6>
+              <h6 class="fw-bold mb-0"><i class="fa-solid fa-warehouse text-success me-2"></i>বর্তমান স্টক সামারি (<span id="currentZoneTitle">গাওয়ার জোন</span>)</h6>
             </div>
             <div class="table-responsive" style="max-height: 200px;">
               <table class="table table-sm table-bordered text-center align-middle mb-0 small">
                 <thead class="table-light sticky-top">
                   <tr>
                     <th>পণ্যের নাম</th>
-                    <th id="thIn">মোট ইন</th>
-                    <th id="thOut">মোট আউট</th>
+                    <th>মোট স্টক ইন</th>
+                    <th>মোট স্টক আউট</th>
                     <th>স্টক ব্যালেন্স</th>
                   </tr>
                 </thead>
@@ -243,14 +221,14 @@
 
           <!-- Transaction History Table -->
           <div class="card card-custom p-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>লেনদেনের ইতিহাস</h6>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 200px;" placeholder="🔍 খুঁজুন...">
               <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
                 <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
               </button>
             </div>
 
-            <div class="table-responsive" style="max-height: 320px;">
+            <div class="table-responsive" style="max-height: 350px;">
               <table class="table table-hover align-middle small" id="transactionTable">
                 <thead class="table-light sticky-top">
                   <tr>
@@ -258,8 +236,8 @@
                     <th>টাইপ</th>
                     <th>পণ্য</th>
                     <th>পরিমাণ</th>
-                    <th>নাম/উৎস</th>
-                    <th>ইউজার আইডি/নোট</th>
+                    <th>রিসিভার/নাম</th>
+                    <th>ইউজার আইডি</th>
                     <th class="text-center">অ্যাকশন</th>
                   </tr>
                 </thead>
@@ -275,7 +253,7 @@
 
 <footer class="app-footer">
   <div class="container">
-    <p class="mb-0 fw-semibold">ISP Inventory System | Central & Zone Management</p>
+    <p class="mb-0 fw-semibold">ISP Inventory Management System | Shared Store (Gawar & Mollartek)</p>
   </div>
 </footer>
 
@@ -301,7 +279,7 @@
 
   let _user = null;
   let _cache = [];
-  let _currentTarget = 'Central';
+  let _currentZone = 'Gawar';
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
@@ -315,35 +293,16 @@
   window.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('appTheme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', savedTheme);
+    
     const todayStr = new Date().toISOString().split('T')[0];
     const dateEl = document.getElementById('txDate');
     if(dateEl) dateEl.value = todayStr;
   });
 
-  function switchTarget() {
-    _currentTarget = document.getElementById('activeTarget').value;
-    const titles = { 'Central': 'সেন্ট্রাল গুদাম', 'Gawar': 'গাওয়ার জোন', 'Mollartek': 'মোল্লারটেক জোন' };
-    document.getElementById('currentTargetTitle').innerText = titles[_currentTarget];
-    
-    if(_currentTarget === 'Central') {
-      document.getElementById('labelTotalIn').innerText = 'মোট স্টক ইন (ক্রয়/রিসিভ)';
-      document.getElementById('labelTotalOut').innerText = 'মোট জোন ট্রান্সফার (আউট)';
-      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-square-plus me-2 text-primary"></i>সেন্ট্রালে নতুন মালামাল এন্ট্রি`;
-    } else {
-      document.getElementById('labelTotalIn').innerText = 'সেন্ট্রাল থেকে প্রাপ্তি (In)';
-      document.getElementById('labelTotalOut').innerText = 'ব্যবহার / বিতরণ (Out)';
-      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-square-plus me-2 text-primary"></i>${titles[_currentTarget]}-এ এন্ট্রি`;
-    }
+  function switchZone() {
+    _currentZone = document.getElementById('activeZone').value;
+    document.getElementById('currentZoneTitle').innerText = _currentZone === 'Gawar' ? 'গাওয়ার জোন' : 'মোল্লারটেক জোন';
     fetchTransactions();
-  }
-
-  function updateFormLabels() {
-    const type = document.getElementById('txType').value;
-    if(_currentTarget === 'Central') {
-      document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'সরবরাহকারী / ভেন্ডরের নাম' : 'কোন জোনে পাঠানো হলো (যেমন: Gawar)';
-    } else {
-      document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'উৎস / সেন্ট্রাল রেফারেন্স' : 'রিসিভার বা টেকনিশিয়ানের নাম';
-    }
   }
 
   _auth.onAuthStateChanged(async (u) => {
@@ -365,43 +324,56 @@
   document.getElementById('authForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     toggleLoader(true);
+    const errorEl = document.getElementById('authError');
+    errorEl.style.display = 'none';
+
     try {
       await _auth.signInWithEmailAndPassword(
         document.getElementById('authEmail').value,
         document.getElementById('authPassword').value
       );
     } catch (e) {
-      const errorEl = document.getElementById('authError');
       errorEl.style.display = 'block';
-      errorEl.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক তথ্য দিন।";
+      errorEl.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক ইমেইল ও পাসওয়ার্ড দিন।";
     } finally {
       toggleLoader(false);
     }
   });
 
-  function logout() { _auth.signOut(); }
+  function logout() {
+    _auth.signOut();
+  }
 
+  // Common store database entry
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!_user) return;
 
+    const txType = document.getElementById('txType').value;
+    const txDate = document.getElementById('txDate').value;
+    const itemName = document.getElementById('itemName').value.trim();
+    const txQty = parseInt(document.getElementById('txQty').value) || 0;
+    const reName = document.getElementById('reName').value.trim();
+    const userId = document.getElementById('userId').value.trim();
+
     const payload = {
-      date: document.getElementById('txDate').value,
-      type: document.getElementById('txType').value,
-      itemName: document.getElementById('itemName').value.trim(),
-      quantity: parseInt(document.getElementById('txQty').value) || 0,
-      reName: document.getElementById('reName').value.trim(),
-      userId: document.getElementById('userId').value.trim(),
+      date: txDate,
+      type: txType,
+      itemName: itemName,
+      quantity: txQty,
+      reName: reName,
+      userId: userId,
       timestamp: Date.now()
     };
 
     toggleLoader(true);
     try {
-      await _db.ref(`isp_inventory/${_currentTarget}/transactions`).push(payload);
+      // কমন স্টোরেজ পাথ (common_store) ব্যবহার করা হয়েছে যাতে সবাই একই ডাটা দেখতে ও এডিট করতে পারে
+      await _db.ref(`common_store/zones/${_currentZone}/transactions`).push(payload);
       document.getElementById('transactionForm').reset();
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
     } catch (err) {
-      alert("সমস্যা হয়েছে: " + err.message);
+      alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + err.message);
     } finally {
       toggleLoader(false);
     }
@@ -409,7 +381,8 @@
 
   function fetchTransactions() {
     if (!_user) return;
-    _db.ref(`isp_inventory/${_currentTarget}/transactions`).on('value', (snap) => {
+    // কমন স্টোর পাথ থেকে রিয়েলটাইমে ডাটা ফেচ করা
+    _db.ref(`common_store/zones/${_currentZone}/transactions`).on('value', (snap) => {
       _cache = [];
       const val = snap.val();
       if (val) {
@@ -424,38 +397,7 @@
     });
   }
 
-  function parseDateString(str) {
-    if (!str) return '';
-    let s = String(str).trim();
-    if (s.includes('.')) {
-      const parts = s.split('.');
-      if (parts.length === 3) {
-        let day = parts[0].padStart(2, '0');
-        let month = parts[1].padStart(2, '0');
-        let year = parts[2];
-        if (year.length === 2) year = '20' + year;
-        return `${year}-${month}-${day}`;
-      }
-    }
-    return s;
-  }
-
   function renderUI() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const searchQ = document.getElementById('searchInput').value.toLowerCase().trim();
-
-    const filteredCache = _cache.filter(item => {
-      const itemDateFormatted = parseDateString(item.date);
-      if (startDate && itemDateFormatted < startDate) return false;
-      if (endDate && itemDateFormatted > endDate) return false;
-      if (searchQ) {
-        const rowText = `${item.date} ${item.type} ${item.itemName} ${item.quantity} ${item.reName} ${item.userId}`.toLowerCase();
-        if (!rowText.includes(searchQ)) return false;
-      }
-      return true;
-    });
-
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
 
@@ -463,11 +405,13 @@
     let totalOutCount = 0;
     const stockMap = {};
 
-    filteredCache.forEach(item => {
+    _cache.forEach(item => {
       const qty = Number(item.quantity) || 0;
       const iName = item.itemName || 'N/A';
 
-      if (!stockMap[iName]) stockMap[iName] = { in: 0, out: 0 };
+      if (!stockMap[iName]) {
+        stockMap[iName] = { in: 0, out: 0 };
+      }
 
       if (item.type === 'Stock In') {
         totalInCount += qty;
@@ -487,7 +431,7 @@
     const itemKeys = Object.keys(stockMap);
 
     if (itemKeys.length === 0) {
-      summaryBody.innerHTML = `<tr><td colspan="4" class="text-muted small">কোনো ডাটা পাওয়া যায়নি</td></tr>`;
+      summaryBody.innerHTML = `<tr><td colspan="4" class="text-muted small">কোনো মালামাল এন্ট্রি করা হয়নি</td></tr>`;
     } else {
       itemKeys.forEach(name => {
         const ins = stockMap[name].in;
@@ -504,15 +448,15 @@
       });
     }
 
-    if (filteredCache.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">কোনো রেকর্ড নেই</td></tr>`;
+    if (_cache.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">কোনো ট্রানজাকশন পাওয়া যায়নি</td></tr>`;
       return;
     }
 
-    filteredCache.forEach(item => {
+    _cache.forEach(item => {
       const badge = item.type === 'Stock In' 
-        ? `<span class="badge bg-success">ইন / রিসিভ</span>` 
-        : `<span class="badge bg-danger">আউট / ট্রান্সফার</span>`;
+        ? `<span class="badge bg-success">স্টক ইন</span>` 
+        : `<span class="badge bg-danger">স্টক আউট</span>`;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -530,244 +474,105 @@
     });
   }
 
-  function resetFilter() {
-    document.getElementById('startDate').value = '';
-    document.getElementById('endDate').value = '';
-    document.getElementById('searchInput').value = '';
-    renderUI();
+  function filterTransactions() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(q) ? '' : 'none';
+    });
   }
 
   async function deleteTx(id) {
-    if (!confirm('মুছে ফেলতে চান?')) return;
+    if (!confirm('আপনি কি এই এন্ট্রিটি মুছে ফেলতে চান?')) return;
     if (!_user) return;
     toggleLoader(true);
     try {
-      await _db.ref(`isp_inventory/${_currentTarget}/transactions/${id}`).remove();
+      await _db.ref(`common_store/zones/${_currentZone}/transactions/${id}`).remove();
     } catch (e) {
-      alert("ত্রুটি: " + e.message);
-    } finally {
-      toggleLoader(false);
-    }
-  }
-
-  // Clear Current Target Data
-  async function clearCurrentTargetData() {
-    const titles = { 'Central': 'সেন্ট্রাল গুদাম', 'Gawar': 'গাওয়ার জোন', 'Mollartek': 'মোল্লারটেক জোন' };
-    const currentName = titles[_currentTarget];
-
-    if (!confirm(`সতর্কতা! ${currentName}-এর সমস্ত ডাটা ডিলিট করতে চান?`)) return;
-
-    if (!_user) return;
-    toggleLoader(true);
-    try {
-      await _db.ref(`isp_inventory/${_currentTarget}/transactions`).remove();
-      alert(`${currentName}-এর সমস্ত ডাটা মুছে ফেলা হয়েছে!`);
-    } catch (e) {
-      alert("সমস্যা হয়েছে: " + e.message);
-    } finally {
-      toggleLoader(false);
-    }
-  }
-
-  // Clear Entire Dashboard Data (All Zones)
-  async function clearEntireDashboardData() {
-    if (!confirm(`অত্যন্ত সতর্কবার্তা! সম্পূর্ণ ড্যাশবোর্ডের সেন্ট্রাল, গাওয়ার এবং মোল্লারটেক—সব জোনের সমস্ত ডাটা চিরতরে মুছে যাবে। আপনি কি নিশ্চিত?`)) return;
-
-    if (!_user) return;
-    toggleLoader(true);
-    try {
-      await _db.ref('isp_inventory').remove();
-      alert("পুরো ড্যাশবোর্ডের সমস্ত ডাটা সফলভাবে মুছে ফেলা হয়েছে!");
-      window.location.reload();
-    } catch (e) {
-      alert("সমস্যা হয়েছে: " + e.message);
+      alert("মুছে ফেলতে ব্যর্থ হয়েছে: " + e.message);
     } finally {
       toggleLoader(false);
     }
   }
 
   function exportToExcel() {
-    if (_cache.length === 0) { alert("ডাটা নেই!"); return; }
+    if (_cache.length === 0) {
+      alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!");
+      return;
+    }
     const dataToExport = _cache.map(item => ({
-      "তারিখ": item.date, "ধরন": item.type, "পণ্যের নাম": item.itemName,
-      "পরিমাণ": item.quantity, "নাম/উৎস": item.reName || '', "নোট/আইডি": item.userId || ''
+      "তারিখ": item.date,
+      "ধরন": item.type,
+      "পণ্যের নাম": item.itemName,
+      "পরিমাণ": item.quantity,
+      "রিসিভার/নাম": item.reName || '',
+      "ইউজার আইডি": item.userId || ''
     }));
+
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, `${_currentTarget}_Stock`);
-    XLSX.writeFile(workbook, `ISP_${_currentTarget}_Report.xlsx`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, `${_currentZone}_Stock`);
+    XLSX.writeFile(workbook, `ISP_Stock_${_currentZone}_Report.xlsx`);
   }
 
-  // --- Smart Excel Import Function ---
   function importExcel() {
     const fileInput = document.getElementById('excelFile');
-    if (fileInput.files.length === 0) { alert("ফাইল সিলেক্ট করুন!"); return; }
+    if (fileInput.files.length === 0) {
+      alert("অনুগ্রহ করে একটি এক্সেল ফাইল সিলেক্ট করুন!");
+      return;
+    }
 
+    const file = fileInput.files[0];
     const reader = new FileReader();
+
     reader.onload = async function (e) {
       try {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
 
-        if (!rows || rows.length === 0) {
-          alert("এক্সেল শিটে কোনো ডাটা পাওয়া যায়নি!");
-          return;
-        }
-
-        // 1. Search for Side-by-Side header (Multiple "Item Name" headers in one row)
-        let sbsHeaderIdx = -1;
-        for (let i = 0; i < rows.length; i++) {
-          const rowStr = rows[i].map(c => String(c).toLowerCase());
-          const itemMatchCount = rowStr.filter(c => c.includes('item') || c.includes('পণ্য')).length;
-          if (itemMatchCount >= 2) {
-            sbsHeaderIdx = i;
-            break;
-          }
-        }
-
-        let transactionsToUpload = [];
-
-        if (sbsHeaderIdx !== -1) {
-          // --- Side-by-Side Format (Stock In & Stock Out in same row) ---
-          const headerRow = rows[sbsHeaderIdx].map(c => String(c).toLowerCase());
-          const itemCols = [];
-          headerRow.forEach((c, idx) => {
-            if (c.includes('item') || c.includes('পণ্য')) itemCols.push(idx);
-          });
-
-          const inItemCol = itemCols[0];
-          const outItemCol = itemCols.length > 1 ? itemCols[1] : -1;
-
-          for (let i = sbsHeaderIdx + 1; i < rows.length; i++) {
-            const r = rows[i];
-            if (!r || r.length === 0) continue;
-
-            // Extract Stock In item
-            if (inItemCol < r.length) {
-              const itemName = String(r[inItemCol] || '').trim();
-              if (itemName && !['nan', 'null', 'undefined', 'item name', 'পণ্য'].includes(itemName.toLowerCase())) {
-                const date = String(inItemCol > 0 ? r[inItemCol - 1] : '').trim();
-                const qty = parseInt(r[inItemCol + 1]) || 0;
-                if (qty > 0) {
-                  transactionsToUpload.push({
-                    date: date || new Date().toISOString().split('T')[0],
-                    type: 'Stock In',
-                    itemName: itemName,
-                    quantity: qty,
-                    reName: '',
-                    userId: ''
-                  });
-                }
-              }
-            }
-
-            // Extract Stock Out item
-            if (outItemCol !== -1 && outItemCol < r.length) {
-              const itemName = String(r[outItemCol] || '').trim();
-              if (itemName && !['nan', 'null', 'undefined', 'item name', 'পণ্য'].includes(itemName.toLowerCase())) {
-                const date = String(outItemCol > 0 ? r[outItemCol - 1] : '').trim();
-                const qty = parseInt(r[outItemCol + 1]) || 0;
-                const reName = String(r[outItemCol + 2] || '').trim();
-                const userId = String(r[outItemCol + 3] || '').trim();
-                if (qty > 0) {
-                  transactionsToUpload.push({
-                    date: date || new Date().toISOString().split('T')[0],
-                    type: 'Stock Out',
-                    itemName: itemName,
-                    quantity: qty,
-                    reName: ['nan', 'null', 'undefined'].includes(reName.toLowerCase()) ? '' : reName,
-                    userId: ['nan', 'null', 'undefined'].includes(userId.toLowerCase()) ? '' : userId
-                  });
-                }
-              }
-            }
-          }
-        } else {
-          // --- Standard / Single Group Format ---
-          let headerIdx = -1;
-          for (let i = 0; i < rows.length; i++) {
-            const rowStr = rows[i].map(c => String(c).toLowerCase());
-            if (rowStr.some(c => c.includes('item') || c.includes('পণ্য'))) {
-              headerIdx = i;
-              break;
-            }
-          }
-
-          let startIdx = 0;
-          let dateCol = 0, itemCol = 1, qtyCol = 2, typeCol = -1, reCol = -1, userCol = -1;
-
-          if (headerIdx !== -1) {
-            startIdx = headerIdx + 1;
-            const header = rows[headerIdx].map(c => String(c).toLowerCase());
-            dateCol = header.findIndex(c => c.includes('date') || c.includes('তারিখ'));
-            itemCol = header.findIndex(c => c.includes('item') || c.includes('পণ্য') || c.includes('name') || c.includes('নাম'));
-            qtyCol = header.findIndex(c => c.includes('qty') || c.includes('quantity') || c.includes('পরিমাণ'));
-            typeCol = header.findIndex(c => c.includes('type') || c.includes('ধরন'));
-            reCol = header.findIndex(c => c.includes('re.') || c.includes('re name') || c.includes('receiver') || c.includes('প্রাপক') || c.includes('উৎস'));
-            userCol = header.findIndex(c => c.includes('user') || c.includes('id') || c.includes('লোকেশন'));
-
-            if (dateCol === -1) dateCol = 0;
-            if (itemCol === -1) itemCol = 1;
-            if (qtyCol === -1) qtyCol = 2;
-          }
-
-          for (let i = startIdx; i < rows.length; i++) {
-            const r = rows[i];
-            if (!r || r.length <= itemCol) continue;
-
-            const itemName = String(r[itemCol] || '').trim();
-            if (!itemName || ['nan', 'null', 'undefined', 'item name', 'পণ্য'].includes(itemName.toLowerCase())) continue;
-
-            const date = String(dateCol !== -1 && dateCol < r.length ? r[dateCol] : '').trim();
-            const qty = parseInt(r[qtyCol !== -1 && qtyCol < r.length ? r[qtyCol] : 0]) || 0;
-            let rawType = typeCol !== -1 && typeCol < r.length ? String(r[typeCol]) : '';
-            const type = rawType.toLowerCase().includes('out') ? 'Stock Out' : 'Stock In';
-            
-            const reName = reCol !== -1 && reCol < r.length ? String(r[reCol] || '').trim() : '';
-            const userId = userCol !== -1 && userCol < r.length ? String(r[userCol] || '').trim() : '';
-
-            if (qty > 0) {
-              transactionsToUpload.push({
-                date: date || new Date().toISOString().split('T')[0],
-                type: type,
-                itemName: itemName,
-                quantity: qty,
-                reName: ['nan', 'null', 'undefined'].includes(reName.toLowerCase()) ? '' : reName,
-                userId: ['nan', 'null', 'undefined'].includes(userId.toLowerCase()) ? '' : userId
-              });
-            }
-          }
-        }
-
-        if (transactionsToUpload.length === 0) {
-          alert("কোনো বৈধ পণ্যের ডাটা পাওয়া যায়নি!");
+        if (json.length === 0) {
+          alert("এক্সেল ফাইলে কোনো ডাটা পাওয়া যায়নি!");
           return;
         }
 
         toggleLoader(true);
         const updates = {};
-        let count = 0;
-        const now = Date.now();
+        
+        json.forEach(row => {
+          const date = row['Date'] || row['তারিখ'] || new Date().toISOString().split('T')[0];
+          const itemName = row['Item Name'] || row['পণ্যের নাম'] || 'Unknown';
+          const qty = parseInt(row['Qty.'] || row['Qty'] || row['পরিমাণ'] || 1);
+          const reName = row['Re. Name'] || row['রিসিভার'] || '';
+          const userId = row['User Id'] || row['ইউজার আইডি'] || '';
+          const type = row['Type'] || row['টাইপ'] || (row['Stock In'] ? 'Stock In' : 'Stock Out');
 
-        transactionsToUpload.forEach((tx) => {
-          let newRef = _db.ref(`isp_inventory/${_currentTarget}/transactions`).push();
-          tx.timestamp = now + count;
-          updates[newRef.key] = tx;
-          count++;
+          const newRef = _db.ref(`common_store/zones/${_currentZone}/transactions`).push();
+          updates[newRef.key] = {
+            date: String(date),
+            type: type.includes('In') ? 'Stock In' : 'Stock Out',
+            itemName: String(itemName),
+            quantity: isNaN(qty) ? 1 : qty,
+            reName: String(reName),
+            userId: String(userId),
+            timestamp: Date.now()
+          };
         });
 
-        await _db.ref(`isp_inventory/${_currentTarget}/transactions`).update(updates);
-        alert(`সফলভাবে ${count} টি পণ্যের ডাটা ইমপোর্ট হয়েছে!`);
+        await _db.ref(`common_store/zones/${_currentZone}/transactions`).update(updates);
+        alert("এক্সেল ফাইল থেকে সফলভাবে মালামাল ইমপোর্ট করা হয়েছে!");
         fileInput.value = '';
       } catch (err) {
-        alert("সমস্যা হয়েছে: " + err.message);
+        alert("ইমপোর্ট করতে সমস্যা হয়েছে: " + err.message);
       } finally {
         toggleLoader(false);
       }
     };
-    reader.readAsArrayBuffer(fileInput.files[0]);
+
+    reader.readAsArrayBuffer(file);
   }
 </script>
 </body>
