@@ -187,7 +187,7 @@
           <!-- Excel Import Card -->
           <div class="card card-custom p-3">
             <h6 class="fw-bold mb-2"><i class="fa-solid fa-file-excel text-success me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
-            <p class="text-muted small mb-2">আপনার এক্সেল ফাইল থেকে সরাসরি মালামালের হিসাব আপলোড করুন।</p>
+            <p class="text-muted small mb-2">আপনার মাল্টি-কলাম এক্সেল ফাইল থেকে সরাসরি স্টক ইন ও আউট ইমপোর্ট করুন।</p>
             <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="form-control form-control-sm mb-2">
             <button onclick="importExcel()" class="btn btn-outline-success btn-sm w-100 fw-bold">
               <i class="fa-solid fa-upload me-1"></i> এক্সেল ডাটা ইমপোর্ট করুন
@@ -417,21 +417,21 @@
     });
   }
 
-  // Helper to format/normalize date string to YYYY-MM-DD for comparison
+  // Helper to format/normalize date string (handles DD.MM.YY format from excel)
   function parseDateString(str) {
     if (!str) return '';
-    // If format is DD.MM.YY or DD.MM.YYYY from excel
-    if (str.includes('.')) {
-      const parts = str.split('.');
+    let s = String(str).trim();
+    if (s.includes('.')) {
+      const parts = s.split('.');
       if (parts.length === 3) {
-        let day = parts[0];
-        let month = parts[1];
+        let day = parts[0].padStart(2, '0');
+        let month = parts[1].padStart(2, '0');
         let year = parts[2];
         if (year.length === 2) year = '20' + year;
         return `${year}-${month}-${day}`;
       }
     }
-    return str; // already YYYY-MM-DD
+    return s; // already YYYY-MM-DD
   }
 
   function renderUI() {
@@ -439,15 +439,12 @@
     const endDate = document.getElementById('endDate').value;
     const searchQ = document.getElementById('searchInput').value.toLowerCase().trim();
 
-    // Filter data based on Date Range and Search query
     const filteredCache = _cache.filter(item => {
       const itemDateFormatted = parseDateString(item.date);
       
-      // Date filtering check
       if (startDate && itemDateFormatted < startDate) return false;
       if (endDate && itemDateFormatted > endDate) return false;
 
-      // Search query check
       if (searchQ) {
         const rowText = `${item.date} ${item.type} ${item.itemName} ${item.quantity} ${item.reName} ${item.userId}`.toLowerCase();
         if (!rowText.includes(searchQ)) return false;
@@ -588,6 +585,7 @@
     XLSX.writeFile(workbook, `ISP_Stock_${_currentZone}_Report.xlsx`);
   }
 
+  // Enhanced Excel Importer to handle multi-column side-by-side Stock In & Stock Out sheets
   function importExcel() {
     const fileInput = document.getElementById('excelFile');
     if (fileInput.files.length === 0) {
@@ -604,38 +602,73 @@
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-        const json = XLSX.utils.sheet_to_json(worksheet);
+        
+        // Convert sheet to array of arrays (rows)
+        const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-        if (json.length === 0) {
-          alert("এক্সেল ফাইলে কোনো ডাটা পাওয়া যায়নি!");
+        if (rows.length < 4) {
+          alert("এক্সেল ফাইলের ফরম্যাট সঠিক নয় বা পর্যাপ্ত ডাটা নেই!");
           return;
         }
 
         toggleLoader(true);
         const updates = {};
-        
-        json.forEach(row => {
-          const date = row['Date'] || row['তারিখ'] || new Date().toISOString().split('T')[0];
-          const itemName = row['Item Name'] || row['পণ্যের নাম'] || 'Unknown';
-          const qty = parseInt(row['Qty.'] || row['Qty'] || row['পরিমাণ'] || 1);
-          const reName = row['Re. Name'] || row['রিসিভার'] || '';
-          const userId = row['User Id'] || row['ইউজার আইডি'] || '';
-          const type = row['Type'] || row['টাইপ'] || (row['Stock In'] ? 'Stock In' : 'Stock Out');
+        let count = 0;
 
-          const newRef = _db.ref(`common_store/zones/${_currentZone}/transactions`).push();
-          updates[newRef.key] = {
-            date: String(date),
-            type: type.includes('In') ? 'Stock In' : 'Stock Out',
-            itemName: String(itemName),
-            quantity: isNaN(qty) ? 1 : qty,
-            reName: String(reName),
-            userId: String(userId),
-            timestamp: Date.now()
-          };
-        });
+        // Loop through rows starting from index 4 (where actual data begins in your file)
+        for (let i = 4; i < rows.length; i++) {
+          let row = rows[i];
+          if (!row || row.length === 0) continue;
+
+          // --- STOCK IN (Columns 0, 1, 2) ---
+          let inDate = row[0];
+          let inItem = row[1];
+          let inQty = row[2];
+
+          if (inDate && inItem && inQty && !isNaN(inQty)) {
+            let newRef = _db.ref(`common_store/zones/${_currentZone}/transactions`).push();
+            updates[newRef.key] = {
+              date: String(inDate).trim(),
+              type: 'Stock In',
+              itemName: String(inItem).trim(),
+              quantity: parseInt(inQty) || 0,
+              reName: '',
+              userId: '',
+              timestamp: Date.now() + count
+            };
+            count++;
+          }
+
+          // --- STOCK OUT (Columns 3, 4, 5, 6, 7) ---
+          let outDate = row[3];
+          let outItem = row[4];
+          let outQty = row[5];
+          let reName = row[6] || '';
+          let userId = row[7] || '';
+
+          if (outDate && outItem && outQty && !isNaN(outQty)) {
+            let newRef = _db.ref(`common_store/zones/${_currentZone}/transactions`).push();
+            updates[newRef.key] = {
+              date: String(outDate).trim(),
+              type: 'Stock Out',
+              itemName: String(outItem).trim(),
+              quantity: parseInt(outQty) || 0,
+              reName: String(reName).trim(),
+              userId: String(userId).trim(),
+              timestamp: Date.now() + count
+            };
+            count++;
+          }
+        }
+
+        if (count === 0) {
+          alert("ফাইল থেকে কোনো কার্যকর ডাটা পাওয়া যায়নি। দয়া করে ফরম্যাট চেক করুন।");
+          toggleLoader(false);
+          return;
+        }
 
         await _db.ref(`common_store/zones/${_currentZone}/transactions`).update(updates);
-        alert("এক্সেল ফাইল থেকে সফলভাবে মালামাল ইমপোর্ট করা হয়েছে!");
+        alert(`সফলভাবে ${count}টি এন্ট্রি ইমপোর্ট করা হয়েছে!`);
         fileInput.value = '';
       } catch (err) {
         alert("ইমপোর্ট করতে সমস্যা হয়েছে: " + err.message);
