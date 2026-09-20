@@ -166,13 +166,22 @@
             </form>
           </div>
 
-          <!-- Excel Import Card -->
-          <div class="card card-custom p-3">
+          <!-- Excel Import & Clear Data Card -->
+          <div class="card card-custom p-3 mb-3">
             <h6 class="fw-bold mb-2"><i class="fa-solid fa-file-excel text-success me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
             <p class="text-muted small mb-2">এক্সেল শিট থেকে সরাসরি ডাটা আপলোড করুন।</p>
             <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="form-control form-control-sm mb-2">
             <button onclick="importExcel()" class="btn btn-outline-success btn-sm w-100 fw-bold">
               <i class="fa-solid fa-upload me-1"></i> এক্সেল ইমপোর্ট করুন
+            </button>
+          </div>
+
+          <!-- Clear All Data Card -->
+          <div class="card card-custom p-3 border-danger">
+            <h6 class="fw-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation me-2"></i>সমস্ত ডাটা মুছুন</h6>
+            <p class="text-muted small mb-2">বর্তমান সিলেক্টেড জোন বা সেন্ট্রালের সমস্ত রেকর্ড চিরতরে ডিলিট করতে:</p>
+            <button onclick="clearAllData()" class="btn btn-outline-danger btn-sm w-100 fw-bold">
+              <i class="fa-solid fa-trash-can me-1"></i> সমস্ত ডাটা ডিলিট করুন
             </button>
           </div>
         </div>
@@ -308,7 +317,6 @@
     const titles = { 'Central': 'সেন্ট্রাল গুদাম', 'Gawar': 'গাওয়ার জোন', 'Mollartek': 'মোল্লারটেক জোন' };
     document.getElementById('currentTargetTitle').innerText = titles[_currentTarget];
     
-    // Adjust labels based on view
     if(_currentTarget === 'Central') {
       document.getElementById('labelTotalIn').innerText = 'মোট স্টক ইন (ক্রয়/রিসিভ)';
       document.getElementById('labelTotalOut').innerText = 'মোট জোন ট্রান্সফার (আউট)';
@@ -529,6 +537,26 @@
       await _db.ref(`isp_inventory/${_currentTarget}/transactions/${id}`).remove();
     } catch (e) {
       alert("ত্রুটি: " + e.message);
+    } finally {
+      toggleLoader(false);
+    }
+  }
+
+  // Clear All Data Function for Current Target
+  async function clearAllData() {
+    const titles = { 'Central': 'সেন্ট্রাল গুদাম', 'Gawar': 'গাওয়ার জোন', 'Mollartek': 'মোল্লারটেক জোন' };
+    const currentName = titles[_currentTarget];
+
+    let confirmClear = confirm(`সতর্কতা! আপনি কি নিশ্চিতভাবে ${currentName}-এর সমস্ত ডাটা চিরতরে ডিলিট করতে চান?`);
+    if (!confirmClear) return;
+
+    if (!_user) return;
+    toggleLoader(true);
+    try {
+      await _db.ref(`isp_inventory/${_currentTarget}/transactions`).remove();
+      alert(`${currentName}-এর সমস্ত ডাটা সফলভাবে মুছে ফেলা হয়েছে!`);
+    } catch (e) {
+      alert("ডিলিট করতে সমস্যা হয়েছে: " + e.message);
     } finally {
       toggleLoader(false);
     }
