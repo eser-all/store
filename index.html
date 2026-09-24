@@ -120,16 +120,16 @@
     }
     .row-cols-grid-9 > * {
       flex: 0 0 auto;
-      width: 11.111111%; /* 100% / 9 = 11.11% */
+      width: 11.111111%;
       padding-right: 4px;
       padding-left: 4px;
       margin-bottom: 8px;
     }
 
-    @media (max-width: 1400px) { .row-cols-grid-9 > * { width: 14.2857%; } } /* 7 per row */
-    @media (max-width: 1200px) { .row-cols-grid-9 > * { width: 16.6666%; } } /* 6 per row */
-    @media (max-width: 992px)  { .row-cols-grid-9 > * { width: 25%; } }       /* 4 per row */
-    @media (max-width: 576px)  { .row-cols-grid-9 > * { width: 50%; } }       /* 2 per row */
+    @media (max-width: 1400px) { .row-cols-grid-9 > * { width: 14.2857%; } }
+    @media (max-width: 1200px) { .row-cols-grid-9 > * { width: 16.6666%; } }
+    @media (max-width: 992px)  { .row-cols-grid-9 > * { width: 25%; } }
+    @media (max-width: 576px)  { .row-cols-grid-9 > * { width: 50%; } }
 
     /* MINI PRODUCT DASHBOARD CARDS */
     .product-card {
@@ -212,7 +212,6 @@
   <div id="authSection" class="container">
     <div class="card card-custom p-4 auth-container">
       <div class="text-center mb-3">
-        <!-- SAM ONLINE LOGO SVG -->
         <div class="brand-logo-box mb-2">
           <svg width="140" height="40" viewBox="0 0 300 80">
             <path d="M 20 50 Q 30 15 60 25 Q 40 70 20 50 Z" fill="#e67e22"/>
@@ -244,7 +243,6 @@
   <div id="dashboardSection" style="display: none;">
     <div class="header-banner mb-3">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
-        <!-- LOGO BRANDING -->
         <div class="d-flex align-items-center gap-2">
           <div class="brand-logo-box">
             <svg width="150" height="38" viewBox="0 0 300 80">
@@ -272,9 +270,8 @@
 
     <div class="container-fluid px-md-4">
       <div class="row g-3">
-        <!-- Left Panel (Input Form & Excel Import) -->
+        <!-- Left Panel -->
         <div class="col-lg-3">
-          <!-- Form Card -->
           <div class="card card-custom p-3 mb-3">
             <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>নতুন স্টক এন্ট্রি</h6>
             <form id="transactionForm">
@@ -320,7 +317,6 @@
             </form>
           </div>
 
-          <!-- Excel Import Card -->
           <div class="card card-custom p-3">
             <h6 class="fw-bold mb-2 text-success"><i class="fa-solid fa-file-excel me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
             <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="form-control form-control-sm mb-2">
@@ -330,10 +326,10 @@
           </div>
         </div>
 
-        <!-- Right Panel (9-Column Stock Grid Header, Search Filter, Tables) -->
+        <!-- Right Panel -->
         <div class="col-lg-9">
 
-          <!-- 1. Product Small Dashboard Cards Section (9 PER ROW) -->
+          <!-- 1. Dashboard Stock Cards -->
           <div class="card card-custom p-3 mb-3">
             <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
               <div class="d-flex align-items-center gap-2">
@@ -344,10 +340,7 @@
               <span class="text-muted small" style="font-size: 0.75rem;">লাইভ স্টক পজিশন</span>
             </div>
 
-            <!-- Grid Container with 9 Items Per Row -->
-            <div class="row-cols-grid-9" id="productCardGrid">
-              <!-- Mini Product Cards dynamically rendered here -->
-            </div>
+            <div class="row-cols-grid-9" id="productCardGrid"></div>
           </div>
 
           <!-- 2. Smart Search Filter Box -->
@@ -391,7 +384,6 @@
               </div>
             </div>
 
-            <!-- Quick Date Filter Badges -->
             <div class="d-flex gap-1 mt-2 align-items-center flex-wrap pt-1">
               <span class="text-muted small me-1" style="font-size: 0.75rem;">কুইক ফিল্টার:</span>
               <button onclick="setQuickDate('today')" class="btn btn-outline-primary btn-sm quick-date-btn">আজ</button>
@@ -401,7 +393,7 @@
             </div>
           </div>
 
-          <!-- 3. History Tabs Section -->
+          <!-- 3. Tables Section -->
           <ul class="nav nav-tabs border-bottom-0 mb-2" id="historyTabs" role="tablist">
             <li class="nav-item">
               <button class="nav-link active small" id="trans-tab" data-bs-toggle="tab" data-bs-target="#transPane" type="button">
@@ -416,13 +408,12 @@
           </ul>
 
           <div class="tab-content" id="historyTabContent">
-            <!-- Transaction History Pane -->
             <div class="tab-pane fade show active" id="transPane" role="tabpanel">
               <div class="card card-custom p-3 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <h6 class="fw-bold mb-0" style="font-size: 0.9rem;">স্টক ফিল্টারড রেকর্ড</h6>
                   <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold" style="font-size: 0.78rem;">
-                    <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
+                    <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট (২টি শিট সহ)
                   </button>
                 </div>
 
@@ -444,7 +435,6 @@
               </div>
             </div>
 
-            <!-- User Activity Log Pane -->
             <div class="tab-pane fade" id="userPane" role="tabpanel">
               <div class="card card-custom p-3 mb-4">
                 <h6 class="fw-bold mb-2" style="font-size: 0.9rem;">
@@ -502,6 +492,7 @@
 
   let _user = null;
   let _cache = [];
+  let _currentFilteredData = [];
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
@@ -609,7 +600,7 @@
   }
 
   function renderUI() {
-    // 1. Calculate TOTAL Overall Stock
+    // 1. Calculate TOTAL Stock Dashboard
     const stockMapTotal = {};
     _cache.forEach(item => {
       const qty = Number(item.quantity) || 0;
@@ -655,7 +646,7 @@
     const dateFrom = document.getElementById('searchDateFrom').value;
     const dateTo = document.getElementById('searchDateTo').value;
 
-    const filteredData = _cache.filter(item => {
+    _currentFilteredData = _cache.filter(item => {
       const matchProduct = !productQuery || (item.itemName && item.itemName.toLowerCase().includes(productQuery));
       const matchPerson = !personQuery || 
                           (item.reName && item.reName.toLowerCase().includes(personQuery)) || 
@@ -671,15 +662,15 @@
       return matchProduct && matchPerson && matchDate;
     });
 
-    document.getElementById('recordCountBadge').innerText = `${filteredData.length} টি লেনদেন পাওয়া গেছে`;
+    document.getElementById('recordCountBadge').innerText = `${_currentFilteredData.length} টি লেনদেন পাওয়া গেছে`;
 
     // 3. Render Transaction Table
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
-    if (filteredData.length === 0) {
+    if (_currentFilteredData.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">কোনো লেনদেন রেকর্ড নেই</td></tr>`;
     } else {
-      filteredData.forEach(item => {
+      _currentFilteredData.forEach(item => {
         const badge = item.type === 'Stock In' 
           ? `<span class="badge bg-success-subtle text-success border border-success-subtle">ইন</span>` 
           : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle">আউট</span>`;
@@ -701,14 +692,14 @@
     const userTbody = document.getElementById('userLogTableBody');
     userTbody.innerHTML = '';
 
-    if (filteredData.length === 0) {
+    if (_currentFilteredData.length === 0) {
       userTbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">কোনো ইউজারের কাজ পাওয়া যায়নি</td></tr>`;
     } else {
-      filteredData.forEach(item => {
+      _currentFilteredData.forEach(item => {
         const entryTime = item.timestamp ? new Date(item.timestamp).toLocaleString('bn-BD') : item.date;
         const userMail = item.createdByEmail || '<span class="text-muted">অজানা (পুরাতন ডাটা)</span>';
         const actionType = item.type === 'Stock In' 
-          ? `<span class="badge bg-success">এন্ট্রি দিয়েছেন (Stock In)</span>` 
+          ? `<span class="badge bg-success">এন্ট্রি দিয়েছেন (Stock In)</span>` 
           : `<span class="badge bg-warning text-dark">বিতরণ করেছেন (Stock Out)</span>`;
 
         const tr = document.createElement('tr');
@@ -758,52 +749,72 @@
     renderUI();
   }
 
+  // EXPORT FUNCTION: GENERATES BOTH SUMMARY & DETAILS SHEETS
   function exportToExcel() {
-    if (_cache.length === 0) { alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!"); return; }
+    if (_currentFilteredData.length === 0) { 
+      alert("ফিল্টার করার পর কোনো ডাটা পাওয়া যায়নি! এক্সপোর্ট সম্ভব নয়।"); 
+      return; 
+    }
 
-    const personSummary = {};
-    _cache.forEach(item => {
-      if (item.type === 'Stock Out') {
-        const person = item.reName || 'অনির্দিষ্ট গ্রহীতা';
-        const product = item.itemName || 'অনির্দিষ্ট পণ্য';
-        const qty = Number(item.quantity) || 0;
+    // --- ১. ফিল্টারড ডাটার যোগফল (Summary Calculations) ---
+    const summaryMap = {};
+    _currentFilteredData.forEach(item => {
+      const person = item.reName || 'অনির্দিষ্ট ব্যক্তি/উৎসব';
+      const product = item.itemName || 'অন্যান্য';
+      const qty = Number(item.quantity) || 0;
+      const type = item.type || 'Stock In';
 
-        if (!personSummary[person]) personSummary[person] = {};
-        if (!personSummary[person][product]) personSummary[person][product] = 0;
-        personSummary[person][product] += qty;
+      if (!summaryMap[person]) summaryMap[person] = {};
+      if (!summaryMap[person][product]) summaryMap[person][product] = { inQty: 0, outQty: 0 };
+
+      if (type === 'Stock In') {
+        summaryMap[person][product].inQty += qty;
+      } else {
+        summaryMap[person][product].outQty += qty;
       }
     });
 
-    const summaryData = [];
-    Object.keys(personSummary).forEach(person => {
-      Object.keys(personSummary[person]).forEach(product => {
-        summaryData.push({
-          "গ্রহীতা / ব্যক্তির নাম": person,
-          "পণ্যের নাম": product,
-          "মোট গ্রহণের পরিমাণ (Total Qty)": personSummary[person][product]
+    const summaryRows = [];
+    Object.keys(summaryMap).forEach(person => {
+      Object.keys(summaryMap[person]).forEach(product => {
+        const inQ = summaryMap[person][product].inQty;
+        const outQ = summaryMap[person][product].outQty;
+        summaryRows.push({
+          "ব্যক্তি / প্রতিষ্ঠান (Name)": person,
+          "পণ্যের নাম (Product)": product,
+          "মোট গ্রহণ/ইন (Total Stock In)": inQ,
+          "মোট বিতরণ/আউট (Total Stock Out)": outQ,
+          "অবশিষ্ট/পার্থক্য (Net Difference)": inQ - outQ
         });
       });
     });
 
-    const detailedData = _cache.map(item => ({
-      "তারিখ": item.date,
-      "লেনদেনের ধরন": item.type,
-      "পণ্যের নাম": item.itemName,
-      "পরিমাণ": item.quantity,
-      "গ্রহীতা / উৎস": item.reName || '',
-      "ইউজার আইডি / নোট": item.userId || '',
-      "এন্ট্রিদাতা ইউজার (Created By)": item.createdByEmail || ''
+    // --- ২. ফিল্টারড ডাটার সম্পূর্ণ বিবরণী (Detailed Data List) ---
+    const detailRows = _currentFilteredData.map((item, index) => ({
+      "ক্রমিক নং": index + 1,
+      "তারিখ": item.date || '-',
+      "লেনদেনের ধরন": item.type || '-',
+      "পণ্যের নাম": item.itemName || '-',
+      "পরিমাণ (Qty)": item.quantity || 0,
+      "গ্রহীতা / ভেন্ডরের নাম": item.reName || '-',
+      "ইউজার আইডি / নোট": item.userId || '-',
+      "এন্ট্রিদাতা ইমেইল": item.createdByEmail || '-'
     }));
 
+    // --- ৩. একটি Workbook বানিয়ে ২টি আলাদা Sheet যোগ করা ---
     const workbook = XLSX.utils.book_new();
 
-    const summarySheet = XLSX.utils.json_to_sheet(summaryData);
-    XLSX.utils.book_append_sheet(workbook, summarySheet, "গ্রহীতাভিত্তিক যোগফল");
+    // শিট ১: যোগফল (Summary)
+    const summarySheet = XLSX.utils.json_to_sheet(summaryRows);
+    XLSX.utils.book_append_sheet(workbook, summarySheet, "ফিল্টারড সামারি (যোগফল)");
 
-    const detailedSheet = XLSX.utils.json_to_sheet(detailedData);
-    XLSX.utils.book_append_sheet(workbook, detailedSheet, "সম্পূর্ণ ইতিহাস ও ইউজার লগ");
+    // শিট ২: বিস্তারিত (Details)
+    const detailSheet = XLSX.utils.json_to_sheet(detailRows);
+    XLSX.utils.book_append_sheet(workbook, detailSheet, "ফিল্টারড সম্পূর্ণ ডিটেইলস");
 
-    XLSX.writeFile(workbook, `Sam_Online_Inventory_${new Date().toISOString().split('T')[0]}.xlsx`);
+    // ফাইল ডাউনলোড
+    const fileName = `Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
   }
 
   function importExcel() {
