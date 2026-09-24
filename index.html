@@ -10,7 +10,7 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Orbitron:wght@600;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- XLSX Library -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
@@ -26,6 +26,7 @@
       --tg-border: #D1D8E0;
       --tg-input-bg: #F4F4F5;
       --tg-focus-shadow: rgba(42, 171, 238, 0.25);
+      --card-glow: none;
     }
     
     [data-bs-theme="dark"] {
@@ -38,6 +39,21 @@
       --tg-border: #242F3D;
       --tg-input-bg: #242F3D;
       --tg-focus-shadow: rgba(135, 116, 225, 0.25);
+      --card-glow: none;
+    }
+
+    /* AI CYBER MOOD THEME STYLES */
+    [data-bs-theme="ai"] {
+      --tg-primary: #00f0ff;
+      --tg-primary-hover: #0070f3;
+      --tg-bg: #050811;
+      --tg-card-bg: rgba(10, 16, 30, 0.85);
+      --tg-text-main: #e0f7fc;
+      --tg-text-muted: #7094b8;
+      --tg-border: rgba(0, 240, 255, 0.3);
+      --tg-input-bg: rgba(15, 23, 42, 0.8);
+      --tg-focus-shadow: rgba(0, 240, 255, 0.4);
+      --card-glow: 0 0 15px rgba(0, 240, 255, 0.15);
     }
     
     body { 
@@ -50,7 +66,11 @@
       flex-direction: column;
       -webkit-font-smoothing: antialiased;
       line-height: 1.5;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+    }
+
+    [data-bs-theme="ai"] body {
+      background-image: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.05) 0%, transparent 80%);
     }
     
     .content-wrapper { flex: 1; }
@@ -62,6 +82,11 @@
       padding: 10px 0; 
       border-bottom: 1px solid var(--tg-border);
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    [data-bs-theme="ai"] .header-banner {
+      border-bottom: 1px solid var(--tg-primary);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
     }
     
     .brand-logo-box {
@@ -79,14 +104,21 @@
       backdrop-filter: blur(10px);
       border: 1px solid var(--tg-border); 
       border-radius: 14px; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: var(--card-glow);
       overflow: hidden;
+      transition: all 0.3s ease;
     }
 
     .forecast-card {
       background: linear-gradient(135deg, rgba(42, 171, 238, 0.08) 0%, rgba(135, 116, 225, 0.08) 100%);
       border: 1px solid var(--tg-primary);
       border-radius: 14px;
+    }
+
+    [data-bs-theme="ai"] .forecast-card {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(112, 0, 255, 0.15) 100%);
+      border: 1px solid var(--tg-primary);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
     }
 
     .search-box-card {
@@ -98,7 +130,7 @@
 
     .form-control, .form-select {
       background-color: var(--tg-input-bg);
-      border: 1px solid transparent;
+      border: 1px solid var(--tg-border);
       border-radius: 10px;
       color: var(--tg-text-main);
       font-size: 0.9rem;
@@ -154,7 +186,7 @@
       background-color: var(--tg-card-bg);
       border-radius: 10px;
       padding: 8px 6px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      box-shadow: var(--card-glow);
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -166,7 +198,7 @@
     .product-card:hover {
       border-color: var(--tg-primary);
       transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 4px 12px rgba(0,240,255,0.2);
     }
     .product-title {
       font-size: 0.8rem;
@@ -200,6 +232,7 @@
       border: none;
       transition: all 0.2s ease;
     }
+    [data-bs-theme="ai"] .btn-tg { color: #050811; }
     .btn-tg:hover { background-color: var(--tg-primary-hover); color: #fff; }
 
     .nav-tabs { border-bottom: 2px solid var(--tg-border); }
@@ -256,6 +289,17 @@
       font-size: 0.78rem;
       white-space: nowrap;
     }
+
+    .ai-badge {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      background: linear-gradient(45deg, #00f0ff, #7000ff);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
@@ -311,11 +355,13 @@
               <text x="55" y="72" font-family="sans-serif" font-weight="bold" font-size="12" fill="#e67e22" letter-spacing="3">EXPLORE YOUR LIFE</text>
             </svg>
           </div>
+          <span id="themeIndicator" class="ai-badge d-none d-sm-inline-block">AI MOOD</span>
         </div>
 
         <div class="d-flex align-items-center gap-2">
-          <button onclick="toggleDarkMode()" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 34px; height: 34px;">
-            <i class="fa-solid fa-moon"></i>
+          <!-- 3-STAGE THEME TOGGLER -->
+          <button onclick="cycleTheme()" id="themeBtn" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 36px; height: 36px;" title="থিম পরিবর্তন করুন (Light / Dark / AI Mood)">
+            <i id="themeIcon" class="fa-solid fa-robot text-info"></i>
           </button>
           <span id="userDisplayEmail" class="badge bg-body-tertiary text-body border d-none d-md-inline-block py-2 px-3 rounded-pill fw-normal"></span>
           <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-semibold rounded-2 px-3">
@@ -378,7 +424,7 @@
         <!-- Right Panel -->
         <div class="col-lg-9">
 
-          <!-- NEW: 0. AI SMART FORECASTING CARD -->
+          <!-- AI SMART FORECASTING CARD -->
           <div class="card forecast-card p-3 mb-3 shadow-sm">
             <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom border-primary-subtle">
               <div class="fw-bold text-primary small d-flex align-items-center gap-2">
@@ -569,16 +615,40 @@
     return _user && _user.email && ADMIN_EMAILS.includes(_user.email.toLowerCase());
   }
 
-  function toggleDarkMode() {
-    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-    const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-bs-theme', targetTheme);
-    localStorage.setItem('appTheme', targetTheme);
+  /* THREE-STAGE THEME CYCLING (Light -> Dark -> AI Mood) */
+  function cycleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+    let nextTheme = 'dark';
+    
+    if (currentTheme === 'light') nextTheme = 'dark';
+    else if (currentTheme === 'dark') nextTheme = 'ai';
+    else nextTheme = 'light';
+
+    applyTheme(nextTheme);
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    localStorage.setItem('appTheme', theme);
+
+    const icon = document.getElementById('themeIcon');
+    const badge = document.getElementById('themeIndicator');
+
+    if (theme === 'light') {
+      icon.className = 'fa-solid fa-sun text-warning';
+      if(badge) badge.innerText = "LIGHT MOOD";
+    } else if (theme === 'dark') {
+      icon.className = 'fa-solid fa-moon text-primary';
+      if(badge) badge.innerText = "DARK MOOD";
+    } else {
+      icon.className = 'fa-solid fa-robot text-info';
+      if(badge) badge.innerText = "AI CYBER";
+    }
   }
 
   window.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('appTheme') || 'light';
-    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+    const savedTheme = localStorage.getItem('appTheme') || 'ai';
+    applyTheme(savedTheme);
     const dateEl = document.getElementById('txDate');
     if(dateEl) dateEl.value = new Date().toISOString().split('T')[0];
   });
@@ -716,9 +786,7 @@
       });
     }
 
-    // -------------------------------------------------------------
-    // NEW: SMART FORECASTING GENERATION
-    // -------------------------------------------------------------
+    // 2. AI FORECASTING UI GENERATION
     const forecastGrid = document.getElementById('forecastGrid');
     forecastGrid.innerHTML = '';
 
@@ -729,22 +797,17 @@
       const last30Days = new Date(now.setDate(now.getDate() - 30));
 
       allProducts.slice(0, 4).forEach(pName => {
-        // গত ৩০ দিনের খরচ হিসাব
         const past30DaysOut = activeCache
           .filter(i => i.type === 'Stock Out' && i.itemName === pName && new Date(i.date) >= last30Days)
           .reduce((sum, i) => sum + Number(i.quantity), 0);
 
-        // আগামী ৩০ দিনের অনুমান (১০% বাফার সহ)
         const predictedDemand = Math.ceil(past30DaysOut * 1.1) || 5; 
         const currentStock = (stockMapTotal[pName].in - stockMapTotal[pName].out);
         const shortage = predictedDemand - currentStock;
 
-        let alertBadge = '';
-        if (shortage > 0) {
-          alertBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle mt-1" style="font-size: 0.68rem;">⚠️ ঘাটতি: ${shortage} Pcs রি-অর্ডার করুন</span>`;
-        } else {
-          alertBadge = `<span class="badge bg-success-subtle text-success border border-success-subtle mt-1" style="font-size: 0.68rem;">✅ পর্যাপ্ত স্টক আছে</span>`;
-        }
+        let alertBadge = shortage > 0
+          ? `<span class="badge bg-danger-subtle text-danger border border-danger-subtle mt-1" style="font-size: 0.68rem;">⚠️ ঘাটতি: ${shortage} Pcs রি-অর্ডার করুন</span>`
+          : `<span class="badge bg-success-subtle text-success border border-success-subtle mt-1" style="font-size: 0.68rem;">✅ পর্যাপ্ত স্টক আছে</span>`;
 
         const fCol = document.createElement('div');
         fCol.className = 'col-md-3 col-6';
@@ -753,7 +816,7 @@
             <div class="fw-bold text-truncate small text-primary mb-1"><i class="fa-solid fa-cube me-1"></i>${pName}</div>
             <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
               <span class="text-muted">আগামী ৩০ দিনে লাগবে:</span>
-              <span class="fw-bold text-dark">~${predictedDemand} Pcs</span>
+              <span class="fw-bold text-body">~${predictedDemand} Pcs</span>
             </div>
             <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
               <span class="text-muted">বর্তমান স্টক:</span>
@@ -766,7 +829,7 @@
       });
     }
 
-    // 2. মেইন টেবিলে ফিল্টারিং
+    // 3. FILTERING
     const productQuery = document.getElementById('searchProduct').value.toLowerCase().trim();
     const personQuery = document.getElementById('searchPerson').value.toLowerCase().trim();
     const dateFrom = document.getElementById('searchDateFrom').value;
@@ -790,7 +853,7 @@
 
     document.getElementById('recordCountBadge').innerText = `${_currentFilteredData.length} টি লেনদেন পাওয়া গেছে`;
 
-    // 3. অ্যাডমিন একশন কলাম হ্যান্ডলার
+    // 4. ADMIN ACTIONS HEADER
     const headerRow = document.getElementById('tableHeaderRow');
     const existingActionHeader = document.getElementById('actionHeaderCol');
     if (isAdmin()) {
@@ -804,7 +867,7 @@
       if (existingActionHeader) existingActionHeader.remove();
     }
 
-    // 4. মেইন স্টক টেবিল রেন্ডারিং
+    // 5. RENDER MAIN TABLE
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
     const colCount = isAdmin() ? 7 : 6;
@@ -844,7 +907,7 @@
       });
     }
 
-    // 5. সফট ডিলিট ট্র্যাকিং (ইউজার হিস্ট্রি টেবিলে ব্যাকআপ হিসেবে থাকবে)
+    // 6. RENDER AUDIT / USER HISTORY LOG
     const userTbody = document.getElementById('userLogTableBody');
     userTbody.innerHTML = '';
 
@@ -880,7 +943,7 @@
     }
   }
 
-  // Soft Delete System
+  // SOFT DELETE SYSTEM
   async function deleteTransaction(id) {
     if (!isAdmin()) {
       alert("ক্ষমা করবেন! আপনার ডিলিট করার অনুমতি নেই।");
