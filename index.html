@@ -65,20 +65,19 @@
       border: 1px solid var(--tg-border);
       background-color: var(--tg-card-bg);
       border-radius: 12px;
-      padding: 14px;
+      padding: 12px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.03);
       position: relative;
-      overflow: hidden;
     }
     .product-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    .product-card .stock-badge {
-      font-size: 1.1rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 8px;
+    .stock-tag {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
     }
 
     .auth-container { max-width: 400px; margin: 60px auto; }
@@ -161,28 +160,6 @@
     </div>
 
     <div class="container-fluid px-md-4">
-      
-      <!-- Top Overview Stats -->
-      <div class="row g-3 mb-4">
-        <div class="col-md-4">
-          <div class="card card-custom p-3 border-start border-success border-4">
-            <div class="text-muted small fw-semibold">মোট ইন (Stock In)</div>
-            <h4 class="text-success fw-bold mt-1 mb-0" id="statTotalIn">0 Pcs</h4>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card card-custom p-3 border-start border-danger border-4">
-            <div class="text-muted small fw-semibold">মোট বিতরণ (Stock Out)</div>
-            <h4 class="text-danger fw-bold mt-1 mb-0" id="statTotalOut">0 Pcs</h4>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card card-custom p-3 border-start border-primary border-4">
-            <div class="text-muted small fw-semibold">বর্তমান মোট ব্যালেন্স</div>
-            <h4 class="text-primary fw-bold mt-1 mb-0" id="statTotalBalance">0 Pcs</h4>
-          </div>
-        </div>
-      </div>
 
       <div class="row">
         <!-- Input & Action Panel -->
@@ -247,7 +224,7 @@
         <!-- Dashboard Cards & Data History Panel -->
         <div class="col-lg-8">
 
-          <!-- 2 Separate Dual Search Engines -->
+          <!-- 2 Separate Search Engines -->
           <div class="card card-custom p-3 mb-3">
             <div class="row g-2">
               <div class="col-md-5">
@@ -266,11 +243,11 @@
             </div>
           </div>
 
-          <!-- Product Small Dashboard Cards Section -->
+          <!-- Product Mini Dashboard Cards Section -->
           <div class="card card-custom p-3 mb-3">
-            <h6 class="fw-bold mb-3"><i class="fa-solid fa-cubes text-primary me-2"></i>প্রোডাক্ট স্টক ড্যাশবোর্ড (ছোট ছোট কার্ড)</h6>
+            <h6 class="fw-bold mb-3"><i class="fa-solid fa-cubes text-primary me-2"></i>প্রোডাক্ট স্টক ড্যাশবোর্ড</h6>
             <div class="row g-2" id="productCardGrid">
-              <!-- Small Product Cards dynamically rendered here -->
+              <!-- Mini Cards with In, Out & Balance -->
             </div>
           </div>
 
@@ -407,7 +384,6 @@
 
     toggleLoader(true);
     try {
-      // Save data directly to root store
       await _db.ref('isp_inventory/Central/transactions').push(payload);
       document.getElementById('transactionForm').reset();
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
@@ -418,14 +394,13 @@
     }
   });
 
-  // Fetch all transactions from all branches so NO DATA IS LOST
+  // Fetch all transactions from all locations to retain complete historical data
   function fetchTransactions() {
     if (!_user) return;
     _db.ref('isp_inventory').on('value', (snap) => {
       _cache = [];
       const val = snap.val();
       if (val) {
-        // Recursive search through old nodes (Central, Gawar, Mollartek, etc.)
         Object.keys(val).forEach(zone => {
           if (val[zone] && val[zone].transactions) {
             const txs = val[zone].transactions;
@@ -448,11 +423,10 @@
 
     const filteredData = _cache.filter(item => {
       const matchProduct = !productQuery || (item.itemName && item.itemName.toLowerCase().includes(productQuery));
-      const matchPerson = !personQuery || (item.reName && item.reName.toLowerCase().includes(personPerson)) || (item.userId && item.userId.toLowerCase().includes(personQuery));
+      const matchPerson = !personQuery || (item.reName && item.reName.toLowerCase().includes(personQuery)) || (item.userId && item.userId.toLowerCase().includes(personQuery));
       return matchProduct && matchPerson;
     });
 
-    let totalIn = 0, totalOut = 0;
     const stockMap = {};
 
     filteredData.forEach(item => {
@@ -462,19 +436,13 @@
       if (!stockMap[iName]) stockMap[iName] = { in: 0, out: 0 };
 
       if (item.type === 'Stock In') {
-        totalIn += qty;
         stockMap[iName].in += qty;
       } else {
-        totalOut += qty;
         stockMap[iName].out += qty;
       }
     });
 
-    document.getElementById('statTotalIn').innerText = `${totalIn} Pcs`;
-    document.getElementById('statTotalOut').innerText = `${totalOut} Pcs`;
-    document.getElementById('statTotalBalance').innerText = `${totalIn - totalOut} Pcs`;
-
-    // Render Small Dashboard Cards (Product Name & Available Stock)
+    // Render Compact Product Cards (Showing In, Out, and Stock Balance)
     const cardGrid = document.getElementById('productCardGrid');
     cardGrid.innerHTML = '';
 
@@ -491,13 +459,15 @@
         col.className = 'col-sm-6 col-md-4';
         col.innerHTML = `
           <div class="product-card">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="fw-bold text-dark dark-text-white">${pName}</span>
-              <span class="stock-badge ${pBal > 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">${pBal} Pcs</span>
+            <div class="fw-bold text-dark dark-text-white mb-2 text-truncate" title="${pName}">
+              <i class="fa-solid fa-cube text-primary me-1"></i>${pName}
             </div>
-            <div class="d-flex justify-content-between text-muted small">
-              <span>ইন: <strong class="text-success">${pIn}</strong></span>
-              <span>আউট: <strong class="text-danger">${pOut}</strong></span>
+            <div class="d-flex justify-content-between align-items-center small">
+              <span class="text-muted">ইন: <strong class="text-success">${pIn}</strong></span>
+              <span class="text-muted">আউট: <strong class="text-danger">${pOut}</strong></span>
+              <span class="stock-tag ${pBal >= 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">
+                স্টক: ${pBal}
+              </span>
             </div>
           </div>
         `;
@@ -505,7 +475,7 @@
       });
     }
 
-    // Render Transaction Table
+    // Render Transaction History Table
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
 
@@ -538,7 +508,7 @@
     renderUI();
   }
 
-  // --- Advanced Multi-Sheet Excel Export ---
+  // --- Excel Export Engine ---
   function exportToExcel() {
     if (_cache.length === 0) { alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!"); return; }
 
