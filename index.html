@@ -60,17 +60,25 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
     
-    /* Small Product Dashboard Cards */
+    /* Mini Product Dashboard Cards (Telegram Style) */
     .product-card {
       border: 1px solid var(--tg-border);
       background-color: var(--tg-card-bg);
       border-radius: 12px;
       padding: 14px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      position: relative;
+      overflow: hidden;
     }
     .product-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .product-card .stock-badge {
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
     }
 
     .auth-container { max-width: 400px; margin: 60px auto; }
@@ -134,10 +142,10 @@
     <div class="header-banner mb-4">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-2">
-          <i class="fa-solid fa-boxes-stacked text-primary fs-4"></i>
+          <i class="fa-paper-plane text-primary fs-3"></i>
           <div>
-            <h5 class="fw-bold mb-0">সেন্ট্রাল স্টক ইনভেন্টরি ড্যাশবোর্ড</h5>
-            <p class="mb-0 text-muted small">স্মার্ট ও নিরাপদ মালামাল ট্র্যাকিং সিস্টেম</p>
+            <h5 class="fw-bold mb-0">স্টক ইনভেন্টরি ড্যাশবোর্ড</h5>
+            <p class="mb-0 text-muted small">স্মার্ট ও নিরাপদ মালামাল ব্যবস্থাপনা</p>
           </div>
         </div>
         <div class="d-flex align-items-center gap-2">
@@ -170,7 +178,7 @@
         </div>
         <div class="col-md-4">
           <div class="card card-custom p-3 border-start border-primary border-4">
-            <div class="text-muted small fw-semibold">অবশিষ্ট ব্যালেন্স (Current Stock)</div>
+            <div class="text-muted small fw-semibold">বর্তমান মোট ব্যালেন্স</div>
             <h4 class="text-primary fw-bold mt-1 mb-0" id="statTotalBalance">0 Pcs</h4>
           </div>
         </div>
@@ -181,7 +189,7 @@
         <div class="col-lg-4 mb-4">
           <!-- Form Card -->
           <div class="card card-custom p-3 mb-3">
-            <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-square-plus me-2"></i>নতুন স্টক লেনদেন এন্ট্রি</h6>
+            <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-square-plus me-2"></i>নতুন স্টক এন্ট্রি</h6>
             <form id="transactionForm">
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">লেনদেনের ধরন</label>
@@ -239,20 +247,20 @@
         <!-- Dashboard Cards & Data History Panel -->
         <div class="col-lg-8">
 
-          <!-- 2 Separate Dual Search Engine -->
+          <!-- 2 Separate Dual Search Engines -->
           <div class="card card-custom p-3 mb-3">
             <div class="row g-2">
-              <div class="col-md-4">
+              <div class="col-md-5">
                 <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-box text-primary me-1"></i>১. প্রোডাক্ট সার্চ ইঞ্জিন</label>
                 <input type="text" id="searchProduct" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="পণ্য দিয়ে খুঁজুন...">
               </div>
-              <div class="col-md-4">
+              <div class="col-md-5">
                 <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-user text-success me-1"></i>২. গ্রহীতা / নাম সার্চ ইঞ্জিন</label>
                 <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="গ্রহীতা বা ব্যক্তি দিয়ে খুঁজুন...">
               </div>
-              <div class="col-md-4 text-md-end mt-md-4">
+              <div class="col-md-2 text-md-end mt-md-4">
                 <button onclick="resetFilters()" class="btn btn-outline-secondary btn-sm w-100">
-                  <i class="fa-solid fa-rotate me-1"></i> সার্চ রিসেট
+                  <i class="fa-solid fa-rotate me-1"></i> রিসেট
                 </button>
               </div>
             </div>
@@ -260,7 +268,7 @@
 
           <!-- Product Small Dashboard Cards Section -->
           <div class="card card-custom p-3 mb-3">
-            <h6 class="fw-bold mb-3"><i class="fa-solid fa-cubes text-primary me-2"></i>প্রোডাক্ট স্টক ড্যাশবোর্ড কার্ড</h6>
+            <h6 class="fw-bold mb-3"><i class="fa-solid fa-cubes text-primary me-2"></i>প্রোডাক্ট স্টক ড্যাশবোর্ড (ছোট ছোট কার্ড)</h6>
             <div class="row g-2" id="productCardGrid">
               <!-- Small Product Cards dynamically rendered here -->
             </div>
@@ -269,9 +277,9 @@
           <!-- Transaction History Table -->
           <div class="card card-custom p-3 mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>লেনদেনের বিস্তারিত ইতিহাস</h6>
+              <h6 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>লেনদেনের ইতিহাস</h6>
               <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold">
-                <i class="fa-solid fa-file-excel me-1"></i> বিস্তারিত এক্সেল এক্সপোর্ট
+                <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
               </button>
             </div>
 
@@ -399,7 +407,8 @@
 
     toggleLoader(true);
     try {
-      await _db.ref('central_inventory/transactions').push(payload);
+      // Save data directly to root store
+      await _db.ref('isp_inventory/Central/transactions').push(payload);
       document.getElementById('transactionForm').reset();
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
     } catch (err) {
@@ -409,16 +418,23 @@
     }
   });
 
+  // Fetch all transactions from all branches so NO DATA IS LOST
   function fetchTransactions() {
     if (!_user) return;
-    _db.ref('central_inventory/transactions').on('value', (snap) => {
+    _db.ref('isp_inventory').on('value', (snap) => {
       _cache = [];
       const val = snap.val();
       if (val) {
-        Object.keys(val).forEach(k => {
-          let item = val[k];
-          item.id = k;
-          _cache.push(item);
+        // Recursive search through old nodes (Central, Gawar, Mollartek, etc.)
+        Object.keys(val).forEach(zone => {
+          if (val[zone] && val[zone].transactions) {
+            const txs = val[zone].transactions;
+            Object.keys(txs).forEach(k => {
+              let item = txs[k];
+              item.id = k;
+              _cache.push(item);
+            });
+          }
         });
         _cache.sort((a, b) => b.timestamp - a.timestamp);
       }
@@ -432,7 +448,7 @@
 
     const filteredData = _cache.filter(item => {
       const matchProduct = !productQuery || (item.itemName && item.itemName.toLowerCase().includes(productQuery));
-      const matchPerson = !personQuery || (item.reName && item.reName.toLowerCase().includes(personQuery)) || (item.userId && item.userId.toLowerCase().includes(personQuery));
+      const matchPerson = !personQuery || (item.reName && item.reName.toLowerCase().includes(personPerson)) || (item.userId && item.userId.toLowerCase().includes(personQuery));
       return matchProduct && matchPerson;
     });
 
@@ -458,7 +474,7 @@
     document.getElementById('statTotalOut').innerText = `${totalOut} Pcs`;
     document.getElementById('statTotalBalance').innerText = `${totalIn - totalOut} Pcs`;
 
-    // Render Small Dashboard Cards
+    // Render Small Dashboard Cards (Product Name & Available Stock)
     const cardGrid = document.getElementById('productCardGrid');
     cardGrid.innerHTML = '';
 
@@ -477,7 +493,7 @@
           <div class="product-card">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <span class="fw-bold text-dark dark-text-white">${pName}</span>
-              <span class="badge ${pBal > 0 ? 'bg-primary' : 'bg-danger'}">${pBal} Pcs</span>
+              <span class="stock-badge ${pBal > 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">${pBal} Pcs</span>
             </div>
             <div class="d-flex justify-content-between text-muted small">
               <span>ইন: <strong class="text-success">${pIn}</strong></span>
@@ -522,11 +538,10 @@
     renderUI();
   }
 
-  // --- Advanced Excel Export Engine (Multi-Sheet with Aggregated Sums) ---
+  // --- Advanced Multi-Sheet Excel Export ---
   function exportToExcel() {
     if (_cache.length === 0) { alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!"); return; }
 
-    // 1. Calculate Aggregated Receiver Summary (কে কতগুলো ভিন্ন ভিন্ন প্রোডাক্ট নিয়েছে)
     const personSummary = {};
 
     _cache.forEach(item => {
@@ -553,7 +568,6 @@
       });
     });
 
-    // 2. Format Raw Detailed Data
     const detailedData = _cache.map(item => ({
       "তারিখ": item.date,
       "লেনদেনের ধরন": item.type,
@@ -563,7 +577,6 @@
       "ইউজার আইডি / নোট": item.userId || ''
     }));
 
-    // Build Workbook with 2 Sheets
     const workbook = XLSX.utils.book_new();
 
     const summarySheet = XLSX.utils.json_to_sheet(summaryData);
@@ -572,13 +585,13 @@
     const detailedSheet = XLSX.utils.json_to_sheet(detailedData);
     XLSX.utils.book_append_sheet(workbook, detailedSheet, "সম্পূর্ণ ইতিহাস");
 
-    XLSX.writeFile(workbook, `Central_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    XLSX.writeFile(workbook, `Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
   // --- Excel Import Engine ---
   function importExcel() {
     const fileInput = document.getElementById('excelFile');
-    if (fileInput.files.length === 0) { alert("অনুগ্রহ করে একটি এক্সেল ফাইল নির্বাচন করুন!"); return; }
+    if (fileInput.files.length === 0) { alert("একটি এক্সেল ফাইল সিলেক্ট করুন!"); return; }
 
     const reader = new FileReader();
     reader.onload = async function (e) {
@@ -616,13 +629,13 @@
         const now = Date.now();
 
         transactionsToUpload.forEach((tx) => {
-          let newRef = _db.ref('central_inventory/transactions').push();
+          let newRef = _db.ref('isp_inventory/Central/transactions').push();
           tx.timestamp = now + count;
           updates[newRef.key] = tx;
           count++;
         });
 
-        await _db.ref('central_inventory/transactions').update(updates);
+        await _db.ref('isp_inventory/Central/transactions').update(updates);
         alert(`সফলভাবে ${count} টি ডাটা আপলোড করা হয়েছে!`);
         fileInput.value = '';
       } catch (err) {
