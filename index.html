@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sam Online - স্মার্ট ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
+  <title>Sam Online - স্মার্ট ইনভентরি ম্যানেজমেন্ট সিস্টেম</title>
   
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts (Telegram UI & Bengali Font) -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- XLSX Library -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
-    /* TELEGRAM OFFICIAL COLOR PALETTE & EXACT BACKGROUNDS */
+    /* TELEGRAM OFFICIAL COLOR PALETTE & ORIGINAL DOODLE BACKGROUND */
     :root {
       --tg-primary: #2AABEE;
       --tg-primary-hover: #229ED9;
-      --tg-bg: #E7EBF0; /* Exact Telegram Light Chat Background */
-      --tg-card-bg: #FFFFFF;
+      --tg-bg: #E7EBF0;
+      --tg-card-bg: rgba(255, 255, 255, 0.92); /* Glass effect for background visibility */
       --tg-text-main: #222222;
       --tg-text-muted: #707579;
       --tg-border: #D1D8E0;
@@ -31,8 +31,8 @@
     [data-bs-theme="dark"] {
       --tg-primary: #8774E1;
       --tg-primary-hover: #6C52DF;
-      --tg-bg: #0F1721; /* Exact Telegram Dark Theme Background */
-      --tg-card-bg: #18222D;
+      --tg-bg: #0F1721;
+      --tg-card-bg: rgba(24, 34, 45, 0.92);
       --tg-text-main: #F5F5F5;
       --tg-text-muted: #8E96A0;
       --tg-border: #242F3D;
@@ -41,14 +41,16 @@
     }
     
     body { 
+      /* Telegram Wallpaper SVG Overlay Pattern */
       background-color: var(--tg-bg) !important; 
-      font-family: 'Roboto', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, sans-serif; 
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C9C9C' fill-opacity='0.08' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+      font-family: 'Hind Siliguri', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; 
       color: var(--tg-text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       -webkit-font-smoothing: antialiased;
-      line-height: 1.4;
+      line-height: 1.5;
       transition: background-color 0.3s ease;
     }
     
@@ -57,6 +59,7 @@
     /* HEADER BANNER */
     .header-banner { 
       background-color: var(--tg-card-bg); 
+      backdrop-filter: blur(8px);
       color: var(--tg-text-main); 
       padding: 10px 0; 
       border-bottom: 1px solid var(--tg-border);
@@ -73,9 +76,10 @@
       gap: 8px;
     }
 
-    /* CARDS STYLING (Telegram Widget Style) */
+    /* CARDS STYLING */
     .card-custom { 
       background-color: var(--tg-card-bg);
+      backdrop-filter: blur(10px);
       border: 1px solid var(--tg-border); 
       border-radius: 14px; 
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
@@ -95,7 +99,7 @@
       border: 1px solid transparent;
       border-radius: 10px;
       color: var(--tg-text-main);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       padding: 8px 12px;
       transition: all 0.2s ease;
     }
@@ -107,7 +111,7 @@
     }
 
     .quick-date-btn {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       padding: 3px 10px;
       border-radius: 15px;
       border: 1px solid var(--tg-border);
@@ -143,7 +147,7 @@
     @media (max-width: 768px)  { .row-cols-grid-9 > * { width: 33.3333%; } }
     @media (max-width: 576px)  { .row-cols-grid-9 > * { width: 50%; } }
 
-    /* MINI PRODUCT DASHBOARD CARDS */
+    /* PRODUCT DASHBOARD CARDS */
     .product-card {
       border: 1px solid var(--tg-border);
       background-color: var(--tg-card-bg);
@@ -164,7 +168,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.06);
     }
     .product-title {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
       color: var(--tg-text-main);
       white-space: nowrap;
@@ -174,7 +178,7 @@
       margin-bottom: 4px;
     }
     .stock-tag {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 700;
       padding: 2px 4px;
       border-radius: 6px;
@@ -186,7 +190,7 @@
       text-overflow: ellipsis;
     }
 
-    /* TELEGRAM STYLE BUTTONS */
+    /* TELEGRAM BUTTONS */
     .btn-tg {
       background-color: var(--tg-primary);
       color: #ffffff;
@@ -221,6 +225,7 @@
     
     .app-footer { 
       background-color: var(--tg-card-bg); 
+      backdrop-filter: blur(8px);
       color: var(--tg-text-muted); 
       text-align: center; 
       padding: 12px 0; 
@@ -236,7 +241,7 @@
     }
     .table { 
       color: var(--tg-text-main); 
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       table-layout: auto;
       width: 100%;
       margin-bottom: 0;
@@ -252,7 +257,7 @@
       color: var(--tg-text-muted);
       border-bottom: 1px solid var(--tg-border);
       background-color: var(--tg-input-bg);
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       white-space: nowrap;
     }
   </style>
@@ -266,7 +271,7 @@
 <div class="content-wrapper">
   <!-- Auth Section -->
   <div id="authSection" class="container">
-    <div class="card card-custom p-4 auth-container">
+    <div class="card card-custom p-4 auth-container shadow-lg">
       <div class="text-center mb-3">
         <div class="brand-logo-box mb-2">
           <svg width="140" height="40" viewBox="0 0 300 80">
@@ -468,7 +473,7 @@
                 <div class="table-responsive" style="max-height: 380px;">
                   <table class="table table-hover align-middle small mb-0">
                     <thead class="sticky-top">
-                      <tr>
+                      <tr id="tableHeaderRow">
                         <th>তারিখ</th>
                         <th>টাইপ</th>
                         <th>প্রোডাক্ট</th>
@@ -486,7 +491,7 @@
             <div class="tab-pane fade" id="userPane" role="tabpanel">
               <div class="card card-custom p-3 mb-4">
                 <h6 class="fw-bold mb-2" style="font-size: 0.9rem;">
-                  <i class="fa-solid fa-user-clock text-warning me-2"></i>কোন ইউজার কি এন্ট্রি দিয়েছেন
+                  <i class="fa-solid fa-user-clock text-warning me-2"></i>ইউজার এডিট/ডিলিট সহ সকল অ্যাক্টিভিটি
                 </h6>
                 <div class="table-responsive" style="max-height: 380px;">
                   <table class="table table-hover align-middle small mb-0">
@@ -494,8 +499,8 @@
                       <tr>
                         <th>সময় ও তারিখ</th>
                         <th>ইউজার ইমেইল</th>
-                        <th>অ্যাকশন/কাজ</th>
-                        <th>প্রোডাক্ট ও পরিমাণ</th>
+                        <th>অ্যাকশন/স্ট্যাটাস</th>
+                        <th>বিবরণ (ডিটেইলস)</th>
                       </tr>
                     </thead>
                     <tbody id="userLogTableBody"></tbody>
@@ -538,11 +543,21 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
+  // সিকিউরিটি অ্যাডমিন তালিকা
+  const ADMIN_EMAILS = [
+    "admin@gmail.com",
+    "antu@samonline.com"
+  ];
+
   let _user = null;
   let _cache = [];
   let _currentFilteredData = [];
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
+
+  function isAdmin() {
+    return _user && _user.email && ADMIN_EMAILS.includes(_user.email.toLowerCase());
+  }
 
   function toggleDarkMode() {
     const currentTheme = document.documentElement.getAttribute('data-bs-theme');
@@ -569,7 +584,7 @@
       _user = u;
       document.getElementById('authSection').style.display = 'none';
       document.getElementById('dashboardSection').style.display = 'block';
-      document.getElementById('userDisplayEmail').innerText = _user.email;
+      document.getElementById('userDisplayEmail').innerText = _user.email + (isAdmin() ? " (Admin)" : "");
       fetchTransactions();
     } else {
       _user = null;
@@ -610,7 +625,8 @@
       reName: document.getElementById('reName').value.trim(),
       userId: document.getElementById('userId').value.trim(),
       createdByEmail: _user.email,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      isDeleted: false // ডাটা যেন সহজে হারিয়ে না যায়
     };
 
     toggleLoader(true);
@@ -648,9 +664,11 @@
   }
 
   function renderUI() {
-    // 1. Calculate TOTAL Stock Dashboard
+    // 1. ড্যাশবোর্ড ফিল্টার (শুধুমাত্র সচল এন্ট্রি নিয়ে হিসাব হবে)
+    const activeCache = _cache.filter(i => !i.isDeleted);
+
     const stockMapTotal = {};
-    _cache.forEach(item => {
+    activeCache.forEach(item => {
       const qty = Number(item.quantity) || 0;
       const iName = item.itemName || 'অন্যান্য';
       if (!stockMapTotal[iName]) stockMapTotal[iName] = { in: 0, out: 0 };
@@ -688,13 +706,13 @@
       });
     }
 
-    // 2. Filter Table Data
+    // 2. মেইন টেবিলে ফিল্টারিং
     const productQuery = document.getElementById('searchProduct').value.toLowerCase().trim();
     const personQuery = document.getElementById('searchPerson').value.toLowerCase().trim();
     const dateFrom = document.getElementById('searchDateFrom').value;
     const dateTo = document.getElementById('searchDateTo').value;
 
-    _currentFilteredData = _cache.filter(item => {
+    _currentFilteredData = activeCache.filter(item => {
       const matchProduct = !productQuery || (item.itemName && item.itemName.toLowerCase().includes(productQuery));
       const matchPerson = !personQuery || 
                           (item.reName && item.reName.toLowerCase().includes(personQuery)) || 
@@ -712,16 +730,45 @@
 
     document.getElementById('recordCountBadge').innerText = `${_currentFilteredData.length} টি লেনদেন পাওয়া গেছে`;
 
-    // 3. Render Transaction Table
+    // 3. অ্যাডমিন একশন কলাম হ্যান্ডলার
+    const headerRow = document.getElementById('tableHeaderRow');
+    const existingActionHeader = document.getElementById('actionHeaderCol');
+    if (isAdmin()) {
+      if (!existingActionHeader) {
+        const th = document.createElement('th');
+        th.id = 'actionHeaderCol';
+        th.innerText = 'অ্যাকশন';
+        headerRow.appendChild(th);
+      }
+    } else {
+      if (existingActionHeader) existingActionHeader.remove();
+    }
+
+    // 4. মেইন স্টক টেবিল রেন্ডারিং
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
+    const colCount = isAdmin() ? 7 : 6;
     if (_currentFilteredData.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">কোনো লেনদেন রেকর্ড নেই</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="${colCount}" class="text-center text-muted py-3">কোনো লেনদেন রেকর্ড নেই</td></tr>`;
     } else {
       _currentFilteredData.forEach(item => {
         const badge = item.type === 'Stock In' 
           ? `<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">ইন</span>` 
           : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">আউট</span>`;
+
+        let actionTd = '';
+        if (isAdmin()) {
+          actionTd = `
+            <td>
+              <button onclick="editTransaction('${item.id}')" class="btn btn-sm btn-outline-primary py-0 px-2 me-1" title="এডিট">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button onclick="deleteTransaction('${item.id}')" class="btn btn-sm btn-outline-danger py-0 px-2" title="ডিলিট">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          `;
+        }
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -731,34 +778,103 @@
           <td class="fw-bold">${item.quantity || 0} Pcs</td>
           <td>${item.reName || '-'}</td>
           <td>${item.userId || '-'}</td>
+          ${actionTd}
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // 4. Render User Activity Log Table
+    // 5. অল ডাটা ও সফট ডিলিট ট্র্যাকিং (ইউজার হিস্ট্রি টেবিলে সব কিছু থেকে যাবে)
     const userTbody = document.getElementById('userLogTableBody');
     userTbody.innerHTML = '';
 
-    if (_currentFilteredData.length === 0) {
-      userTbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">কোনো ইউজারের কাজ পাওয়া যায়নি</td></tr>`;
+    if (_cache.length === 0) {
+      userTbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">কোনো অ্যাক্টিভিটি পাওয়া যায়নি</td></tr>`;
     } else {
-      _currentFilteredData.forEach(item => {
+      _cache.forEach(item => {
         const entryTime = item.timestamp ? new Date(item.timestamp).toLocaleString('bn-BD') : item.date;
-        const userMail = item.createdByEmail || '<span class="text-muted">অজানা (পুরাতন ডাটা)</span>';
-        const actionType = item.type === 'Stock In' 
-          ? `<span class="badge bg-success rounded-pill">এন্ট্রি দিয়েছেন (Stock In)</span>` 
-          : `<span class="badge bg-warning text-dark rounded-pill">বিতরণ করেছেন (Stock Out)</span>`;
+        const userMail = item.createdByEmail || 'অজানা';
+        
+        let statusBadge = '';
+        if (item.isDeleted) {
+          statusBadge = `<span class="badge bg-danger rounded-pill"><i class="fa-solid fa-trash me-1"></i>মুছে ফেলা হয়েছে</span>`;
+        } else if (item.updatedBy) {
+          statusBadge = `<span class="badge bg-warning text-dark rounded-pill"><i class="fa-solid fa-pen me-1"></i>এডিট করা হয়েছে</span>`;
+        } else {
+          statusBadge = `<span class="badge bg-success rounded-pill"><i class="fa-solid fa-check me-1"></i>নতুন এন্ট্রি</span>`;
+        }
+
+        let editDetails = item.updatedBy ? `<br><small class="text-muted">সর্বশেষ এডিটর: ${item.updatedBy}</small>` : '';
 
         const tr = document.createElement('tr');
+        if (item.isDeleted) tr.classList.add('table-light', 'text-decoration-line-through');
+
         tr.innerHTML = `
           <td>${entryTime}</td>
-          <td class="fw-semibold text-primary">${userMail}</td>
-          <td>${actionType}</td>
+          <td class="fw-semibold text-primary">${userMail}${editDetails}</td>
+          <td>${statusBadge}</td>
           <td><b>${item.itemName}</b> (${item.quantity} Pcs) - ${item.reName || ''}</td>
         `;
         userTbody.appendChild(tr);
       });
+    }
+  }
+
+  // -----------------------------------------------------------
+  // সফট ডিলিট ও নিরাপদ এডিট সিস্টেম (যেন ব্যাকআপ ও ডাটা নিরাপদ থাকে)
+  // -----------------------------------------------------------
+  async function deleteTransaction(id) {
+    if (!isAdmin()) {
+      alert("ক্ষমা করবেন! আপনার ডিলিট করার অনুমতি নেই।");
+      return;
+    }
+
+    if (confirm("আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান? (ডাটা আর্কাইভে থেকে যাবে)")) {
+      toggleLoader(true);
+      try {
+        // স্থায়ীভাবে মুছে না ফেলে Soft Delete করা হচ্ছে
+        await _db.ref(`isp_inventory/Central/transactions/${id}`).update({
+          isDeleted: true,
+          deletedBy: _user.email,
+          deletedAt: Date.now()
+        });
+        alert("এন্ট্রি হাইড করা হয়েছে (ডাটা সেফ আর্কাইভে ব্যাকআপ থাকবে)!");
+      } catch (error) {
+        alert("ত্রুটি: " + error.message);
+      } finally {
+        toggleLoader(false);
+      }
+    }
+  }
+
+  async function editTransaction(id) {
+    if (!isAdmin()) {
+      alert("ক্ষমা করবেন! আপনার এডিট করার অনুমতি নেই।");
+      return;
+    }
+
+    const targetItem = _cache.find(item => item.id === id);
+    if (!targetItem) return;
+
+    const newQty = prompt("নতুন পরিমাণ (Qty) লিখুন:", targetItem.quantity);
+    if (newQty === null) return; 
+
+    const newReName = prompt("নতুন গ্রহীতা / ভেন্ডরের নাম লিখুন:", targetItem.reName || '');
+    if (newReName === null) return;
+
+    toggleLoader(true);
+    try {
+      await _db.ref(`isp_inventory/Central/transactions/${id}`).update({
+        quantity: parseInt(newQty) || 0,
+        reName: newReName.trim(),
+        updatedBy: _user.email,
+        lastUpdated: Date.now()
+      });
+      alert("ডাটা সফলভাবে আপডেট করা হয়েছে!");
+    } catch (error) {
+      alert("ত্রুটি: " + error.message);
+    } finally {
+      toggleLoader(false);
     }
   }
 
@@ -797,7 +913,7 @@
     renderUI();
   }
 
-  // EXPORT FUNCTION: GENERATES BOTH SUMMARY & DETAILS SHEETS
+  // EXPORT FUNCTION
   function exportToExcel() {
     if (_currentFilteredData.length === 0) { 
       alert("ফিল্টার করার পর কোনো ডাটা পাওয়া যায়নি! এক্সপোর্ট সম্ভব নয়।"); 
