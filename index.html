@@ -23,6 +23,8 @@
       --tg-text-main: #222222;
       --tg-text-muted: #707579;
       --tg-border: #e4e4e7;
+      --tg-input-bg: #f8fafc;
+      --tg-focus-shadow: rgba(0, 136, 204, 0.25);
     }
     [data-bs-theme="dark"] {
       --tg-primary: #52ade1;
@@ -32,7 +34,10 @@
       --tg-text-main: #f8fafc;
       --tg-text-muted: #94a3b8;
       --tg-border: #334155;
+      --tg-input-bg: #0f172a;
+      --tg-focus-shadow: rgba(82, 173, 225, 0.3);
     }
+    
     body { 
       background-color: var(--tg-bg); 
       font-family: 'Hind Siliguri', 'Inter', sans-serif; 
@@ -43,51 +48,91 @@
     }
     .content-wrapper { flex: 1; }
     
-    /* Telegram Header Style */
+    /* Header Banner */
     .header-banner { 
       background-color: var(--tg-card-bg); 
       color: var(--tg-text-main); 
-      padding: 16px 0; 
+      padding: 14px 0; 
       border-bottom: 1px solid var(--tg-border);
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
+    /* Telegram Cards */
     .card-custom { 
       background-color: var(--tg-card-bg);
       border: 1px solid var(--tg-border); 
       border-radius: 14px; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      transition: all 0.2s ease-in-out;
+    }
+
+    /* Telegram Style Form Controls */
+    .form-control, .form-select {
+      background-color: var(--tg-input-bg);
+      border: 1px solid var(--tg-border);
+      border-radius: 8px;
+      color: var(--tg-text-main);
+      font-size: 0.85rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+      background-color: var(--tg-card-bg);
+      border-color: var(--tg-primary);
+      box-shadow: 0 0 0 0.25rem var(--tg-focus-shadow);
+      color: var(--tg-text-main);
     }
     
-    /* Mini Product Dashboard Cards (Telegram Style) */
+    /* Telegram Mini Product Card (6 in 1 Row) */
     .product-card {
       border: 1px solid var(--tg-border);
       background-color: var(--tg-card-bg);
-      border-radius: 12px;
-      padding: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-      position: relative;
+      border-radius: 10px;
+      padding: 8px 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .product-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-color: var(--tg-primary);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    .product-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .stock-tag {
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 3px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 6px;
       border-radius: 6px;
+    }
+
+    /* Grid layout for 6 items in a row on large screens */
+    .col-xl-2-custom {
+      flex: 0 0 auto;
+      width: 16.666667%;
+    }
+    @media (max-width: 1200px) {
+      .col-xl-2-custom { width: 25%; }
+    }
+    @media (max-width: 768px) {
+      .col-xl-2-custom { width: 50%; }
     }
 
     .auth-container { max-width: 400px; margin: 60px auto; }
     .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index: 9999; justify-content: center; align-items: center; }
     
-    /* Telegram Buttons */
+    /* Buttons */
     .btn-tg {
       background-color: var(--tg-primary);
       color: white;
-      border-radius: 10px;
+      border-radius: 8px;
       font-weight: 600;
       border: none;
     }
@@ -99,8 +144,8 @@
       background-color: var(--tg-card-bg); 
       color: var(--tg-text-muted); 
       text-align: center; 
-      padding: 14px 0; 
-      font-size: 0.85rem; 
+      padding: 12px 0; 
+      font-size: 0.8rem; 
       border-top: 1px solid var(--tg-border);
       margin-top: auto; 
     }
@@ -138,13 +183,13 @@
 
   <!-- Dashboard Section -->
   <div id="dashboardSection" style="display: none;">
-    <div class="header-banner mb-4">
+    <div class="header-banner mb-3">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-2">
-          <i class="fa-paper-plane text-primary fs-3"></i>
+          <i class="fa-paper-plane text-primary fs-4"></i>
           <div>
-            <h5 class="fw-bold mb-0">স্টক ইনভেন্টরি ড্যাশবোর্ড</h5>
-            <p class="mb-0 text-muted small">স্মার্ট ও নিরাপদ মালামাল ব্যবস্থাপনা</p>
+            <h6 class="fw-bold mb-0">স্মার্ট ইনভেন্টরি ড্যাশবোর্ড</h6>
+            <p class="mb-0 text-muted small" style="font-size: 0.75rem;">রিয়েলটাইম স্টক ট্র্যাকিং</p>
           </div>
         </div>
         <div class="d-flex align-items-center gap-2">
@@ -153,7 +198,7 @@
           </button>
           <span id="userDisplayEmail" class="badge bg-light text-dark border d-none d-md-inline-block py-2 px-3"></span>
           <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-semibold rounded-2">
-            <i class="fa-solid fa-power-off"></i> লগআউট
+            <i class="fa-solid fa-power-off"></i>
           </button>
         </div>
       </div>
@@ -161,12 +206,12 @@
 
     <div class="container-fluid px-md-4">
 
-      <div class="row">
-        <!-- Input & Action Panel -->
-        <div class="col-lg-4 mb-4">
+      <div class="row g-3">
+        <!-- Left Panel (Input Form & Excel Import) - Half width on large screens -->
+        <div class="col-lg-4 col-xl-3">
           <!-- Form Card -->
           <div class="card card-custom p-3 mb-3">
-            <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-square-plus me-2"></i>নতুন স্টক এন্ট্রি</h6>
+            <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>নতুন স্টক এন্ট্রি</h6>
             <form id="transactionForm">
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">লেনদেনের ধরন</label>
@@ -205,7 +250,7 @@
               </div>
 
               <button type="submit" class="btn btn-tg w-100 btn-sm py-2">
-                <i class="fa-solid fa-cloud-arrow-up me-1"></i> সেভ করুন
+                <i class="fa-solid fa-paper-plane me-1"></i> সেভ করুন
               </button>
             </form>
           </div>
@@ -213,7 +258,6 @@
           <!-- Excel Import Card -->
           <div class="card card-custom p-3">
             <h6 class="fw-bold mb-2 text-success"><i class="fa-solid fa-file-excel me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
-            <p class="text-muted small mb-2">এক্সেল বা সিএসভি থেকে ডাটা যোগ করুন।</p>
             <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="form-control form-control-sm mb-2">
             <button onclick="importExcel()" class="btn btn-outline-success btn-sm w-100 fw-bold">
               <i class="fa-solid fa-upload me-1"></i> আপলোড করুন
@@ -221,21 +265,29 @@
           </div>
         </div>
 
-        <!-- Dashboard Cards & Data History Panel -->
-        <div class="col-lg-8">
+        <!-- Right Panel (Search Engines, Product Grid, Data Table) -->
+        <div class="col-lg-8 col-xl-9">
 
-          <!-- 2 Separate Search Engines -->
+          <!-- 3 Advanced Search Engines (Product, Person, Date-to-Date) -->
           <div class="card card-custom p-3 mb-3">
-            <div class="row g-2">
-              <div class="col-md-5">
-                <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-box text-primary me-1"></i>১. প্রোডাক্ট সার্চ ইঞ্জিন</label>
+            <div class="row g-2 align-items-end">
+              <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-box text-primary me-1"></i>১. প্রোডাক্ট সার্চ</label>
                 <input type="text" id="searchProduct" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="পণ্য দিয়ে খুঁজুন...">
               </div>
-              <div class="col-md-5">
-                <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-user text-success me-1"></i>২. গ্রহীতা / নাম সার্চ ইঞ্জিন</label>
-                <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="গ্রহীতা বা ব্যক্তি দিয়ে খুঁজুন...">
+              <div class="col-md-3">
+                <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-user text-success me-1"></i>২. নাম সার্চ</label>
+                <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="গ্রহীতা/ব্যক্তি...">
               </div>
-              <div class="col-md-2 text-md-end mt-md-4">
+              <div class="col-md-2">
+                <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-calendar text-info me-1"></i>শুরু (From)</label>
+                <input type="date" id="searchDateFrom" onchange="renderUI()" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-calendar text-info me-1"></i>শেষ (To)</label>
+                <input type="date" id="searchDateTo" onchange="renderUI()" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-2">
                 <button onclick="resetFilters()" class="btn btn-outline-secondary btn-sm w-100">
                   <i class="fa-solid fa-rotate me-1"></i> রিসেট
                 </button>
@@ -243,19 +295,23 @@
             </div>
           </div>
 
-          <!-- Product Mini Dashboard Cards Section -->
+          <!-- Product Small Dashboard Cards Section (6 Items per Row) -->
           <div class="card card-custom p-3 mb-3">
-            <h6 class="fw-bold mb-3"><i class="fa-solid fa-cubes text-primary me-2"></i>প্রোডাক্ট স্টক ড্যাশবোর্ড</h6>
+            <h6 class="fw-bold mb-2 text-dark dark-text-white" style="font-size: 0.9rem;">
+              <i class="fa-solid fa-cubes text-primary me-2"></i>প্রোডাক্ট স্টক ড্যাশবোর্ড
+            </h6>
             <div class="row g-2" id="productCardGrid">
-              <!-- Mini Cards with In, Out & Balance -->
+              <!-- Mini Product Cards dynamically rendered here (6 per row) -->
             </div>
           </div>
 
           <!-- Transaction History Table -->
           <div class="card card-custom p-3 mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>লেনদেনের ইতিহাস</h6>
-              <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0 text-dark dark-text-white" style="font-size: 0.9rem;">
+                <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>লেনদেনের ইতিহাস
+              </h6>
+              <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold" style="font-size: 0.78rem;">
                 <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
               </button>
             </div>
@@ -285,7 +341,7 @@
 
 <footer class="app-footer">
   <div class="container">
-    <p class="mb-0 fw-medium">ISP Inventory Management System | Protected & Secured Platform</p>
+    <p class="mb-0 fw-medium">ISP Inventory Management System | Safe & Secure Platform</p>
   </div>
 </footer>
 
@@ -394,7 +450,7 @@
     }
   });
 
-  // Fetch all transactions from all locations to retain complete historical data
+  // Fetch all transactions safely without losing any historical data
   function fetchTransactions() {
     if (!_user) return;
     _db.ref('isp_inventory').on('value', (snap) => {
@@ -420,11 +476,20 @@
   function renderUI() {
     const productQuery = document.getElementById('searchProduct').value.toLowerCase().trim();
     const personQuery = document.getElementById('searchPerson').value.toLowerCase().trim();
+    const dateFrom = document.getElementById('searchDateFrom').value;
+    const dateTo = document.getElementById('searchDateTo').value;
 
     const filteredData = _cache.filter(item => {
       const matchProduct = !productQuery || (item.itemName && item.itemName.toLowerCase().includes(productQuery));
       const matchPerson = !personQuery || (item.reName && item.reName.toLowerCase().includes(personQuery)) || (item.userId && item.userId.toLowerCase().includes(personQuery));
-      return matchProduct && matchPerson;
+      
+      let matchDate = true;
+      if (item.date) {
+        if (dateFrom && item.date < dateFrom) matchDate = false;
+        if (dateTo && item.date > dateTo) matchDate = false;
+      }
+
+      return matchProduct && matchPerson && matchDate;
     });
 
     const stockMap = {};
@@ -442,7 +507,7 @@
       }
     });
 
-    // Render Compact Product Cards (Showing In, Out, and Stock Balance)
+    // Render Compact Product Grid (6 Items Per Row)
     const cardGrid = document.getElementById('productCardGrid');
     cardGrid.innerHTML = '';
 
@@ -456,15 +521,17 @@
         const pBal = pIn - pOut;
 
         const col = document.createElement('div');
-        col.className = 'col-sm-6 col-md-4';
+        col.className = 'col-xl-2-custom col-lg-3 col-md-4 col-6';
         col.innerHTML = `
           <div class="product-card">
-            <div class="fw-bold text-dark dark-text-white mb-2 text-truncate" title="${pName}">
-              <i class="fa-solid fa-cube text-primary me-1"></i>${pName}
+            <div class="product-title text-dark dark-text-white mb-1" title="${pName}">
+              ${pName}
             </div>
-            <div class="d-flex justify-content-between align-items-center small">
-              <span class="text-muted">ইন: <strong class="text-success">${pIn}</strong></span>
-              <span class="text-muted">আউট: <strong class="text-danger">${pOut}</strong></span>
+            <div class="d-flex justify-content-between align-items-center mb-1" style="font-size: 0.72rem;">
+              <span class="text-muted">ইন: <b class="text-success">${pIn}</b></span>
+              <span class="text-muted">আউট: <b class="text-danger">${pOut}</b></span>
+            </div>
+            <div class="text-end">
               <span class="stock-tag ${pBal >= 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">
                 স্টক: ${pBal}
               </span>
@@ -475,7 +542,7 @@
       });
     }
 
-    // Render Transaction History Table
+    // Render History Table
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
 
@@ -486,8 +553,8 @@
 
     filteredData.forEach(item => {
       const badge = item.type === 'Stock In' 
-        ? `<span class="badge bg-success-subtle text-success border border-success-subtle">স্টক ইন</span>` 
-        : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle">বিতরণ / আউট</span>`;
+        ? `<span class="badge bg-success-subtle text-success border border-success-subtle">ইন</span>` 
+        : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle">আউট</span>`;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -505,6 +572,8 @@
   function resetFilters() {
     document.getElementById('searchProduct').value = '';
     document.getElementById('searchPerson').value = '';
+    document.getElementById('searchDateFrom').value = '';
+    document.getElementById('searchDateTo').value = '';
     renderUI();
   }
 
