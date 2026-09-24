@@ -3,50 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>স্মার্ট ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
+  <title>Sam Online - স্মার্ট ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
   
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Google Fonts for Telegram Look -->
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- XLSX Library -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
     /* TELEGRAM THEME COLOR PALETTE & FONTS */
     :root {
-      --tg-primary: #3390ec;             /* Telegram Primary Blue */
-      --tg-primary-hover: #2372c8;       /* Telegram Hover Blue */
-      --tg-bg: #e7ebf0;                  /* Telegram Light Chat Background */
-      --tg-card-bg: #ffffff;             /* Telegram Card White */
-      --tg-text-main: #222222;           /* Telegram Dark Text */
-      --tg-text-muted: #707579;          /* Telegram Subtitle Text */
+      --tg-primary: #0088cc;
+      --tg-primary-hover: #0077b3;
+      --tg-bg: #e7ebf0;
+      --tg-card-bg: #ffffff;
+      --tg-text-main: #222222;
+      --tg-text-muted: #707579;
       --tg-border: #dfe1e5;
       --tg-input-bg: #f4f4f5;
-      --tg-focus-shadow: rgba(51, 144, 236, 0.2);
-      --tg-bubble-in: #ffffff;
-      --tg-bubble-out: #eeffde;          /* Telegram Sent Bubble Green Tint */
+      --tg-focus-shadow: rgba(0, 136, 204, 0.2);
     }
     
     [data-bs-theme="dark"] {
-      --tg-primary: #8774e1;             /* Telegram Dark Purple/Blue Theme Accent */
+      --tg-primary: #8774e1;
       --tg-primary-hover: #6c52df;
-      --tg-bg: #0f1721;                  /* Telegram Dark Mode Background */
-      --tg-card-bg: #18222d;             /* Telegram Dark Card */
+      --tg-bg: #0f1721;
+      --tg-card-bg: #18222d;
       --tg-text-main: #f5f5f5;
       --tg-text-muted: #aaaaaa;
       --tg-border: #242f3d;
       --tg-input-bg: #242f3d;
       --tg-focus-shadow: rgba(135, 116, 225, 0.25);
-      --tg-bubble-in: #212d3b;
-      --tg-bubble-out: #2b5278;
     }
     
     body { 
       background-color: var(--tg-bg); 
-      /* Telegram Font Hierarchy */
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hind Siliguri", sans-serif; 
       color: var(--tg-text-main);
       min-height: 100vh;
@@ -57,25 +52,33 @@
     
     .content-wrapper { flex: 1; }
     
-    /* TELEGRAM STYLE HEADER */
+    /* HEADER & LOGO BANNER */
     .header-banner { 
       background-color: var(--tg-card-bg); 
       color: var(--tg-text-main); 
-      padding: 12px 0; 
+      padding: 10px 0; 
       border-bottom: 1px solid var(--tg-border);
       box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
     
-    /* CARDS LIKE TELEGRAM PANELS */
+    .brand-logo-box {
+      border: 2px solid #222;
+      border-radius: 8px;
+      padding: 2px 10px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* CARDS STYLING */
     .card-custom { 
       background-color: var(--tg-card-bg);
       border: 1px solid var(--tg-border); 
       border-radius: 12px; 
       box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-      transition: all 0.2s ease-in-out;
     }
 
-    /* TELEGRAM SEARCH BOX */
     .search-box-card {
       background-color: var(--tg-card-bg);
       border: 1px solid var(--tg-border);
@@ -83,15 +86,13 @@
       border-radius: 12px;
     }
 
-    /* TELEGRAM FORM INPUTS */
+    /* FORM INPUTS */
     .form-control, .form-select {
       background-color: var(--tg-input-bg);
       border: 1px solid transparent;
-      border-radius: 10px;
+      border-radius: 8px;
       color: var(--tg-text-main);
-      font-size: 0.88rem;
-      font-weight: 400;
-      letter-spacing: 0.2px;
+      font-size: 0.85rem;
       transition: all 0.2s ease;
     }
     .form-control:focus, .form-select:focus {
@@ -100,81 +101,82 @@
       box-shadow: 0 0 0 0.2rem var(--tg-focus-shadow);
       color: var(--tg-text-main);
     }
-    .form-control::placeholder {
-      color: var(--tg-text-muted);
-      font-size: 0.85rem;
-    }
 
     .quick-date-btn {
       font-size: 0.72rem;
-      padding: 3px 10px;
-      border-radius: 15px;
+      padding: 2px 8px;
+      border-radius: 12px;
       border-color: var(--tg-border);
       color: var(--tg-primary);
       font-weight: 500;
     }
-    .quick-date-btn:hover {
-      background-color: var(--tg-primary);
-      color: #fff;
+
+    /* COMPACT GRID FOR 9 ITEMS PER ROW */
+    .row-cols-grid-9 {
+      display: flex;
+      flex-wrap: wrap;
+      margin-right: -4px;
+      margin-left: -4px;
     }
-    
-    /* TELEGRAM PRODUCT CARDS */
+    .row-cols-grid-9 > * {
+      flex: 0 0 auto;
+      width: 11.111111%; /* 100% / 9 = 11.11% */
+      padding-right: 4px;
+      padding-left: 4px;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 1400px) { .row-cols-grid-9 > * { width: 14.2857%; } } /* 7 per row */
+    @media (max-width: 1200px) { .row-cols-grid-9 > * { width: 16.6666%; } } /* 6 per row */
+    @media (max-width: 992px)  { .row-cols-grid-9 > * { width: 25%; } }       /* 4 per row */
+    @media (max-width: 576px)  { .row-cols-grid-9 > * { width: 50%; } }       /* 2 per row */
+
+    /* MINI PRODUCT DASHBOARD CARDS */
     .product-card {
       border: 1px solid var(--tg-border);
       background-color: var(--tg-card-bg);
-      border-radius: 10px;
-      padding: 10px 12px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      border-radius: 8px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      transition: all 0.2s ease;
     }
     .product-card:hover {
-      transform: translateY(-2px);
       border-color: var(--tg-primary);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
     }
     .product-title {
-      font-size: 0.88rem;
-      font-weight: 600;
+      font-size: 0.78rem;
+      font-weight: 700;
       color: var(--tg-text-main);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-align: center;
     }
     .stock-tag {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 4px;
+      display: inline-block;
+      width: 100%;
+      text-align: center;
     }
 
-    .col-xl-2-custom {
-      flex: 0 0 auto;
-      width: 16.666667%;
-    }
-    @media (max-width: 1200px) {
-      .col-xl-2-custom { width: 25%; }
-    }
-    @media (max-width: 768px) {
-      .col-xl-2-custom { width: 50%; }
-    }
-
-    /* TELEGRAM BUTTONS */
+    /* BUTTONS & FOOTER */
     .btn-tg {
       background-color: var(--tg-primary);
       color: #ffffff;
-      border-radius: 10px;
+      border-radius: 8px;
       font-weight: 600;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       border: none;
-      letter-spacing: 0.3px;
     }
-    .btn-tg:hover {
-      background-color: var(--tg-primary-hover);
-      color: #ffffff;
-    }
+    .btn-tg:hover { background-color: var(--tg-primary-hover); color: #fff; }
 
     .auth-container { max-width: 380px; margin: 60px auto; }
     .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index: 9999; justify-content: center; align-items: center; }
@@ -183,44 +185,19 @@
       background-color: var(--tg-card-bg); 
       color: var(--tg-text-muted); 
       text-align: center; 
-      padding: 12px 0; 
+      padding: 10px 0; 
       font-size: 0.8rem; 
       border-top: 1px solid var(--tg-border);
       margin-top: auto; 
     }
 
-    /* TELEGRAM CHAT-LIKE TABLE STYLING */
-    .table {
-      color: var(--tg-text-main);
-      font-size: 0.85rem;
-    }
+    .table { color: var(--tg-text-main); font-size: 0.82rem; }
     .table thead th {
       font-weight: 600;
       color: var(--tg-text-muted);
       border-bottom: 1px solid var(--tg-border);
       background-color: var(--tg-input-bg);
-      text-transform: uppercase;
       font-size: 0.75rem;
-      letter-spacing: 0.5px;
-    }
-    .table tbody tr td {
-      border-bottom: 1px solid var(--tg-border);
-      vertical-align: middle;
-    }
-    
-    /* NAV TABS LIKE TELEGRAM TOP BAR */
-    .nav-tabs .nav-link {
-      color: var(--tg-text-muted);
-      font-weight: 500;
-      border: none;
-      border-bottom: 2px solid transparent;
-      padding: 8px 16px;
-    }
-    .nav-tabs .nav-link.active {
-      color: var(--tg-primary);
-      background: transparent;
-      border-bottom: 2px solid var(--tg-primary);
-      font-weight: 600;
     }
   </style>
 </head>
@@ -234,10 +211,19 @@
   <!-- Auth Section -->
   <div id="authSection" class="container">
     <div class="card card-custom p-4 auth-container">
-      <div class="text-center mb-4">
-        <i class="fa-paper-plane fa-3x text-primary mb-2"></i>
-        <h5 class="fw-bold">ইনভেন্টরি পোর্টাল</h5>
-        <p class="text-muted small">টেলিগ্রাম থিম ইন্টারফেস</p>
+      <div class="text-center mb-3">
+        <!-- SAM ONLINE LOGO SVG -->
+        <div class="brand-logo-box mb-2">
+          <svg width="140" height="40" viewBox="0 0 300 80">
+            <path d="M 20 50 Q 30 15 60 25 Q 40 70 20 50 Z" fill="#e67e22"/>
+            <text x="35" y="55" font-family="sans-serif" font-weight="900" font-size="42" fill="#0077b5">Sam</text>
+            <circle cx="160" cy="40" r="16" fill="#0077b5" stroke="#ffffff" stroke-width="2"/>
+            <path d="M 140 45 Q 160 20 185 30" stroke="#e67e22" stroke-width="4" fill="none"/>
+            <text x="180" y="55" font-family="sans-serif" font-weight="bold" font-size="38" fill="#0077b5">nline</text>
+            <text x="55" y="72" font-family="sans-serif" font-weight="bold" font-size="12" fill="#e67e22" letter-spacing="3">EXPLORE YOUR LIFE</text>
+          </svg>
+        </div>
+        <h6 class="fw-bold text-secondary">ইনভেন্টরি সিস্টেম পোর্টাল</h6>
       </div>
       <form id="authForm">
         <div class="mb-3">
@@ -258,13 +244,20 @@
   <div id="dashboardSection" style="display: none;">
     <div class="header-banner mb-3">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
+        <!-- LOGO BRANDING -->
         <div class="d-flex align-items-center gap-2">
-          <i class="fa-paper-plane text-primary fs-4"></i>
-          <div>
-            <h6 class="fw-bold mb-0">স্মার্ট ইনভেন্টরি ড্যাশবোর্ড</h6>
-            <p class="mb-0 text-muted small" style="font-size: 0.75rem;">রিয়েলটাইম স্টক ও ইউজার ট্র্যাকিং</p>
+          <div class="brand-logo-box">
+            <svg width="150" height="38" viewBox="0 0 300 80">
+              <path d="M 20 50 Q 30 15 60 25 Q 40 70 20 50 Z" fill="#e67e22"/>
+              <text x="35" y="55" font-family="sans-serif" font-weight="900" font-size="42" fill="#0077b5">Sam</text>
+              <circle cx="160" cy="40" r="16" fill="#0077b5" stroke="#ffffff" stroke-width="2"/>
+              <path d="M 140 45 Q 160 20 185 30" stroke="#e67e22" stroke-width="4" fill="none"/>
+              <text x="180" y="55" font-family="sans-serif" font-weight="bold" font-size="38" fill="#0077b5">nline</text>
+              <text x="55" y="72" font-family="sans-serif" font-weight="bold" font-size="12" fill="#e67e22" letter-spacing="3">EXPLORE YOUR LIFE</text>
+            </svg>
           </div>
         </div>
+
         <div class="d-flex align-items-center gap-2">
           <button onclick="toggleDarkMode()" class="btn btn-sm btn-outline-secondary rounded-circle">
             <i class="fa-solid fa-moon"></i>
@@ -278,10 +271,9 @@
     </div>
 
     <div class="container-fluid px-md-4">
-
       <div class="row g-3">
         <!-- Left Panel (Input Form & Excel Import) -->
-        <div class="col-lg-4 col-xl-3">
+        <div class="col-lg-3">
           <!-- Form Card -->
           <div class="card card-custom p-3 mb-3">
             <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>নতুন স্টক এন্ট্রি</h6>
@@ -338,23 +330,27 @@
           </div>
         </div>
 
-        <!-- Right Panel (Stock Grid on Top, Search Box in Middle, Tables Below) -->
-        <div class="col-lg-8 col-xl-9">
+        <!-- Right Panel (9-Column Stock Grid Header, Search Filter, Tables) -->
+        <div class="col-lg-9">
 
-          <!-- 1. Product Small Dashboard Cards Section (TOP) -->
+          <!-- 1. Product Small Dashboard Cards Section (9 PER ROW) -->
           <div class="card card-custom p-3 mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="fw-bold mb-0 text-dark dark-text-white" style="font-size: 0.95rem;">
-                <i class="fa-solid fa-cubes text-primary me-2"></i>প্রোডাক্ট স্টক ড্যাশবোর্ড
-              </h6>
-              <span class="text-muted small" style="font-size: 0.75rem;">বর্তমান পজিশন সামারি</span>
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary fs-6 px-3 py-2 rounded-2 shadow-sm">
+                  <i class="fa-solid fa-gauge-high me-2"></i>ড্যাশবোর্ড
+                </span>
+              </div>
+              <span class="text-muted small" style="font-size: 0.75rem;">লাইভ স্টক পজিশন</span>
             </div>
-            <div class="row g-2" id="productCardGrid">
+
+            <!-- Grid Container with 9 Items Per Row -->
+            <div class="row-cols-grid-9" id="productCardGrid">
               <!-- Mini Product Cards dynamically rendered here -->
             </div>
           </div>
 
-          <!-- 2. Smart Search Filter Box (BOTTOM OF STOCK DASHBOARD) -->
+          <!-- 2. Smart Search Filter Box -->
           <div class="card card-custom search-box-card p-3 mb-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div class="fw-bold text-primary small">
@@ -479,7 +475,7 @@
 
 <footer class="app-footer">
   <div class="container">
-    <p class="mb-0 fw-medium">ISP Inventory Management System | Safe & Secure Platform</p>
+    <p class="mb-0 fw-medium">Sam Online Inventory System | Safe & Secure Platform</p>
     <small class="text-muted d-block mt-1">Developed by <strong>Antu</strong></small>
   </div>
 </footer>
@@ -563,7 +559,6 @@
 
   function logout() { _auth.signOut(); }
 
-  // New entry with user email tracking
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!_user) return;
@@ -614,7 +609,7 @@
   }
 
   function renderUI() {
-    // 1. Calculate TOTAL Overall Stock Cards
+    // 1. Calculate TOTAL Overall Stock
     const stockMapTotal = {};
     _cache.forEach(item => {
       const qty = Number(item.quantity) || 0;
@@ -628,7 +623,7 @@
     cardGrid.innerHTML = '';
     const allProducts = Object.keys(stockMapTotal);
     if (allProducts.length === 0) {
-      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-3 small">কোনো স্টক ডাটা নেই</div>`;
+      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-2 small">কোনো স্টক ডাটা নেই</div>`;
     } else {
       allProducts.forEach(pName => {
         const pIn = stockMapTotal[pName].in;
@@ -636,15 +631,14 @@
         const pBal = pIn - pOut;
 
         const col = document.createElement('div');
-        col.className = 'col-xl-2-custom col-lg-3 col-md-4 col-6';
         col.innerHTML = `
           <div class="product-card">
-            <div class="product-title mb-1" title="${pName}">${pName}</div>
-            <div class="d-flex justify-content-between align-items-center mb-1" style="font-size: 0.72rem;">
-              <span class="text-muted">ইন: <b class="text-success">${pIn}</b></span>
-              <span class="text-muted">আউট: <b class="text-danger">${pOut}</b></span>
+            <div class="product-title" title="${pName}">${pName}</div>
+            <div class="d-flex justify-content-between align-items-center my-1" style="font-size: 0.68rem;">
+              <span class="text-muted">ইন:<b class="text-success">${pIn}</b></span>
+              <span class="text-muted">আউট:<b class="text-danger">${pOut}</b></span>
             </div>
-            <div class="text-end">
+            <div>
               <span class="stock-tag ${pBal >= 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">
                 স্টক: ${pBal}
               </span>
@@ -809,7 +803,7 @@
     const detailedSheet = XLSX.utils.json_to_sheet(detailedData);
     XLSX.utils.book_append_sheet(workbook, detailedSheet, "সম্পূর্ণ ইতিহাস ও ইউজার লগ");
 
-    XLSX.writeFile(workbook, `Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    XLSX.writeFile(workbook, `Sam_Online_Inventory_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
   function importExcel() {
