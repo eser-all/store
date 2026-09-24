@@ -3,38 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>সেন্ট্রাল ও জোন ভিত্তিক ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
+  <title>স্মার্ট ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
   
+  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Inter & Hind Siliguri -->
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- XLSX Library -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
     :root {
-      --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      --tg-primary: #0088cc;
+      --tg-primary-hover: #0077b3;
+      --tg-bg: #f4f4f5;
+      --tg-card-bg: #ffffff;
+      --tg-text-main: #222222;
+      --tg-text-muted: #707579;
+      --tg-border: #e4e4e7;
     }
     [data-bs-theme="dark"] {
-      --primary-gradient: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+      --tg-primary: #52ade1;
+      --tg-primary-hover: #3ba0da;
+      --tg-bg: #0f172a;
+      --tg-card-bg: #1e293b;
+      --tg-text-main: #f8fafc;
+      --tg-text-muted: #94a3b8;
+      --tg-border: #334155;
     }
     body { 
-      background-color: var(--bs-body-bg); 
-      font-family: 'Hind Siliguri', sans-serif; 
+      background-color: var(--tg-bg); 
+      font-family: 'Hind Siliguri', 'Inter', sans-serif; 
+      color: var(--tg-text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
     .content-wrapper { flex: 1; }
-    .header-banner { background: var(--primary-gradient); color: white; padding: 18px 0; border-radius: 0 0 20px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
-    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .stat-card { border-left: 5px solid; padding: 12px !important; }
-    .stat-in { border-color: #198754; }
-    .stat-out { border-color: #dc3545; }
-    .stat-balance { border-color: #0d6efd; }
-    .auth-container { max-width: 420px; margin: 70px auto; border-top: 5px solid #0d6efd; }
-    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
-    .app-footer { background: var(--primary-gradient); color: #ffffff; text-align: center; padding: 12px 0; font-size: 0.9rem; margin-top: auto; }
-    .app-footer span { color: #00d2ff; }
+    
+    /* Telegram Header Style */
+    .header-banner { 
+      background-color: var(--tg-card-bg); 
+      color: var(--tg-text-main); 
+      padding: 16px 0; 
+      border-bottom: 1px solid var(--tg-border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .card-custom { 
+      background-color: var(--tg-card-bg);
+      border: 1px solid var(--tg-border); 
+      border-radius: 14px; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    /* Small Product Dashboard Cards */
+    .product-card {
+      border: 1px solid var(--tg-border);
+      background-color: var(--tg-card-bg);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .product-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .auth-container { max-width: 400px; margin: 60px auto; }
+    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index: 9999; justify-content: center; align-items: center; }
+    
+    /* Telegram Buttons */
+    .btn-tg {
+      background-color: var(--tg-primary);
+      color: white;
+      border-radius: 10px;
+      font-weight: 600;
+      border: none;
+    }
+    .btn-tg:hover {
+      background-color: var(--tg-primary-hover);
+      color: white;
+    }
+    .app-footer { 
+      background-color: var(--tg-card-bg); 
+      color: var(--tg-text-muted); 
+      text-align: center; 
+      padding: 14px 0; 
+      font-size: 0.85rem; 
+      border-top: 1px solid var(--tg-border);
+      margin-top: auto; 
+    }
   </style>
 </head>
 <body>
@@ -48,46 +110,42 @@
   <div id="authSection" class="container">
     <div class="card card-custom p-4 auth-container">
       <div class="text-center mb-4">
-        <i class="fa-solid fa-warehouse fa-3x text-primary mb-2"></i>
-        <h4 class="fw-bold">সেন্ট্রাল স্টক পোর্টাল</h4>
-        <p class="text-muted small">সিস্টেমে প্রবেশ করতে আপনার লগইন তথ্য দিন</p>
+        <i class="fa-paper-plane fa-3x text-primary mb-2"></i>
+        <h4 class="fw-bold">ইনভেন্টরি পোর্টাল</h4>
+        <p class="text-muted small">লগইন করতে আপনার অ্যাকাউন্টের তথ্য দিন</p>
       </div>
       <form id="authForm">
         <div class="mb-3">
-          <label class="form-label fw-semibold">ইমেইল এড্রেস</label>
+          <label class="form-label fw-semibold small">ইমেইল এড্রেস</label>
           <input type="email" id="authEmail" class="form-control" placeholder="name@domain.com" required>
         </div>
         <div class="mb-3">
-          <label class="form-label fw-semibold">পাসওয়ার্ড</label>
+          <label class="form-label fw-semibold small">পাসওয়ার্ড</label>
           <input type="password" id="authPassword" class="form-control" placeholder="••••••••" minlength="6" required>
         </div>
         <div id="authError" class="alert alert-danger py-2 small mb-3 text-center" style="display: none;"></div>
-        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">প্রবেশ করুন</button>
+        <button type="submit" class="btn btn-tg w-100 py-2 shadow-sm">প্রবেশ করুন</button>
       </form>
     </div>
   </div>
 
   <!-- Dashboard Section -->
   <div id="dashboardSection" style="display: none;">
-    <div class="header-banner mb-3">
+    <div class="header-banner mb-4">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
-        <div>
-          <h4 class="fw-bold mb-0"><i class="fa-solid fa-boxes-stacked me-2"></i>সেন্ট্রাল ও জোন ভিত্তিক স্টক ম্যানেজমেন্ট</h4>
-          <p class="mb-0 opacity-75 small">সেন্ট্রাল গুদাম থেকে মালামাল রিসিভ ও দুই জোনে বন্টন ব্যবস্থা</p>
+        <div class="d-flex align-items-center gap-2">
+          <i class="fa-solid fa-boxes-stacked text-primary fs-4"></i>
+          <div>
+            <h5 class="fw-bold mb-0">সেন্ট্রাল স্টক ইনভেন্টরি ড্যাশবোর্ড</h5>
+            <p class="mb-0 text-muted small">স্মার্ট ও নিরাপদ মালামাল ট্র্যাকিং সিস্টেম</p>
+          </div>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <!-- View / Target Selector -->
-          <select id="activeTarget" onchange="switchTarget()" class="form-select form-select-sm fw-bold bg-light text-dark" style="width: 180px;">
-            <option value="Central">সেন্ট্রাল গুদাম (Central Stock)</option>
-            <option value="Gawar">গাওয়ার জোন (Gawar Zone)</option>
-            <option value="Mollartek">মোল্লারটেক জোন (Mollartek)</option>
-          </select>
-
-          <button onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold">
+          <button onclick="toggleDarkMode()" class="btn btn-sm btn-outline-secondary rounded-circle">
             <i class="fa-solid fa-moon"></i>
           </button>
-          <span id="userDisplayEmail" class="badge bg-light text-dark d-none d-md-inline-block py-2 px-3"></span>
-          <button onclick="logout()" class="btn btn-outline-light btn-sm fw-bold">
+          <span id="userDisplayEmail" class="badge bg-light text-dark border d-none d-md-inline-block py-2 px-3"></span>
+          <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-semibold rounded-2">
             <i class="fa-solid fa-power-off"></i> লগআউট
           </button>
         </div>
@@ -96,50 +154,51 @@
 
     <div class="container-fluid px-md-4">
       
-      <!-- Summary Statistics Row -->
-      <div class="row g-2 mb-3 text-center">
+      <!-- Top Overview Stats -->
+      <div class="row g-3 mb-4">
         <div class="col-md-4">
-          <div class="card card-custom stat-card stat-in">
-            <div class="text-muted small fw-bold" id="labelTotalIn">মোট স্টক ইন</div>
-            <h5 class="text-success fw-bold mt-1 mb-0" id="statTotalIn">0 Pcs</h5>
+          <div class="card card-custom p-3 border-start border-success border-4">
+            <div class="text-muted small fw-semibold">মোট ইন (Stock In)</div>
+            <h4 class="text-success fw-bold mt-1 mb-0" id="statTotalIn">0 Pcs</h4>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card card-custom stat-card stat-out">
-            <div class="text-muted small fw-bold" id="labelTotalOut">মোট বিতরণ / আউট</div>
-            <h5 class="text-danger fw-bold mt-1 mb-0" id="statTotalOut">0 Pcs</h5>
+          <div class="card card-custom p-3 border-start border-danger border-4">
+            <div class="text-muted small fw-semibold">মোট বিতরণ (Stock Out)</div>
+            <h4 class="text-danger fw-bold mt-1 mb-0" id="statTotalOut">0 Pcs</h4>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card card-custom stat-card stat-balance">
-            <div class="text-muted small fw-bold">বর্তমান স্টক ব্যালেন্স</div>
-            <h5 class="text-primary fw-bold mt-1 mb-0" id="statTotalBalance">0 Pcs</h5>
+          <div class="card card-custom p-3 border-start border-primary border-4">
+            <div class="text-muted small fw-semibold">অবশিষ্ট ব্যালেন্স (Current Stock)</div>
+            <h4 class="text-primary fw-bold mt-1 mb-0" id="statTotalBalance">0 Pcs</h4>
           </div>
         </div>
       </div>
 
       <div class="row">
-        <!-- Input Panel -->
+        <!-- Input & Action Panel -->
         <div class="col-lg-4 mb-4">
+          <!-- Form Card -->
           <div class="card card-custom p-3 mb-3">
-            <h6 class="fw-bold mb-3" id="formTitle"><i class="fa-solid fa-square-plus me-2 text-primary"></i>সেন্ট্রালে নতুন মালামাল এন্ট্রি</h6>
+            <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-square-plus me-2"></i>নতুন স্টক লেনদেন এন্ট্রি</h6>
             <form id="transactionForm">
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">লেনদেনের ধরন</label>
-                <select id="txType" class="form-select form-select-sm shadow-sm" required onchange="updateFormLabels()">
+                <select id="txType" class="form-select form-select-sm" required onchange="updateFormLabels()">
                   <option value="Stock In">স্টক ইন (কেনাকাটা / রিসিভ)</option>
-                  <option value="Stock Out">স্টক আউট / জোন ট্রান্সফার</option>
+                  <option value="Stock Out">স্টক আউট (বিতরণ / ব্যবহার)</option>
                 </select>
               </div>
 
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">তারিখ</label>
-                <input type="date" id="txDate" class="form-control form-control-sm shadow-sm" required>
+                <input type="date" id="txDate" class="form-control form-control-sm" required>
               </div>
 
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">পণ্যের নাম (Item Name)</label>
-                <input type="text" id="itemName" class="form-control form-control-sm shadow-sm" list="itemListOptions" placeholder="যেমন: Onu, SC P. Cord" required>
+                <input type="text" id="itemName" class="form-control form-control-sm" list="itemListOptions" placeholder="যেমন: Onu, Router, Patch Cord" required>
                 <datalist id="itemListOptions">
                   <option value="Onu"><option value="Giga Onu"><option value="SC P. Cord"><option value="TG 2 port"><option value="TG 4 port"><option value="TG 8 Port"><option value="SP 1*2"><option value="SP 1*4"><option value="F. 2 Core"><option value="F. 4 Core"><option value="Switch"><option value="Router"><option value="Tie">
                 </datalist>
@@ -147,126 +206,92 @@
 
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">পরিমাণ (Qty)</label>
-                <input type="number" id="txQty" class="form-control form-control-sm shadow-sm" placeholder="পরিমাণ লিখুন" min="1" required>
+                <input type="number" id="txQty" class="form-control form-control-sm" placeholder="পরিমাণ লিখুন" min="1" required>
               </div>
 
-              <div class="mb-2" id="sourceReceiverField">
-                <label class="form-label fw-semibold small mb-1" id="reNameLabel">প্রদানকারী / রিসিভারের নাম</label>
-                <input type="text" id="reName" class="form-control form-control-sm shadow-sm" placeholder="নাম লিখুন">
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-1" id="reNameLabel">সরবরাহকারী / ভেন্ডরের নাম</label>
+                <input type="text" id="reName" class="form-control form-control-sm" placeholder="ব্যক্তি বা প্রতিষ্ঠানের নাম">
               </div>
 
-              <div class="mb-3" id="userIdField">
-                <label class="form-label fw-semibold small mb-1">ইউজার আইডি / লোকেশন</label>
-                <input type="text" id="userId" class="form-control form-control-sm shadow-sm" placeholder="আইডি বা নোট">
+              <div class="mb-3">
+                <label class="form-label fw-semibold small mb-1">ইউজার আইডি / নোট / লোকেশন</label>
+                <input type="text" id="userId" class="form-control form-control-sm" placeholder="নোট বা আইডি">
               </div>
 
-              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm btn-sm py-2">
-                <i class="fa-solid fa-cloud-arrow-up me-1"></i> এন্ট্রি সেভ করুন
+              <button type="submit" class="btn btn-tg w-100 btn-sm py-2">
+                <i class="fa-solid fa-cloud-arrow-up me-1"></i> সেভ করুন
               </button>
             </form>
           </div>
 
           <!-- Excel Import Card -->
-          <div class="card card-custom p-3 mb-3">
-            <h6 class="fw-bold mb-2"><i class="fa-solid fa-file-excel text-success me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
-            <p class="text-muted small mb-2">এক্সেল শিট থেকে সরাসরি ডাটা আপলোড করুন।</p>
+          <div class="card card-custom p-3">
+            <h6 class="fw-bold mb-2 text-success"><i class="fa-solid fa-file-excel me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
+            <p class="text-muted small mb-2">এক্সেল বা সিএসভি থেকে ডাটা যোগ করুন।</p>
             <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="form-control form-control-sm mb-2">
             <button onclick="importExcel()" class="btn btn-outline-success btn-sm w-100 fw-bold">
-              <i class="fa-solid fa-upload me-1"></i> এক্সেল ইমপোর্ট করুন
-            </button>
-          </div>
-
-          <!-- Clear Selected Target Data -->
-          <div class="card card-custom p-3 mb-3 border-danger">
-            <h6 class="fw-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation me-2"></i>সিলেক্টেড জোন ডাটা মুছুন</h6>
-            <button onclick="clearCurrentTargetData()" class="btn btn-outline-danger btn-sm w-100 fw-bold">
-              <i class="fa-solid fa-trash-can me-1"></i> বর্তমান জোনের সব ডাটা মুছুন
-            </button>
-          </div>
-
-          <!-- Clear Entire Dashboard (All Zones) Data -->
-          <div class="card card-custom p-3 bg-danger text-white">
-            <h6 class="fw-bold mb-2"><i class="fa-solid fa-bomb me-2"></i>সম্পূর্ণ ড্যাশবোর্ড রিসেট</h6>
-            <p class="small mb-2 opacity-75">সেন্ট্রাল, গাওয়ার এবং মোল্লারটেক—সব জোনের সমস্ত ডাটা চিরতরে ডিলিট করতে:</p>
-            <button onclick="clearEntireDashboardData()" class="btn btn-light btn-sm w-100 fw-bold text-danger">
-              <i class="fa-solid fa-skull-crossbones me-1"></i> পুরো ড্যাশবোর্ডের সব ডাটা ডিলিট করুন
+              <i class="fa-solid fa-upload me-1"></i> আপলোড করুন
             </button>
           </div>
         </div>
 
-        <!-- Table & Stock Summary Panel -->
+        <!-- Dashboard Cards & Data History Panel -->
         <div class="col-lg-8">
-          <!-- Filter Row -->
+
+          <!-- 2 Separate Dual Search Engine -->
           <div class="card card-custom p-3 mb-3">
-            <div class="row g-2 align-items-center">
-              <div class="col-md-3">
-                <label class="form-label small fw-bold mb-1">শুরুর তারিখ</label>
-                <input type="date" id="startDate" class="form-control form-control-sm" onchange="renderUI()">
+            <div class="row g-2">
+              <div class="col-md-4">
+                <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-box text-primary me-1"></i>১. প্রোডাক্ট সার্চ ইঞ্জিন</label>
+                <input type="text" id="searchProduct" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="পণ্য দিয়ে খুঁজুন...">
               </div>
-              <div class="col-md-3">
-                <label class="form-label small fw-bold mb-1">শেষের তারিখ</label>
-                <input type="date" id="endDate" class="form-control form-control-sm" onchange="renderUI()">
+              <div class="col-md-4">
+                <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-user text-success me-1"></i>২. গ্রহীতা / নাম সার্চ ইঞ্জিন</label>
+                <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="গ্রহীতা বা ব্যক্তি দিয়ে খুঁজুন...">
               </div>
-              <div class="col-md-3">
-                <label class="form-label small fw-bold mb-1">সার্চ করুন</label>
-                <input type="text" id="searchInput" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="🔍 পণ্য বা নাম...">
-              </div>
-              <div class="col-md-3 text-md-end mt-4">
-                <button onclick="resetFilter()" class="btn btn-outline-secondary btn-sm fw-bold w-100">
-                  <i class="fa-solid fa-rotate-right me-1"></i> রিসেট ফিল্টার
+              <div class="col-md-4 text-md-end mt-md-4">
+                <button onclick="resetFilters()" class="btn btn-outline-secondary btn-sm w-100">
+                  <i class="fa-solid fa-rotate me-1"></i> সার্চ রিসেট
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- Live Stock Summary Table -->
+          <!-- Product Small Dashboard Cards Section -->
           <div class="card card-custom p-3 mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="fw-bold mb-0"><i class="fa-solid fa-warehouse text-success me-2"></i>স্টক সামারি (<span id="currentTargetTitle">সেন্ট্রাল গুদাম</span>)</h6>
-            </div>
-            <div class="table-responsive" style="max-height: 200px;">
-              <table class="table table-sm table-bordered text-center align-middle mb-0 small">
-                <thead class="table-light sticky-top">
-                  <tr>
-                    <th>পণ্যের নাম</th>
-                    <th id="thIn">মোট ইন</th>
-                    <th id="thOut">মোট আউট</th>
-                    <th>স্টক ব্যালেন্স</th>
-                  </tr>
-                </thead>
-                <tbody id="inventorySummaryBody">
-                  <tr><td colspan="4" class="text-muted small">কোনো ডাটা নেই</td></tr>
-                </tbody>
-              </table>
+            <h6 class="fw-bold mb-3"><i class="fa-solid fa-cubes text-primary me-2"></i>প্রোডাক্ট স্টক ড্যাশবোর্ড কার্ড</h6>
+            <div class="row g-2" id="productCardGrid">
+              <!-- Small Product Cards dynamically rendered here -->
             </div>
           </div>
 
           <!-- Transaction History Table -->
-          <div class="card card-custom p-3">
+          <div class="card card-custom p-3 mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>লেনদেনের ইতিহাস</h6>
-              <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
-                <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
+              <h6 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>লেনদেনের বিস্তারিত ইতিহাস</h6>
+              <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold">
+                <i class="fa-solid fa-file-excel me-1"></i> বিস্তারিত এক্সেল এক্সপোর্ট
               </button>
             </div>
 
-            <div class="table-responsive" style="max-height: 320px;">
-              <table class="table table-hover align-middle small" id="transactionTable">
+            <div class="table-responsive" style="max-height: 380px;">
+              <table class="table table-hover align-middle small mb-0">
                 <thead class="table-light sticky-top">
                   <tr>
                     <th>তারিখ</th>
                     <th>টাইপ</th>
-                    <th>পণ্য</th>
+                    <th>প্রোডাক্ট</th>
                     <th>পরিমাণ</th>
-                    <th>নাম/উৎস</th>
-                    <th>ইউজার আইডি/নোট</th>
-                    <th class="text-center">অ্যাকশন</th>
+                    <th>গ্রহীতা / উৎস</th>
+                    <th>আইডি / নোট</th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
               </table>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -275,7 +300,7 @@
 
 <footer class="app-footer">
   <div class="container">
-    <p class="mb-0 fw-semibold">ISP Inventory System | Central & Zone Management</p>
+    <p class="mb-0 fw-medium">ISP Inventory Management System | Protected & Secured Platform</p>
   </div>
 </footer>
 
@@ -301,7 +326,6 @@
 
   let _user = null;
   let _cache = [];
-  let _currentTarget = 'Central';
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
@@ -315,38 +339,16 @@
   window.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('appTheme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', savedTheme);
-    const todayStr = new Date().toISOString().split('T')[0];
     const dateEl = document.getElementById('txDate');
-    if(dateEl) dateEl.value = todayStr;
+    if(dateEl) dateEl.value = new Date().toISOString().split('T')[0];
   });
-
-  function switchTarget() {
-    _currentTarget = document.getElementById('activeTarget').value;
-    const titles = { 'Central': 'সেন্ট্রাল গুদাম', 'Gawar': 'গাওয়ার জোন', 'Mollartek': 'মোল্লারটেক জোন' };
-    document.getElementById('currentTargetTitle').innerText = titles[_currentTarget];
-    
-    if(_currentTarget === 'Central') {
-      document.getElementById('labelTotalIn').innerText = 'মোট স্টক ইন (ক্রয়/রিসিভ)';
-      document.getElementById('labelTotalOut').innerText = 'মোট জোন ট্রান্সফার (আউট)';
-      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-square-plus me-2 text-primary"></i>সেন্ট্রালে নতুন মালামাল এন্ট্রি`;
-    } else {
-      document.getElementById('labelTotalIn').innerText = 'সেন্ট্রাল থেকে প্রাপ্তি (In)';
-      document.getElementById('labelTotalOut').innerText = 'ব্যবহার / বিতরণ (Out)';
-      document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-square-plus me-2 text-primary"></i>${titles[_currentTarget]}-এ এন্ট্রি`;
-    }
-    fetchTransactions();
-  }
 
   function updateFormLabels() {
     const type = document.getElementById('txType').value;
-    if(_currentTarget === 'Central') {
-      document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'সরবরাহকারী / ভেন্ডরের নাম' : 'কোন জোনে পাঠানো হলো (যেমন: Gawar)';
-    } else {
-      document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'উৎস / সেন্ট্রাল রেফারেন্স' : 'রিসিভার বা টেকনিশিয়ানের নাম';
-    }
+    document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'সরবরাহকারী / ভেন্ডরের নাম' : 'রিসিভার / টেকনিশিয়ানের নাম';
   }
 
-  _auth.onAuthStateChanged(async (u) => {
+  _auth.onAuthStateChanged((u) => {
     toggleLoader(true);
     if (u) {
       _user = u;
@@ -373,7 +375,7 @@
     } catch (e) {
       const errorEl = document.getElementById('authError');
       errorEl.style.display = 'block';
-      errorEl.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক তথ্য দিন।";
+      errorEl.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক ইমেইল ও পাসওয়ার্ড দিন।";
     } finally {
       toggleLoader(false);
     }
@@ -397,11 +399,11 @@
 
     toggleLoader(true);
     try {
-      await _db.ref(`isp_inventory/${_currentTarget}/transactions`).push(payload);
+      await _db.ref('central_inventory/transactions').push(payload);
       document.getElementById('transactionForm').reset();
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
     } catch (err) {
-      alert("সমস্যা হয়েছে: " + err.message);
+      alert("ত্রুটি: " + err.message);
     } finally {
       toggleLoader(false);
     }
@@ -409,7 +411,7 @@
 
   function fetchTransactions() {
     if (!_user) return;
-    _db.ref(`isp_inventory/${_currentTarget}/transactions`).on('value', (snap) => {
+    _db.ref('central_inventory/transactions').on('value', (snap) => {
       _cache = [];
       const val = snap.val();
       if (val) {
@@ -424,184 +426,159 @@
     });
   }
 
-  function parseDateString(str) {
-    if (!str) return '';
-    let s = String(str).trim();
-    if (s.includes('.')) {
-      const parts = s.split('.');
-      if (parts.length === 3) {
-        let day = parts[0].padStart(2, '0');
-        let month = parts[1].padStart(2, '0');
-        let year = parts[2];
-        if (year.length === 2) year = '20' + year;
-        return `${year}-${month}-${day}`;
-      }
-    }
-    return s;
-  }
-
   function renderUI() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const searchQ = document.getElementById('searchInput').value.toLowerCase().trim();
+    const productQuery = document.getElementById('searchProduct').value.toLowerCase().trim();
+    const personQuery = document.getElementById('searchPerson').value.toLowerCase().trim();
 
-    const filteredCache = _cache.filter(item => {
-      const itemDateFormatted = parseDateString(item.date);
-      if (startDate && itemDateFormatted < startDate) return false;
-      if (endDate && itemDateFormatted > endDate) return false;
-      if (searchQ) {
-        const rowText = `${item.date} ${item.type} ${item.itemName} ${item.quantity} ${item.reName} ${item.userId}`.toLowerCase();
-        if (!rowText.includes(searchQ)) return false;
-      }
-      return true;
+    const filteredData = _cache.filter(item => {
+      const matchProduct = !productQuery || (item.itemName && item.itemName.toLowerCase().includes(productQuery));
+      const matchPerson = !personQuery || (item.reName && item.reName.toLowerCase().includes(personQuery)) || (item.userId && item.userId.toLowerCase().includes(personQuery));
+      return matchProduct && matchPerson;
     });
 
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
-
-    let totalInCount = 0;
-    let totalOutCount = 0;
+    let totalIn = 0, totalOut = 0;
     const stockMap = {};
 
-    filteredCache.forEach(item => {
+    filteredData.forEach(item => {
       const qty = Number(item.quantity) || 0;
-      const iName = item.itemName || 'N/A';
+      const iName = item.itemName || 'অন্যান্য';
 
       if (!stockMap[iName]) stockMap[iName] = { in: 0, out: 0 };
 
       if (item.type === 'Stock In') {
-        totalInCount += qty;
+        totalIn += qty;
         stockMap[iName].in += qty;
       } else {
-        totalOutCount += qty;
+        totalOut += qty;
         stockMap[iName].out += qty;
       }
     });
 
-    document.getElementById('statTotalIn').innerText = `${totalInCount} Pcs`;
-    document.getElementById('statTotalOut').innerText = `${totalOutCount} Pcs`;
-    document.getElementById('statTotalBalance').innerText = `${totalInCount - totalOutCount} Pcs`;
+    document.getElementById('statTotalIn').innerText = `${totalIn} Pcs`;
+    document.getElementById('statTotalOut').innerText = `${totalOut} Pcs`;
+    document.getElementById('statTotalBalance').innerText = `${totalIn - totalOut} Pcs`;
 
-    const summaryBody = document.getElementById('inventorySummaryBody');
-    summaryBody.innerHTML = '';
-    const itemKeys = Object.keys(stockMap);
+    // Render Small Dashboard Cards
+    const cardGrid = document.getElementById('productCardGrid');
+    cardGrid.innerHTML = '';
 
-    if (itemKeys.length === 0) {
-      summaryBody.innerHTML = `<tr><td colspan="4" class="text-muted small">কোনো ডাটা পাওয়া যায়নি</td></tr>`;
+    const products = Object.keys(stockMap);
+    if (products.length === 0) {
+      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-3 small">কোনো ডাটা খুঁজে পাওয়া যায়নি</div>`;
     } else {
-      itemKeys.forEach(name => {
-        const ins = stockMap[name].in;
-        const outs = stockMap[name].out;
-        const bal = ins - outs;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="fw-bold">${name}</td>
-          <td class="text-success">${ins}</td>
-          <td class="text-danger">${outs}</td>
-          <td class="fw-bold text-primary">${bal}</td>
+      products.forEach(pName => {
+        const pIn = stockMap[pName].in;
+        const pOut = stockMap[pName].out;
+        const pBal = pIn - pOut;
+
+        const col = document.createElement('div');
+        col.className = 'col-sm-6 col-md-4';
+        col.innerHTML = `
+          <div class="product-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-bold text-dark dark-text-white">${pName}</span>
+              <span class="badge ${pBal > 0 ? 'bg-primary' : 'bg-danger'}">${pBal} Pcs</span>
+            </div>
+            <div class="d-flex justify-content-between text-muted small">
+              <span>ইন: <strong class="text-success">${pIn}</strong></span>
+              <span>আউট: <strong class="text-danger">${pOut}</strong></span>
+            </div>
+          </div>
         `;
-        summaryBody.appendChild(tr);
+        cardGrid.appendChild(col);
       });
     }
 
-    if (filteredCache.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3">কোনো রেকর্ড নেই</td></tr>`;
+    // Render Transaction Table
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    if (filteredData.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">কোনো লেনদেন রেকর্ড নেই</td></tr>`;
       return;
     }
 
-    filteredCache.forEach(item => {
+    filteredData.forEach(item => {
       const badge = item.type === 'Stock In' 
-        ? `<span class="badge bg-success">ইন / রিসিভ</span>` 
-        : `<span class="badge bg-danger">আউট / ট্রান্সফার</span>`;
+        ? `<span class="badge bg-success-subtle text-success border border-success-subtle">স্টক ইন</span>` 
+        : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle">বিতরণ / আউট</span>`;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${item.date || ''}</td>
+        <td>${item.date || '-'}</td>
         <td>${badge}</td>
-        <td class="fw-bold">${item.itemName || ''}</td>
-        <td class="fw-bold">${item.quantity || 0}</td>
+        <td class="fw-bold">${item.itemName || '-'}</td>
+        <td class="fw-bold">${item.quantity || 0} Pcs</td>
         <td>${item.reName || '-'}</td>
         <td>${item.userId || '-'}</td>
-        <td class="text-center">
-          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger py-0"><i class="fa-solid fa-trash"></i></button>
-        </td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  function resetFilter() {
-    document.getElementById('startDate').value = '';
-    document.getElementById('endDate').value = '';
-    document.getElementById('searchInput').value = '';
+  function resetFilters() {
+    document.getElementById('searchProduct').value = '';
+    document.getElementById('searchPerson').value = '';
     renderUI();
   }
 
-  async function deleteTx(id) {
-    if (!confirm('মুছে ফেলতে চান?')) return;
-    if (!_user) return;
-    toggleLoader(true);
-    try {
-      await _db.ref(`isp_inventory/${_currentTarget}/transactions/${id}`).remove();
-    } catch (e) {
-      alert("ত্রুটি: " + e.message);
-    } finally {
-      toggleLoader(false);
-    }
-  }
-
-  // Clear Current Target Data
-  async function clearCurrentTargetData() {
-    const titles = { 'Central': 'সেন্ট্রাল গুদাম', 'Gawar': 'গাওয়ার জোন', 'Mollartek': 'মোল্লারটেক জোন' };
-    const currentName = titles[_currentTarget];
-
-    if (!confirm(`সতর্কতা! ${currentName}-এর সমস্ত ডাটা ডিলিট করতে চান?`)) return;
-
-    if (!_user) return;
-    toggleLoader(true);
-    try {
-      await _db.ref(`isp_inventory/${_currentTarget}/transactions`).remove();
-      alert(`${currentName}-এর সমস্ত ডাটা মুছে ফেলা হয়েছে!`);
-    } catch (e) {
-      alert("সমস্যা হয়েছে: " + e.message);
-    } finally {
-      toggleLoader(false);
-    }
-  }
-
-  // Clear Entire Dashboard Data (All Zones)
-  async function clearEntireDashboardData() {
-    if (!confirm(`অত্যন্ত সতর্কবার্তা! সম্পূর্ণ ড্যাশবোর্ডের সেন্ট্রাল, গাওয়ার এবং মোল্লারটেক—সব জোনের সমস্ত ডাটা চিরতরে মুছে যাবে। আপনি কি নিশ্চিত?`)) return;
-
-    if (!_user) return;
-    toggleLoader(true);
-    try {
-      await _db.ref('isp_inventory').remove();
-      alert("পুরো ড্যাশবোর্ডের সমস্ত ডাটা সফলভাবে মুছে ফেলা হয়েছে!");
-      window.location.reload();
-    } catch (e) {
-      alert("সমস্যা হয়েছে: " + e.message);
-    } finally {
-      toggleLoader(false);
-    }
-  }
-
+  // --- Advanced Excel Export Engine (Multi-Sheet with Aggregated Sums) ---
   function exportToExcel() {
-    if (_cache.length === 0) { alert("ডাটা নেই!"); return; }
-    const dataToExport = _cache.map(item => ({
-      "তারিখ": item.date, "ধরন": item.type, "পণ্যের নাম": item.itemName,
-      "পরিমাণ": item.quantity, "নাম/উৎস": item.reName || '', "নোট/আইডি": item.userId || ''
+    if (_cache.length === 0) { alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!"); return; }
+
+    // 1. Calculate Aggregated Receiver Summary (কে কতগুলো ভিন্ন ভিন্ন প্রোডাক্ট নিয়েছে)
+    const personSummary = {};
+
+    _cache.forEach(item => {
+      if (item.type === 'Stock Out') {
+        const person = item.reName || 'অনির্দিষ্ট গ্রহীতা';
+        const product = item.itemName || 'অনির্দিষ্ট পণ্য';
+        const qty = Number(item.quantity) || 0;
+
+        if (!personSummary[person]) personSummary[person] = {};
+        if (!personSummary[person][product]) personSummary[person][product] = 0;
+
+        personSummary[person][product] += qty;
+      }
+    });
+
+    const summaryData = [];
+    Object.keys(personSummary).forEach(person => {
+      Object.keys(personSummary[person]).forEach(product => {
+        summaryData.push({
+          "গ্রহীতা / ব্যক্তির নাম": person,
+          "পণ্যের নাম": product,
+          "মোট গ্রহণের পরিমাণ (Total Qty)": personSummary[person][product]
+        });
+      });
+    });
+
+    // 2. Format Raw Detailed Data
+    const detailedData = _cache.map(item => ({
+      "তারিখ": item.date,
+      "লেনদেনের ধরন": item.type,
+      "পণ্যের নাম": item.itemName,
+      "পরিমাণ": item.quantity,
+      "গ্রহীতা / উৎস": item.reName || '',
+      "ইউজার আইডি / নোট": item.userId || ''
     }));
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+
+    // Build Workbook with 2 Sheets
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, `${_currentTarget}_Stock`);
-    XLSX.writeFile(workbook, `ISP_${_currentTarget}_Report.xlsx`);
+
+    const summarySheet = XLSX.utils.json_to_sheet(summaryData);
+    XLSX.utils.book_append_sheet(workbook, summarySheet, "গ্রহীতাভিত্তিক যোগফল");
+
+    const detailedSheet = XLSX.utils.json_to_sheet(detailedData);
+    XLSX.utils.book_append_sheet(workbook, detailedSheet, "সম্পূর্ণ ইতিহাস");
+
+    XLSX.writeFile(workbook, `Central_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
-  // --- Smart Excel Import Function ---
+  // --- Excel Import Engine ---
   function importExcel() {
     const fileInput = document.getElementById('excelFile');
-    if (fileInput.files.length === 0) { alert("ফাইল সিলেক্ট করুন!"); return; }
+    if (fileInput.files.length === 0) { alert("অনুগ্রহ করে একটি এক্সেল ফাইল নির্বাচন করুন!"); return; }
 
     const reader = new FileReader();
     reader.onload = async function (e) {
@@ -609,142 +586,29 @@
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+        const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-        if (!rows || rows.length === 0) {
-          alert("এক্সেল শিটে কোনো ডাটা পাওয়া যায়নি!");
-          return;
-        }
+        if (!rows || rows.length === 0) { alert("ফাইলে কোনো ডাটা পাওয়া যায়নি!"); return; }
 
-        // 1. Search for Side-by-Side header (Multiple "Item Name" headers in one row)
-        let sbsHeaderIdx = -1;
-        for (let i = 0; i < rows.length; i++) {
-          const rowStr = rows[i].map(c => String(c).toLowerCase());
-          const itemMatchCount = rowStr.filter(c => c.includes('item') || c.includes('পণ্য')).length;
-          if (itemMatchCount >= 2) {
-            sbsHeaderIdx = i;
-            break;
+        const transactionsToUpload = [];
+
+        rows.forEach(r => {
+          const itemName = String(r["পণ্যের নাম"] || r["Item Name"] || r["Item"] || '').trim();
+          const qty = parseInt(r["পরিমাণ"] || r["Qty"] || r["Quantity"]) || 0;
+          if (itemName && qty > 0) {
+            transactionsToUpload.push({
+              date: String(r["তারিখ"] || r["Date"] || new Date().toISOString().split('T')[0]).trim(),
+              type: String(r["ধরন"] || r["Type"] || 'Stock In').toLowerCase().includes('out') ? 'Stock Out' : 'Stock In',
+              itemName: itemName,
+              quantity: qty,
+              reName: String(r["গ্রহীতা / উৎস"] || r["Receiver"] || r["Name"] || '').trim(),
+              userId: String(r["ইউজার আইডি / নোট"] || r["User ID"] || r["Note"] || '').trim(),
+              timestamp: Date.now()
+            });
           }
-        }
+        });
 
-        let transactionsToUpload = [];
-
-        if (sbsHeaderIdx !== -1) {
-          // --- Side-by-Side Format (Stock In & Stock Out in same row) ---
-          const headerRow = rows[sbsHeaderIdx].map(c => String(c).toLowerCase());
-          const itemCols = [];
-          headerRow.forEach((c, idx) => {
-            if (c.includes('item') || c.includes('পণ্য')) itemCols.push(idx);
-          });
-
-          const inItemCol = itemCols[0];
-          const outItemCol = itemCols.length > 1 ? itemCols[1] : -1;
-
-          for (let i = sbsHeaderIdx + 1; i < rows.length; i++) {
-            const r = rows[i];
-            if (!r || r.length === 0) continue;
-
-            // Extract Stock In item
-            if (inItemCol < r.length) {
-              const itemName = String(r[inItemCol] || '').trim();
-              if (itemName && !['nan', 'null', 'undefined', 'item name', 'পণ্য'].includes(itemName.toLowerCase())) {
-                const date = String(inItemCol > 0 ? r[inItemCol - 1] : '').trim();
-                const qty = parseInt(r[inItemCol + 1]) || 0;
-                if (qty > 0) {
-                  transactionsToUpload.push({
-                    date: date || new Date().toISOString().split('T')[0],
-                    type: 'Stock In',
-                    itemName: itemName,
-                    quantity: qty,
-                    reName: '',
-                    userId: ''
-                  });
-                }
-              }
-            }
-
-            // Extract Stock Out item
-            if (outItemCol !== -1 && outItemCol < r.length) {
-              const itemName = String(r[outItemCol] || '').trim();
-              if (itemName && !['nan', 'null', 'undefined', 'item name', 'পণ্য'].includes(itemName.toLowerCase())) {
-                const date = String(outItemCol > 0 ? r[outItemCol - 1] : '').trim();
-                const qty = parseInt(r[outItemCol + 1]) || 0;
-                const reName = String(r[outItemCol + 2] || '').trim();
-                const userId = String(r[outItemCol + 3] || '').trim();
-                if (qty > 0) {
-                  transactionsToUpload.push({
-                    date: date || new Date().toISOString().split('T')[0],
-                    type: 'Stock Out',
-                    itemName: itemName,
-                    quantity: qty,
-                    reName: ['nan', 'null', 'undefined'].includes(reName.toLowerCase()) ? '' : reName,
-                    userId: ['nan', 'null', 'undefined'].includes(userId.toLowerCase()) ? '' : userId
-                  });
-                }
-              }
-            }
-          }
-        } else {
-          // --- Standard / Single Group Format ---
-          let headerIdx = -1;
-          for (let i = 0; i < rows.length; i++) {
-            const rowStr = rows[i].map(c => String(c).toLowerCase());
-            if (rowStr.some(c => c.includes('item') || c.includes('পণ্য'))) {
-              headerIdx = i;
-              break;
-            }
-          }
-
-          let startIdx = 0;
-          let dateCol = 0, itemCol = 1, qtyCol = 2, typeCol = -1, reCol = -1, userCol = -1;
-
-          if (headerIdx !== -1) {
-            startIdx = headerIdx + 1;
-            const header = rows[headerIdx].map(c => String(c).toLowerCase());
-            dateCol = header.findIndex(c => c.includes('date') || c.includes('তারিখ'));
-            itemCol = header.findIndex(c => c.includes('item') || c.includes('পণ্য') || c.includes('name') || c.includes('নাম'));
-            qtyCol = header.findIndex(c => c.includes('qty') || c.includes('quantity') || c.includes('পরিমাণ'));
-            typeCol = header.findIndex(c => c.includes('type') || c.includes('ধরন'));
-            reCol = header.findIndex(c => c.includes('re.') || c.includes('re name') || c.includes('receiver') || c.includes('প্রাপক') || c.includes('উৎস'));
-            userCol = header.findIndex(c => c.includes('user') || c.includes('id') || c.includes('লোকেশন'));
-
-            if (dateCol === -1) dateCol = 0;
-            if (itemCol === -1) itemCol = 1;
-            if (qtyCol === -1) qtyCol = 2;
-          }
-
-          for (let i = startIdx; i < rows.length; i++) {
-            const r = rows[i];
-            if (!r || r.length <= itemCol) continue;
-
-            const itemName = String(r[itemCol] || '').trim();
-            if (!itemName || ['nan', 'null', 'undefined', 'item name', 'পণ্য'].includes(itemName.toLowerCase())) continue;
-
-            const date = String(dateCol !== -1 && dateCol < r.length ? r[dateCol] : '').trim();
-            const qty = parseInt(r[qtyCol !== -1 && qtyCol < r.length ? r[qtyCol] : 0]) || 0;
-            let rawType = typeCol !== -1 && typeCol < r.length ? String(r[typeCol]) : '';
-            const type = rawType.toLowerCase().includes('out') ? 'Stock Out' : 'Stock In';
-            
-            const reName = reCol !== -1 && reCol < r.length ? String(r[reCol] || '').trim() : '';
-            const userId = userCol !== -1 && userCol < r.length ? String(r[userCol] || '').trim() : '';
-
-            if (qty > 0) {
-              transactionsToUpload.push({
-                date: date || new Date().toISOString().split('T')[0],
-                type: type,
-                itemName: itemName,
-                quantity: qty,
-                reName: ['nan', 'null', 'undefined'].includes(reName.toLowerCase()) ? '' : reName,
-                userId: ['nan', 'null', 'undefined'].includes(userId.toLowerCase()) ? '' : userId
-              });
-            }
-          }
-        }
-
-        if (transactionsToUpload.length === 0) {
-          alert("কোনো বৈধ পণ্যের ডাটা পাওয়া যায়নি!");
-          return;
-        }
+        if (transactionsToUpload.length === 0) { alert("কোনো বৈধ ডাটা পাওয়া যায়নি!"); return; }
 
         toggleLoader(true);
         const updates = {};
@@ -752,17 +616,17 @@
         const now = Date.now();
 
         transactionsToUpload.forEach((tx) => {
-          let newRef = _db.ref(`isp_inventory/${_currentTarget}/transactions`).push();
+          let newRef = _db.ref('central_inventory/transactions').push();
           tx.timestamp = now + count;
           updates[newRef.key] = tx;
           count++;
         });
 
-        await _db.ref(`isp_inventory/${_currentTarget}/transactions`).update(updates);
-        alert(`সফলভাবে ${count} টি পণ্যের ডাটা ইমপোর্ট হয়েছে!`);
+        await _db.ref('central_inventory/transactions').update(updates);
+        alert(`সফলভাবে ${count} টি ডাটা আপলোড করা হয়েছে!`);
         fileInput.value = '';
       } catch (err) {
-        alert("সমস্যা হয়েছে: " + err.message);
+        alert("ইমপোর্ট করতে সমস্যা হয়েছে: " + err.message);
       } finally {
         toggleLoader(false);
       }
