@@ -316,14 +316,6 @@
               </button>
             </form>
           </div>
-
-          <div class="card card-custom p-3">
-            <h6 class="fw-bold mb-2 text-success"><i class="fa-solid fa-file-excel me-2"></i>এক্সেল ফাইল ইমপোর্ট</h6>
-            <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" class="form-control form-control-sm mb-2">
-            <button onclick="importExcel()" class="btn btn-outline-success btn-sm w-100 fw-bold">
-              <i class="fa-solid fa-upload me-1"></i> আপলোড করুন
-            </button>
-          </div>
         </div>
 
         <!-- Right Panel -->
@@ -401,8 +393,8 @@
               </button>
             </li>
             <li class="nav-item">
-              <button class="nav-link small" id="user-tab" data-bs-toggle="tab" data-bs-target="#userPane" type="button">
-                <i class="fa-solid fa-user-shield me-1"></i>ইউজার কাজ ও অ্যাক্টিভিটি হিস্ট্রি
+              <button class="nav-link small" id="user-tab" data-bs-toggle="tab" data-bs-target="#userPane" type="button" title="ইউজার কাজ ও অ্যাক্টিভিটি হিস্ট্রি">
+                <i class="fa-solid fa-gear"></i>
               </button>
             </li>
           </ul>
@@ -815,65 +807,6 @@
     // ফাইল ডাউনলোড
     const fileName = `Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(workbook, fileName);
-  }
-
-  function importExcel() {
-    const fileInput = document.getElementById('excelFile');
-    if (fileInput.files.length === 0) { alert("একটি এক্সেল ফাইল সিলেক্ট করুন!"); return; }
-
-    const reader = new FileReader();
-    reader.onload = async function (e) {
-      try {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-
-        if (!rows || rows.length === 0) { alert("ফাইলে কোনো ডাটা পাওয়া যায়নি!"); return; }
-
-        const transactionsToUpload = [];
-
-        rows.forEach(r => {
-          const itemName = String(r["পণ্যের নাম"] || r["Item Name"] || r["Item"] || '').trim();
-          const qty = parseInt(r["পরিমাণ"] || r["Qty"] || r["Quantity"]) || 0;
-          if (itemName && qty > 0) {
-            transactionsToUpload.push({
-              date: String(r["তারিখ"] || r["Date"] || new Date().toISOString().split('T')[0]).trim(),
-              type: String(r["ধরন"] || r["Type"] || 'Stock In').toLowerCase().includes('out') ? 'Stock Out' : 'Stock In',
-              itemName: itemName,
-              quantity: qty,
-              reName: String(r["গ্রহীতা / উৎস"] || r["Receiver"] || r["Name"] || '').trim(),
-              userId: String(r["ইউজার আইডি / নোট"] || r["User ID"] || r["Note"] || '').trim(),
-              createdByEmail: _user ? _user.email : 'Excel Import',
-              timestamp: Date.now()
-            });
-          }
-        });
-
-        if (transactionsToUpload.length === 0) { alert("কোনো বৈধ ডাটা পাওয়া যায়নি!"); return; }
-
-        toggleLoader(true);
-        const updates = {};
-        let count = 0;
-        const now = Date.now();
-
-        transactionsToUpload.forEach((tx) => {
-          let newRef = _db.ref('isp_inventory/Central/transactions').push();
-          tx.timestamp = now + count;
-          updates[newRef.key] = tx;
-          count++;
-        });
-
-        await _db.ref('isp_inventory/Central/transactions').update(updates);
-        alert(`সফলভাবে ${count} টি ডাটা আপলোড করা হয়েছে!`);
-        fileInput.value = '';
-      } catch (err) {
-        alert("ইমপোর্ট করতে সমস্যা হয়েছে: " + err.message);
-      } finally {
-        toggleLoader(false);
-      }
-    };
-    reader.readAsArrayBuffer(fileInput.files[0]);
   }
 </script>
 </body>
