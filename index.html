@@ -9,7 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts: Inter & Hind Siliguri -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- XLSX Library -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -48,7 +48,6 @@
     }
     .content-wrapper { flex: 1; }
     
-    /* Header Banner */
     .header-banner { 
       background-color: var(--tg-card-bg); 
       color: var(--tg-text-main); 
@@ -57,7 +56,6 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
-    /* Telegram Cards */
     .card-custom { 
       background-color: var(--tg-card-bg);
       border: 1px solid var(--tg-border); 
@@ -66,7 +64,6 @@
       transition: all 0.2s ease-in-out;
     }
 
-    /* Advanced Search Card Box */
     .search-box-card {
       background: linear-gradient(135deg, rgba(0, 136, 204, 0.03) 0%, rgba(255, 255, 255, 0.05) 100%);
       border: 1px solid var(--tg-border);
@@ -74,7 +71,6 @@
       border-radius: 14px;
     }
 
-    /* Telegram Style Form Controls */
     .form-control, .form-select {
       background-color: var(--tg-input-bg);
       border: 1px solid var(--tg-border);
@@ -96,7 +92,6 @@
       border-radius: 20px;
     }
     
-    /* Telegram Mini Product Card (6 in 1 Row) */
     .product-card {
       border: 1px solid var(--tg-border);
       background-color: var(--tg-card-bg);
@@ -127,7 +122,6 @@
       border-radius: 6px;
     }
 
-    /* Grid layout for 6 items in a row on large screens */
     .col-xl-2-custom {
       flex: 0 0 auto;
       width: 16.666667%;
@@ -142,7 +136,6 @@
     .auth-container { max-width: 400px; margin: 60px auto; }
     .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index: 9999; justify-content: center; align-items: center; }
     
-    /* Buttons */
     .btn-tg {
       background-color: var(--tg-primary);
       color: white;
@@ -203,7 +196,7 @@
           <i class="fa-paper-plane text-primary fs-4"></i>
           <div>
             <h6 class="fw-bold mb-0">স্মার্ট ইনভেন্টরি ড্যাশবোর্ড</h6>
-            <p class="mb-0 text-muted small" style="font-size: 0.75rem;">রিয়েলটাইম স্টক ট্র্যাকিং</p>
+            <p class="mb-0 text-muted small" style="font-size: 0.75rem;">রিয়েলটাইম স্টক ও ইউজার ট্র্যাকিং</p>
           </div>
         </div>
         <div class="d-flex align-items-center gap-2">
@@ -279,10 +272,10 @@
           </div>
         </div>
 
-        <!-- Right Panel (Upgraded Search Engines, Product Grid, Data Table) -->
+        <!-- Right Panel (Search, Cards, Tabs for History and User Log) -->
         <div class="col-lg-8 col-xl-9">
 
-          <!-- Advanced Interactive Search Box Engine -->
+          <!-- Search Filter Box -->
           <div class="card card-custom search-box-card p-3 mb-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div class="fw-bold text-primary small">
@@ -302,10 +295,10 @@
                 </div>
               </div>
               <div class="col-md-3">
-                <label class="form-label small fw-semibold mb-1 text-muted">গ্রহীতা / ব্যক্তি</label>
+                <label class="form-label small fw-semibold mb-1 text-muted">গ্রহীতা / এন্ট্রিদাতা</label>
                 <div class="input-group input-group-sm">
                   <span class="input-group-text bg-transparent border-end-0"><i class="fa-solid fa-user text-success"></i></span>
-                  <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control border-start-0 ps-0" placeholder="নাম বা নোট...">
+                  <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control border-start-0 ps-0" placeholder="নাম বা ইমেইল...">
                 </div>
               </div>
               <div class="col-md-2">
@@ -323,7 +316,6 @@
               </div>
             </div>
 
-            <!-- Quick Date Filter Badges -->
             <div class="d-flex gap-1 mt-2 align-items-center flex-wrap pt-1">
               <span class="text-muted small me-1" style="font-size: 0.75rem;">কুইক ফিল্টার:</span>
               <button onclick="setQuickDate('today')" class="btn btn-outline-primary btn-sm quick-date-btn">আজ</button>
@@ -333,41 +325,77 @@
             </div>
           </div>
 
-          <!-- Product Small Dashboard Cards Section (6 Items per Row) -->
+          <!-- Product Small Dashboard Cards -->
           <div class="card card-custom p-3 mb-3">
             <h6 class="fw-bold mb-2 text-dark dark-text-white" style="font-size: 0.9rem;">
               <i class="fa-solid fa-cubes text-primary me-2"></i>প্রোডাক্ট স্টক ড্যাশবোর্ড
             </h6>
-            <div class="row g-2" id="productCardGrid">
-              <!-- Mini Product Cards dynamically rendered here (6 per row) -->
-            </div>
+            <div class="row g-2" id="productCardGrid"></div>
           </div>
 
-          <!-- Transaction History Table -->
-          <div class="card card-custom p-3 mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="fw-bold mb-0 text-dark dark-text-white" style="font-size: 0.9rem;">
-                <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>লেনদেনের ইতিহাস
-              </h6>
-              <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold" style="font-size: 0.78rem;">
-                <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
+          <!-- Tabs Nav for Transaction History & User Activity Log -->
+          <ul class="nav nav-tabs border-bottom-0 mb-2" id="historyTabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active fw-bold small" id="trans-tab" data-bs-toggle="tab" data-bs-target="#transPane" type="button">
+                <i class="fa-solid fa-clock-rotate-left me-1"></i>লেনদেনের ইতিহাস
               </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link fw-bold small" id="user-tab" data-bs-toggle="tab" data-bs-target="#userPane" type="button">
+                <i class="fa-solid fa-user-shield me-1"></i>ইউজার কাজ ও অ্যাক্টিভিটি হিস্ট্রি
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="historyTabContent">
+            <!-- Transaction History Pane -->
+            <div class="tab-pane fade show active" id="transPane" role="tabpanel">
+              <div class="card card-custom p-3 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">স্টক রেকর্ড</h6>
+                  <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold" style="font-size: 0.78rem;">
+                    <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
+                  </button>
+                </div>
+
+                <div class="table-responsive" style="max-height: 380px;">
+                  <table class="table table-hover align-middle small mb-0">
+                    <thead class="table-light sticky-top">
+                      <tr>
+                        <th>তারিখ</th>
+                        <th>টাইপ</th>
+                        <th>প্রোডাক্ট</th>
+                        <th>পরিমাণ</th>
+                        <th>গ্রহীতা / উৎস</th>
+                        <th>আইডি / নোট</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                  </table>
+                </div>
+              </div>
             </div>
 
-            <div class="table-responsive" style="max-height: 380px;">
-              <table class="table table-hover align-middle small mb-0">
-                <thead class="table-light sticky-top">
-                  <tr>
-                    <th>তারিখ</th>
-                    <th>টাইপ</th>
-                    <th>প্রোডাক্ট</th>
-                    <th>পরিমাণ</th>
-                    <th>গ্রহীতা / উৎস</th>
-                    <th>আইডি / নোট</th>
-                  </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-              </table>
+            <!-- User Activity Log Pane -->
+            <div class="tab-pane fade" id="userPane" role="tabpanel">
+              <div class="card card-custom p-3 mb-4">
+                <h6 class="fw-bold mb-2 text-dark" style="font-size: 0.9rem;">
+                  <i class="fa-solid fa-user-clock text-warning me-2"></i>কোন ইউজার কি এন্ট্রি দিয়েছেন
+                </h6>
+                <div class="table-responsive" style="max-height: 380px;">
+                  <table class="table table-striped table-hover align-middle small mb-0">
+                    <thead class="table-dark sticky-top">
+                      <tr>
+                        <th>সময় ও তারিখ</th>
+                        <th>ইউজার ইমেইল</th>
+                        <th>অ্যাকশন/কাজ</th>
+                        <th>প্রোডাক্ট ও পরিমাণ</th>
+                      </tr>
+                    </thead>
+                    <tbody id="userLogTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -463,6 +491,7 @@
 
   function logout() { _auth.signOut(); }
 
+  // New entry with user audit log saved automatically
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!_user) return;
@@ -474,6 +503,7 @@
       quantity: parseInt(document.getElementById('txQty').value) || 0,
       reName: document.getElementById('reName').value.trim(),
       userId: document.getElementById('userId').value.trim(),
+      createdByEmail: _user.email, // ট্র্যাকিং এর জন্য ইউজার ইমেইল
       timestamp: Date.now()
     };
 
@@ -489,7 +519,6 @@
     }
   });
 
-  // Safe data fetching preserving historical entries
   function fetchTransactions() {
     if (!_user) return;
     _db.ref('isp_inventory').on('value', (snap) => {
@@ -520,7 +549,10 @@
 
     const filteredData = _cache.filter(item => {
       const matchProduct = !productQuery || (item.itemName && item.itemName.toLowerCase().includes(productQuery));
-      const matchPerson = !personQuery || (item.reName && item.reName.toLowerCase().includes(personQuery)) || (item.userId && item.userId.toLowerCase().includes(personQuery));
+      const matchPerson = !personQuery || 
+                          (item.reName && item.reName.toLowerCase().includes(personQuery)) || 
+                          (item.userId && item.userId.toLowerCase().includes(personQuery)) ||
+                          (item.createdByEmail && item.createdByEmail.toLowerCase().includes(personQuery));
       
       let matchDate = true;
       if (item.date) {
@@ -531,28 +563,20 @@
       return matchProduct && matchPerson && matchDate;
     });
 
-    // Update Counter Badge
     document.getElementById('recordCountBadge').innerText = `${filteredData.length} টি লেনদেন পাওয়া গেছে`;
 
+    // 1. Render Product Dashboard Cards
     const stockMap = {};
-
     filteredData.forEach(item => {
       const qty = Number(item.quantity) || 0;
       const iName = item.itemName || 'অন্যান্য';
-
       if (!stockMap[iName]) stockMap[iName] = { in: 0, out: 0 };
-
-      if (item.type === 'Stock In') {
-        stockMap[iName].in += qty;
-      } else {
-        stockMap[iName].out += qty;
-      }
+      if (item.type === 'Stock In') stockMap[iName].in += qty;
+      else stockMap[iName].out += qty;
     });
 
-    // Render Mini Product Grid (6 per row)
     const cardGrid = document.getElementById('productCardGrid');
     cardGrid.innerHTML = '';
-
     const products = Object.keys(stockMap);
     if (products.length === 0) {
       cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-3 small">কোনো ডাটা খুঁজে পাওয়া যায়নি</div>`;
@@ -566,9 +590,7 @@
         col.className = 'col-xl-2-custom col-lg-3 col-md-4 col-6';
         col.innerHTML = `
           <div class="product-card">
-            <div class="product-title text-dark dark-text-white mb-1" title="${pName}">
-              ${pName}
-            </div>
+            <div class="product-title text-dark dark-text-white mb-1" title="${pName}">${pName}</div>
             <div class="d-flex justify-content-between align-items-center mb-1" style="font-size: 0.72rem;">
               <span class="text-muted">ইন: <b class="text-success">${pIn}</b></span>
               <span class="text-muted">আউট: <b class="text-danger">${pOut}</b></span>
@@ -584,34 +606,56 @@
       });
     }
 
-    // Render Table
+    // 2. Render Transaction Table
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
-
     if (filteredData.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">কোনো লেনদেন রেকর্ড নেই</td></tr>`;
-      return;
+    } else {
+      filteredData.forEach(item => {
+        const badge = item.type === 'Stock In' 
+          ? `<span class="badge bg-success-subtle text-success border border-success-subtle">ইন</span>` 
+          : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle">আউট</span>`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.date || '-'}</td>
+          <td>${badge}</td>
+          <td class="fw-bold">${item.itemName || '-'}</td>
+          <td class="fw-bold">${item.quantity || 0} Pcs</td>
+          <td>${item.reName || '-'}</td>
+          <td>${item.userId || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
-    filteredData.forEach(item => {
-      const badge = item.type === 'Stock In' 
-        ? `<span class="badge bg-success-subtle text-success border border-success-subtle">ইন</span>` 
-        : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle">আউট</span>`;
+    // 3. Render User Activity Log Table (ইউজার ট্র্যাকিং হিস্ট্রি)
+    const userTbody = document.getElementById('userLogTableBody');
+    userTbody.innerHTML = '';
 
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${item.date || '-'}</td>
-        <td>${badge}</td>
-        <td class="fw-bold">${item.itemName || '-'}</td>
-        <td class="fw-bold">${item.quantity || 0} Pcs</td>
-        <td>${item.reName || '-'}</td>
-        <td>${item.userId || '-'}</td>
-      `;
-      tbody.appendChild(tr);
-    });
+    if (filteredData.length === 0) {
+      userTbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">কোনো ইউজারের কাজ পাওয়া যায়নি</td></tr>`;
+    } else {
+      filteredData.forEach(item => {
+        const entryTime = item.timestamp ? new Date(item.timestamp).toLocaleString('bn-BD') : item.date;
+        const userMail = item.createdByEmail || '<span class="text-muted">অজানা (পুরাতন ডাটা)</span>';
+        const actionType = item.type === 'Stock In' 
+          ? `<span class="badge bg-success">এন্ট্রি দিয়েছেন (Stock In)</span>` 
+          : `<span class="badge bg-warning text-dark">বিতরণ করেছেন (Stock Out)</span>`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${entryTime}</td>
+          <td class="fw-semibold text-primary">${userMail}</td>
+          <td>${actionType}</td>
+          <td><b>${item.itemName}</b> (${item.quantity} Pcs) - ${item.reName || ''}</td>
+        `;
+        userTbody.appendChild(tr);
+      });
+    }
   }
 
-  // Quick Date Filter Function
   function setQuickDate(type) {
     const today = new Date();
     const formatDate = (d) => d.toISOString().split('T')[0];
@@ -647,12 +691,10 @@
     renderUI();
   }
 
-  // --- Excel Export Engine ---
   function exportToExcel() {
     if (_cache.length === 0) { alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!"); return; }
 
     const personSummary = {};
-
     _cache.forEach(item => {
       if (item.type === 'Stock Out') {
         const person = item.reName || 'অনির্দিষ্ট গ্রহীতা';
@@ -661,7 +703,6 @@
 
         if (!personSummary[person]) personSummary[person] = {};
         if (!personSummary[person][product]) personSummary[person][product] = 0;
-
         personSummary[person][product] += qty;
       }
     });
@@ -683,7 +724,8 @@
       "পণ্যের নাম": item.itemName,
       "পরিমাণ": item.quantity,
       "গ্রহীতা / উৎস": item.reName || '',
-      "ইউজার আইডি / নোট": item.userId || ''
+      "ইউজার আইডি / নোট": item.userId || '',
+      "এন্ট্রিদাতা ইউজার (Created By)": item.createdByEmail || ''
     }));
 
     const workbook = XLSX.utils.book_new();
@@ -692,12 +734,11 @@
     XLSX.utils.book_append_sheet(workbook, summarySheet, "গ্রহীতাভিত্তিক যোগফল");
 
     const detailedSheet = XLSX.utils.json_to_sheet(detailedData);
-    XLSX.utils.book_append_sheet(workbook, detailedSheet, "সম্পূর্ণ ইতিহাস");
+    XLSX.utils.book_append_sheet(workbook, detailedSheet, "সম্পূর্ণ ইতিহাস ও ইউজার লগ");
 
     XLSX.writeFile(workbook, `Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
-  // --- Excel Import Engine ---
   function importExcel() {
     const fileInput = document.getElementById('excelFile');
     if (fileInput.files.length === 0) { alert("একটি এক্সেল ফাইল সিলেক্ট করুন!"); return; }
@@ -725,6 +766,7 @@
               quantity: qty,
               reName: String(r["গ্রহীতা / উৎস"] || r["Receiver"] || r["Name"] || '').trim(),
               userId: String(r["ইউজার আইডি / নোট"] || r["User ID"] || r["Note"] || '').trim(),
+              createdByEmail: _user ? _user.email : 'Excel Import',
               timestamp: Date.now()
             });
           }
