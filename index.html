@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sam Online - স্মার্ট ইনভентরি ম্যানেজমেন্ট সিস্টেম</title>
+  <title>Sam Online - স্মার্ট ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
   
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
       --tg-primary: #2AABEE;
       --tg-primary-hover: #229ED9;
       --tg-bg: #E7EBF0;
-      --tg-card-bg: rgba(255, 255, 255, 0.92); /* Glass effect for background visibility */
+      --tg-card-bg: rgba(255, 255, 255, 0.92);
       --tg-text-main: #222222;
       --tg-text-muted: #707579;
       --tg-border: #D1D8E0;
@@ -41,7 +41,6 @@
     }
     
     body { 
-      /* Telegram Wallpaper SVG Overlay Pattern */
       background-color: var(--tg-bg) !important; 
       background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C9C9C' fill-opacity='0.08' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
       font-family: 'Hind Siliguri', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; 
@@ -56,7 +55,6 @@
     
     .content-wrapper { flex: 1; }
     
-    /* HEADER BANNER */
     .header-banner { 
       background-color: var(--tg-card-bg); 
       backdrop-filter: blur(8px);
@@ -76,7 +74,6 @@
       gap: 8px;
     }
 
-    /* CARDS STYLING */
     .card-custom { 
       background-color: var(--tg-card-bg);
       backdrop-filter: blur(10px);
@@ -86,6 +83,12 @@
       overflow: hidden;
     }
 
+    .forecast-card {
+      background: linear-gradient(135deg, rgba(42, 171, 238, 0.08) 0%, rgba(135, 116, 225, 0.08) 100%);
+      border: 1px solid var(--tg-primary);
+      border-radius: 14px;
+    }
+
     .search-box-card {
       background-color: var(--tg-card-bg);
       border: 1px solid var(--tg-border);
@@ -93,7 +96,6 @@
       border-radius: 14px;
     }
 
-    /* FORM INPUTS */
     .form-control, .form-select {
       background-color: var(--tg-input-bg);
       border: 1px solid transparent;
@@ -147,7 +149,6 @@
     @media (max-width: 768px)  { .row-cols-grid-9 > * { width: 33.3333%; } }
     @media (max-width: 576px)  { .row-cols-grid-9 > * { width: 50%; } }
 
-    /* PRODUCT DASHBOARD CARDS */
     .product-card {
       border: 1px solid var(--tg-border);
       background-color: var(--tg-card-bg);
@@ -190,7 +191,6 @@
       text-overflow: ellipsis;
     }
 
-    /* TELEGRAM BUTTONS */
     .btn-tg {
       background-color: var(--tg-primary);
       color: #ffffff;
@@ -202,10 +202,7 @@
     }
     .btn-tg:hover { background-color: var(--tg-primary-hover); color: #fff; }
 
-    /* TELEGRAM TABS */
-    .nav-tabs {
-      border-bottom: 2px solid var(--tg-border);
-    }
+    .nav-tabs { border-bottom: 2px solid var(--tg-border); }
     .nav-tabs .nav-link {
       color: var(--tg-text-muted);
       border: none;
@@ -234,7 +231,6 @@
       margin-top: auto; 
     }
 
-    /* TABLE OVERFLOW & RESPONSIVE FIXES */
     .table-responsive {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -381,6 +377,21 @@
 
         <!-- Right Panel -->
         <div class="col-lg-9">
+
+          <!-- NEW: 0. AI SMART FORECASTING CARD -->
+          <div class="card forecast-card p-3 mb-3 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom border-primary-subtle">
+              <div class="fw-bold text-primary small d-flex align-items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-warning fs-5"></i>
+                <span>স্মার্ট ইনভেন্টরি পূর্বাভাস (আগামী ৩০ দিনের চাহিদা ও ঘাটতি)</span>
+              </div>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">গড় ব্যবহার ভিত্তিক</span>
+            </div>
+
+            <div class="row g-2" id="forecastGrid">
+              <!-- JS-generated forecast cards will be injected here -->
+            </div>
+          </div>
 
           <!-- 1. Dashboard Stock Cards -->
           <div class="card card-custom p-3 mb-3">
@@ -543,7 +554,6 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  // সিকিউরিটি অ্যাডমিন তালিকা
   const ADMIN_EMAILS = [
     "admin@gmail.com",
     "antu@samonline.com"
@@ -626,7 +636,7 @@
       userId: document.getElementById('userId').value.trim(),
       createdByEmail: _user.email,
       timestamp: Date.now(),
-      isDeleted: false // ডাটা যেন সহজে হারিয়ে না যায়
+      isDeleted: false
     };
 
     toggleLoader(true);
@@ -664,9 +674,9 @@
   }
 
   function renderUI() {
-    // 1. ড্যাশবোর্ড ফিল্টার (শুধুমাত্র সচল এন্ট্রি নিয়ে হিসাব হবে)
     const activeCache = _cache.filter(i => !i.isDeleted);
 
+    // 1. ড্যাশবোর্ড হিসাব
     const stockMapTotal = {};
     activeCache.forEach(item => {
       const qty = Number(item.quantity) || 0;
@@ -703,6 +713,56 @@
           </div>
         `;
         cardGrid.appendChild(col);
+      });
+    }
+
+    // -------------------------------------------------------------
+    // NEW: SMART FORECASTING GENERATION
+    // -------------------------------------------------------------
+    const forecastGrid = document.getElementById('forecastGrid');
+    forecastGrid.innerHTML = '';
+
+    if (allProducts.length === 0) {
+      forecastGrid.innerHTML = `<div class="col-12 text-muted small text-center py-1">পূর্বাভাস দেখানোর জন্য পর্যাপ্ত ডাটা নেই</div>`;
+    } else {
+      const now = new Date();
+      const last30Days = new Date(now.setDate(now.getDate() - 30));
+
+      allProducts.slice(0, 4).forEach(pName => {
+        // গত ৩০ দিনের খরচ হিসাব
+        const past30DaysOut = activeCache
+          .filter(i => i.type === 'Stock Out' && i.itemName === pName && new Date(i.date) >= last30Days)
+          .reduce((sum, i) => sum + Number(i.quantity), 0);
+
+        // আগামী ৩০ দিনের অনুমান (১০% বাফার সহ)
+        const predictedDemand = Math.ceil(past30DaysOut * 1.1) || 5; 
+        const currentStock = (stockMapTotal[pName].in - stockMapTotal[pName].out);
+        const shortage = predictedDemand - currentStock;
+
+        let alertBadge = '';
+        if (shortage > 0) {
+          alertBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle mt-1" style="font-size: 0.68rem;">⚠️ ঘাটতি: ${shortage} Pcs রি-অর্ডার করুন</span>`;
+        } else {
+          alertBadge = `<span class="badge bg-success-subtle text-success border border-success-subtle mt-1" style="font-size: 0.68rem;">✅ পর্যাপ্ত স্টক আছে</span>`;
+        }
+
+        const fCol = document.createElement('div');
+        fCol.className = 'col-md-3 col-6';
+        fCol.innerHTML = `
+          <div class="p-2 border rounded-3 bg-body shadow-sm h-100">
+            <div class="fw-bold text-truncate small text-primary mb-1"><i class="fa-solid fa-cube me-1"></i>${pName}</div>
+            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
+              <span class="text-muted">আগামী ৩০ দিনে লাগবে:</span>
+              <span class="fw-bold text-dark">~${predictedDemand} Pcs</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
+              <span class="text-muted">বর্তমান স্টক:</span>
+              <span class="fw-bold ${currentStock < 0 ? 'text-danger' : 'text-success'}">${currentStock} Pcs</span>
+            </div>
+            <div class="text-center">${alertBadge}</div>
+          </div>
+        `;
+        forecastGrid.appendChild(fCol);
       });
     }
 
@@ -784,7 +844,7 @@
       });
     }
 
-    // 5. অল ডাটা ও সফট ডিলিট ট্র্যাকিং (ইউজার হিস্ট্রি টেবিলে সব কিছু থেকে যাবে)
+    // 5. সফট ডিলিট ট্র্যাকিং (ইউজার হিস্ট্রি টেবিলে ব্যাকআপ হিসেবে থাকবে)
     const userTbody = document.getElementById('userLogTableBody');
     userTbody.innerHTML = '';
 
@@ -820,25 +880,22 @@
     }
   }
 
-  // -----------------------------------------------------------
-  // সফট ডিলিট ও নিরাপদ এডিট সিস্টেম (যেন ব্যাকআপ ও ডাটা নিরাপদ থাকে)
-  // -----------------------------------------------------------
+  // Soft Delete System
   async function deleteTransaction(id) {
     if (!isAdmin()) {
       alert("ক্ষমা করবেন! আপনার ডিলিট করার অনুমতি নেই।");
       return;
     }
 
-    if (confirm("আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান? (ডাটা আর্কাইভে থেকে যাবে)")) {
+    if (confirm("আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান? (ডাটা আর্কাইভে সুরক্ষিত থেকে যাবে)")) {
       toggleLoader(true);
       try {
-        // স্থায়ীভাবে মুছে না ফেলে Soft Delete করা হচ্ছে
         await _db.ref(`isp_inventory/Central/transactions/${id}`).update({
           isDeleted: true,
           deletedBy: _user.email,
           deletedAt: Date.now()
         });
-        alert("এন্ট্রি হাইড করা হয়েছে (ডাটা সেফ আর্কাইভে ব্যাকআপ থাকবে)!");
+        alert("এন্ট্রি হাইড করা হয়েছে (ডাটা ব্যাকআপ আর্কাইভে সেফ আছে)!");
       } catch (error) {
         alert("ত্রুটি: " + error.message);
       } finally {
@@ -913,7 +970,6 @@
     renderUI();
   }
 
-  // EXPORT FUNCTION
   function exportToExcel() {
     if (_currentFilteredData.length === 0) { 
       alert("ফিল্টার করার পর কোনো ডাটা পাওয়া যায়নি! এক্সপোর্ট সম্ভব নয়।"); 
