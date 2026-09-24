@@ -289,7 +289,7 @@
                 <i class="fa-solid fa-sliders me-1"></i>স্মার্ট সার্চ ফিল্টার
               </div>
               <span id="recordCountBadge" class="badge bg-primary-subtle text-primary border border-primary-subtle">
-                ০ টি লেনদেন পাওয়া গেছে
+                ০ টি লেনদেন পাওয়া গেছে
               </span>
             </div>
 
@@ -380,6 +380,7 @@
 <footer class="app-footer">
   <div class="container">
     <p class="mb-0 fw-medium">ISP Inventory Management System | Safe & Secure Platform</p>
+    <small class="text-muted d-block mt-1">Developed by <strong>Antu</strong></small>
   </div>
 </footer>
 
@@ -424,7 +425,7 @@
 
   function updateFormLabels() {
     const type = document.getElementById('txType').value;
-    document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'সরবরাহকারী / ভেন্ডরের নাম' : 'রিসিভার / টেকনিশিয়ানের নাম';
+    document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'সরবরাহকারী / ভেন্ডরের নাম' : 'রিসিভার / টেকনিশিয়ানের নাম';
   }
 
   _auth.onAuthStateChanged((u) => {
@@ -454,7 +455,7 @@
     } catch (e) {
       const errorEl = document.getElementById('authError');
       errorEl.style.display = 'block';
-      errorEl.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক ইমেইল ও পাসওয়ার্ড দিন।";
+      errorEl.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক ইমেইল ও পাসওয়ার্ড দিন।";
     } finally {
       toggleLoader(false);
     }
@@ -531,7 +532,7 @@
     });
 
     // Update Counter Badge
-    document.getElementById('recordCountBadge').innerText = `${filteredData.length} টি লেনদেন পাওয়া গেছে`;
+    document.getElementById('recordCountBadge').innerText = `${filteredData.length} টি লেনদেন পাওয়া গেছে`;
 
     const stockMap = {};
 
@@ -554,7 +555,7 @@
 
     const products = Object.keys(stockMap);
     if (products.length === 0) {
-      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-3 small">কোনো ডাটা খুঁজে পাওয়া যায়নি</div>`;
+      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-3 small">কোনো ডাটা খুঁজে পাওয়া যায়নি</div>`;
     } else {
       products.forEach(pName => {
         const pIn = stockMap[pName].in;
@@ -709,7 +710,7 @@
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-        if (!rows || rows.length === 0) { alert("ফাইলে কোনো ডাটা পাওয়া যায়নি!"); return; }
+        if (!rows || rows.length === 0) { alert("ফাইলে কোনো ডাটা পাওয়া যায়নি!"); return; }
 
         const transactionsToUpload = [];
 
@@ -729,7 +730,7 @@
           }
         });
 
-        if (transactionsToUpload.length === 0) { alert("কোনো বৈধ ডাটা পাওয়া যায়নি!"); return; }
+        if (transactionsToUpload.length === 0) { alert("কোনো বৈধ ডাটা পাওয়া যায়নি!"); return; }
 
         toggleLoader(true);
         const updates = {};
@@ -744,10 +745,10 @@
         });
 
         await _db.ref('isp_inventory/Central/transactions').update(updates);
-        alert(`সফলভাবে ${count} টি ডাটা আপলোড করা হয়েছে!`);
+        alert(`সফলভাবে ${count} টি ডাটা আপলোড করা হয়েছে!`);
         fileInput.value = '';
       } catch (err) {
-        alert("ইমপোর্ট করতে সমস্যা হয়েছে: " + err.message);
+        alert("ইমপোর্ট করতে সমস্যা হয়েছে: " + err.message);
       } finally {
         toggleLoader(false);
       }
