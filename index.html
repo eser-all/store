@@ -310,7 +310,7 @@
       </div>
     </div>
 
-    <div class="container-fluid px-md-4" id="printableArea">
+    <div class="container-fluid px-md-4">
       <!-- Dashboard Cards (Top Grid) -->
       <div class="card card-custom p-3 mb-3 telegram-bubble">
         <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
@@ -1011,15 +1011,67 @@
   }
 
   function downloadPDF() {
-    const element = document.getElementById('printableArea');
+    if (_currentFilteredData.length === 0) {
+      alert("পিডিএফ ডাউনলোড করার জন্য কোনো ডাটা পাওয়া যায়নি!");
+      return;
+    }
+
+    let tableRowsHTML = '';
+    _currentFilteredData.forEach((item, index) => {
+      tableRowsHTML += `
+        <tr style="border-bottom: 1px solid #ddd;">
+          <td style="padding: 8px; text-align: center;">${index + 1}</td>
+          <td style="padding: 8px;">${item.date || '-'}</td>
+          <td style="padding: 8px; font-weight: bold;">${item.type || '-'}</td>
+          <td style="padding: 8px; font-weight: bold;">${item.itemName || '-'}</td>
+          <td style="padding: 8px; text-align: center;">${item.quantity || 0}</td>
+          <td style="padding: 8px;">${item.reName || '-'}</td>
+          <td style="padding: 8px;">${item.userId || '-'}</td>
+        </tr>
+      `;
+    });
+
+    const reportHTML = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; background: #fff;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="margin: 0; color: #0077b5;">Sam Online - Inventory Report</h2>
+          <p style="margin: 5px 0; font-size: 14px; color: #666;">তারিখ: ${new Date().toLocaleDateString('bn-BD')}</p>
+          <hr style="border: 0; border-top: 2px solid #0077b5; margin-top: 10px;">
+        </div>
+        
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px;">
+          <thead>
+            <tr style="background-color: #f2f2f2; color: #333; border-bottom: 2px solid #ddd;">
+              <th style="padding: 8px; text-align: center;">ক্র:</th>
+              <th style="padding: 8px; text-align: left;">তারিখ</th>
+              <th style="padding: 8px; text-align: left;">টাইপ</th>
+              <th style="padding: 8px; text-align: left;">প্রোডাক্টের নাম</th>
+              <th style="padding: 8px; text-align: center;">পরিমাণ</th>
+              <th style="padding: 8px; text-align: left;">ভেন্ডর / রিসিভার</th>
+              <th style="padding: 8px; text-align: left;">নোট / আইডি</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRowsHTML}
+          </tbody>
+        </table>
+        
+        <div style="margin-top: 30px; font-size: 12px; display: flex; justify-content: space-between;">
+          <span>টোটাল এন্ট্রি: <strong>${_currentFilteredData.length} টি</strong></span>
+          <span>রিপোর্ট প্রস্তুতকারক: <strong>${_user ? _user.email : 'Admin'}</strong></span>
+        </div>
+      </div>
+    `;
+
     const opt = {
-      margin:       0.3,
-      filename:     `SamOnline_Inventory_Report_${new Date().toISOString().split('T')[0]}.pdf`,
+      margin:       0.4,
+      filename:     `SamOnline_Report_${new Date().toISOString().split('T')[0]}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true },
       jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
     };
-    html2pdf().from(element).set(opt).save();
+
+    html2pdf().from(reportHTML).set(opt).save();
   }
 </script>
 </body>
