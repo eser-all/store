@@ -67,6 +67,32 @@
       -webkit-font-smoothing: antialiased;
       line-height: 1.5;
       transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    /* CURSOR MOUSE TRAIL BUBBLE EFFECT */
+    .cursor-bubble {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--tg-primary);
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 10px var(--tg-primary), 0 0 20px var(--tg-primary);
+      animation: floatBubble 0.7s linear forwards;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes floatBubble {
+      0% {
+        transform: translate(-50%, -50%) scale(0.4);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translate(-50%, -120%) scale(1.6);
+        opacity: 0;
+      }
     }
 
     /* Telegram Style Bubble Animation Effect */
@@ -142,22 +168,6 @@
       border-color: var(--tg-primary);
       box-shadow: 0 0 0 0.2rem var(--tg-focus-shadow);
       color: var(--tg-text-main);
-    }
-
-    .quick-date-btn {
-      font-size: 0.75rem;
-      padding: 3px 10px;
-      border-radius: 15px;
-      border: 1px solid var(--tg-border);
-      color: var(--tg-primary);
-      background: var(--tg-card-bg);
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    .quick-date-btn:hover {
-      background-color: var(--tg-primary);
-      color: #fff;
-      border-color: var(--tg-primary);
     }
 
     /* GRID FIX FOR DASHBOARD CARDS */
@@ -542,6 +552,35 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+  // MOUSE CURSOR TRAIL BUBBLE GENERATOR
+  let lastBubbleTime = 0;
+  document.addEventListener('mousemove', (e) => {
+    const now = Date.now();
+    // থ্রটল করা হয়েছে যাতে বেশি পরিমাণে এবং স্মুথলি বাবল ইফেক্ট আসে
+    if (now - lastBubbleTime > 40) {
+      lastBubbleTime = now;
+      createBubble(e.clientX, e.clientY);
+    }
+  });
+
+  function createBubble(x, y) {
+    const bubble = document.createElement('div');
+    bubble.className = 'cursor-bubble';
+    
+    // র্যান্ডম সাইজ এবং হালকা র্যান্ডম অফসেট
+    const size = Math.random() * 8 + 8; // ৮px থেকে ১৬px
+    bubble.style.width = `${size}px`;
+    bubble.style.height = `${size}px`;
+    
+    bubble.style.left = `${x + (Math.random() * 10 - 5)}px`;
+    bubble.style.top = `${y + (Math.random() * 10 - 5)}px`;
+    
+    document.body.appendChild(bubble);
+    setTimeout(() => {
+      bubble.remove();
+    }, 700);
+  }
+
   const firebaseConfig = {
     apiKey: "AIzaSyAVj1wFqK5ZJ86aimbFJvdzbSbfBu6EH6g",
     authDomain: "store-91df0.firebaseapp.com",
@@ -834,7 +873,6 @@
       userTbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No activity found</td></tr>`;
     } else {
       _cache.forEach(item => {
-        // Enforced English Date & Time format using en-US locale
         const entryTime = item.timestamp ? new Date(item.timestamp).toLocaleString('en-US', {
           year: 'numeric', month: 'short', day: 'numeric', 
           hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
