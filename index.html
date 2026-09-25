@@ -489,7 +489,6 @@
           <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Receiver / Entry Person</label>
           <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control" placeholder="Name...">
         </div>
-        <!-- User ID or Note Filter Field Added -->
         <div class="mb-3">
           <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">User ID / Note</label>
           <input type="text" id="searchUserId" onkeyup="renderUI()" class="form-control" placeholder="ID or note keywords...">
@@ -964,7 +963,7 @@
     const workbook1 = XLSX.utils.book_new();
     const detailSheet = XLSX.utils.json_to_sheet(detailRows);
     XLSX.utils.book_append_sheet(workbook1, detailSheet, "Detailed Report");
-    XLSX.writeFile(workbook1, `Detailed_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    XLSX.writeFile(workbook1, `Filtered_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
 
     const stockMapTotal = {};
     _currentFilteredData.forEach(item => {
@@ -1008,14 +1007,14 @@
     const workbook2 = XLSX.utils.book_new();
     const summarySheet = XLSX.utils.json_to_sheet(summaryRows);
     XLSX.utils.book_append_sheet(workbook2, summarySheet, "Stock Summary");
-    XLSX.writeFile(workbook2, `Stock_Summary_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    XLSX.writeFile(workbook2, `Filtered_Stock_Summary_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
   function downloadPDF() {
     const element = document.getElementById('printableArea');
     const opt = {
       margin:       0.3,
-      filename:     `Inventory_Report_${new Date().toISOString().split('T')[0]}.pdf`,
+      filename:     `SamOnline_Inventory_Report_${new Date().toISOString().split('T')[0]}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true },
       jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
