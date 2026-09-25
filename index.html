@@ -13,50 +13,48 @@
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Orbitron:wght@600;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- XLSX Library -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- html2pdf Library for PDF Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     :root {
       --tg-primary: #2AABEE;
       --tg-primary-hover: #229ED9;
       --tg-bg: #E7EBF0;
-      --tg-card-bg: rgba(255, 255, 255, 0.92);
+      --tg-card-bg: rgba(255, 255, 255, 0.94);
       --tg-text-main: #222222;
       --tg-text-muted: #707579;
       --tg-border: #D1D8E0;
       --tg-input-bg: #F4F4F5;
       --tg-focus-shadow: rgba(42, 171, 238, 0.25);
-      --card-glow: none;
     }
     
     [data-bs-theme="dark"] {
       --tg-primary: #8774E1;
       --tg-primary-hover: #6C52DF;
       --tg-bg: #0F1721;
-      --tg-card-bg: rgba(24, 34, 45, 0.92);
+      --tg-card-bg: rgba(24, 34, 45, 0.94);
       --tg-text-main: #F5F5F5;
       --tg-text-muted: #8E96A0;
       --tg-border: #242F3D;
       --tg-input-bg: #242F3D;
       --tg-focus-shadow: rgba(135, 116, 225, 0.25);
-      --card-glow: none;
     }
 
     [data-bs-theme="ai"] {
       --tg-primary: #00f0ff;
       --tg-primary-hover: #0070f3;
       --tg-bg: #050811;
-      --tg-card-bg: rgba(10, 16, 30, 0.85);
+      --tg-card-bg: rgba(10, 16, 30, 0.90);
       --tg-text-main: #e0f7fc;
       --tg-text-muted: #7094b8;
       --tg-border: rgba(0, 240, 255, 0.3);
       --tg-input-bg: rgba(15, 23, 42, 0.8);
       --tg-focus-shadow: rgba(0, 240, 255, 0.4);
-      --card-glow: 0 0 15px rgba(0, 240, 255, 0.15);
     }
     
     body { 
       background-color: var(--tg-bg) !important; 
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C9C9C' fill-opacity='0.08' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4H6zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
       font-family: 'Hind Siliguri', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; 
       color: var(--tg-text-main);
       min-height: 100vh;
@@ -65,47 +63,20 @@
       -webkit-font-smoothing: antialiased;
       line-height: 1.5;
       transition: all 0.3s ease;
-      cursor: default;
     }
 
-    /* SOAPY BUBBLE TRAIL EFFECT */
-    .soap-bubble {
-      position: fixed;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(180, 220, 255, 0.2) 80%);
-      border: 1.5px solid rgba(255, 255, 255, 0.8);
-      border-radius: 50%;
-      pointer-events: none;
-      box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.4);
-      animation: riseSoapyBubble 0.8s ease-out forwards;
-      z-index: 99999;
-      transform: translate(-50%, -50%);
-    }
-
-    @keyframes riseSoapyBubble {
-      0% {
-        transform: translate(-50%, -50%) scale(0.3);
-        opacity: 0.8;
-      }
-      50% {
-        opacity: 0.6;
-      }
-      100% {
-        transform: translate(-50%, -150%) scale(1.4);
-        opacity: 0;
-      }
-    }
-
+    /* Telegram Web Bubble Style */
     .telegram-bubble {
       position: relative;
       background: var(--tg-input-bg);
       border: 1px solid var(--tg-border);
       border-radius: 12px;
-      padding: 10px 14px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      animation: bubblePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+      padding: 12px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      animation: bubblePop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
     }
     @keyframes bubblePop {
-      0% { transform: scale(0.9); opacity: 0; }
+      0% { transform: scale(0.95); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
 
@@ -117,7 +88,6 @@
       color: var(--tg-text-main); 
       padding: 10px 0; 
       border-bottom: 1px solid var(--tg-border);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
     .brand-logo-box {
@@ -135,7 +105,6 @@
       backdrop-filter: blur(10px);
       border: 1px solid var(--tg-border); 
       border-radius: 14px; 
-      box-shadow: var(--card-glow);
       overflow: hidden;
       transition: all 0.3s ease;
     }
@@ -143,13 +112,6 @@
     .forecast-card {
       background: linear-gradient(135deg, rgba(42, 171, 238, 0.08) 0%, rgba(135, 116, 225, 0.08) 100%);
       border: 1px solid var(--tg-primary);
-      border-radius: 14px;
-    }
-
-    .search-box-card {
-      background-color: var(--tg-card-bg);
-      border: 1px solid var(--tg-border);
-      border-left: 4px solid var(--tg-primary);
       border-radius: 14px;
     }
 
@@ -194,7 +156,6 @@
       background-color: var(--tg-card-bg);
       border-radius: 10px;
       padding: 8px 6px;
-      box-shadow: var(--card-glow);
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -204,7 +165,6 @@
     .product-card:hover {
       border-color: var(--tg-primary);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,240,255,0.2);
     }
     .product-title {
       font-size: 0.8rem;
@@ -224,9 +184,6 @@
       display: block;
       width: 100%;
       text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .btn-tg {
@@ -241,7 +198,6 @@
     [data-bs-theme="ai"] .btn-tg { color: #050811; }
     .btn-tg:hover { background-color: var(--tg-primary-hover); color: #fff; }
 
-    .nav-tabs { border-bottom: 2px solid var(--tg-border); }
     .nav-tabs .nav-link {
       color: var(--tg-text-muted);
       border: none;
@@ -261,7 +217,6 @@
     
     .app-footer { 
       background-color: var(--tg-card-bg); 
-      backdrop-filter: blur(8px);
       color: var(--tg-text-muted); 
       text-align: center; 
       padding: 12px 0; 
@@ -270,7 +225,6 @@
       margin-top: auto; 
     }
 
-    .table-responsive { overflow-x: auto; }
     .table { color: var(--tg-text-main); font-size: 0.85rem; margin-bottom: 0; }
     .table th, .table td { vertical-align: middle; padding: 8px 10px; }
     .table thead th { font-weight: 600; color: var(--tg-text-muted); background-color: var(--tg-input-bg); font-size: 0.78rem; white-space: nowrap; }
@@ -355,7 +309,7 @@
       </div>
     </div>
 
-    <div class="container-fluid px-md-4">
+    <div class="container-fluid px-md-4" id="printableArea">
       <div class="row g-3">
         <!-- Left Panel -->
         <div class="col-lg-3">
@@ -408,31 +362,31 @@
         <!-- Right Panel -->
         <div class="col-lg-9">
 
-          <!-- AI SMART FORECASTING CARD -->
-          <div class="card forecast-card p-3 mb-3 shadow-sm telegram-bubble">
-            <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom border-primary-subtle">
-              <div class="fw-bold text-primary small d-flex align-items-center gap-2">
-                <i class="fa-solid fa-wand-magic-sparkles text-warning fs-5"></i>
-                <span>স্মার্ট ইনভেন্টরি পূর্বাভাস ও রিঅর্ডার অ্যালার্ট (আগামী ৩০ দিন)</span>
+          <!-- EXPANDED SMART INVENTORY FORECASTING DASHBOARD -->
+          <div class="card forecast-card p-4 mb-3 telegram-bubble">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-primary-subtle">
+              <div class="fw-bold text-primary fs-6 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-chart-line text-warning fs-4"></i>
+                <span>স্মার্ট ইনভেন্টরি পূর্বাভাস ও লাইভ ড্যাশবোর্ড (পরবর্তী ৩০ দিন)</span>
               </div>
-              <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">এআই ক্যালকুলেটেড</span>
+              <span class="badge bg-primary text-white rounded-pill px-3 py-1">এআই অ্যানালিটিক্স সক্রিয়</span>
             </div>
-            <div class="row g-2" id="forecastGrid"></div>
+            <div class="row g-3" id="forecastGrid"></div>
           </div>
 
-          <!-- 1. Dashboard Stock Cards -->
+          <!-- 1. Main Stock Live Position Cards -->
           <div class="card card-custom p-3 mb-3 telegram-bubble">
             <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
               <span class="badge bg-primary fs-6 px-3 py-2 rounded-3 shadow-sm">
-                <i class="fa-solid fa-gauge-high me-2"></i>ড্যাশবোর্ড
+                <i class="fa-solid fa-warehouse me-2"></i>স্টক পজিশন সামারি
               </span>
-              <span class="text-muted small">লাইভ স্টক পজিশন</span>
+              <span class="text-muted small">রিয়েল-টাইম আপডেট</span>
             </div>
             <div class="row-cols-grid-9" id="productCardGrid"></div>
           </div>
 
           <!-- 2. Smart Search Filter Box -->
-          <div class="card card-custom search-box-card p-3 mb-3 telegram-bubble">
+          <div class="card card-custom p-3 mb-3 telegram-bubble">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div class="fw-bold text-primary small">
                 <i class="fa-solid fa-sliders me-1"></i>স্মার্ট সার্চ ফিল্টার
@@ -452,11 +406,11 @@
                 <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="নাম বা ইমেইল...">
               </div>
               <div class="col-md-2">
-                <label class="form-label small fw-semibold mb-1 text-muted">তারিখ হতে (From)</label>
+                <label class="form-label small fw-semibold mb-1 text-muted">তারিখ হতে</label>
                 <input type="date" id="searchDateFrom" onchange="renderUI()" class="form-control form-control-sm">
               </div>
               <div class="col-md-2">
-                <label class="form-label small fw-semibold mb-1 text-muted">তারিখ পর্যন্ত (To)</label>
+                <label class="form-label small fw-semibold mb-1 text-muted">তারিখ পর্যন্ত</label>
                 <input type="date" id="searchDateTo" onchange="renderUI()" class="form-control form-control-sm">
               </div>
               <div class="col-md-2">
@@ -475,7 +429,7 @@
               </button>
             </li>
             <li class="nav-item">
-              <button class="nav-link small px-3" id="user-tab" data-bs-toggle="tab" data-bs-target="#userPane" type="button" title="ইউজার অ্যাক্টিভিটি হিস্ট্রি">
+              <button class="nav-link small px-3" id="user-tab" data-bs-toggle="tab" data-bs-target="#userPane" type="button">
                 <i class="fa-solid fa-gear"></i> ইউজার অ্যাক্টিভিটি
               </button>
             </li>
@@ -484,11 +438,16 @@
           <div class="tab-content" id="historyTabContent">
             <div class="tab-pane fade show active" id="transPane" role="tabpanel">
               <div class="card card-custom p-3 mb-4 telegram-bubble">
-                <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                   <h6 class="fw-bold mb-0" style="font-size: 0.9rem;">স্টক ফিল্টারড রেকর্ড</h6>
-                  <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold rounded-2" style="font-size: 0.78rem;">
-                    <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট
-                  </button>
+                  <div class="d-flex gap-2">
+                    <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold rounded-2" style="font-size: 0.78rem;">
+                      <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট (২ ফাইল)
+                    </button>
+                    <button onclick="downloadPDF()" class="btn btn-danger btn-sm fw-semibold rounded-2" style="font-size: 0.78rem;">
+                      <i class="fa-solid fa-file-pdf me-1"></i> পিডিএফ ডাউনলোড
+                    </button>
+                  </div>
                 </div>
 
                 <div class="table-responsive" style="max-height: 380px;">
@@ -512,13 +471,13 @@
             <div class="tab-pane fade" id="userPane" role="tabpanel">
               <div class="card card-custom p-3 mb-4 telegram-bubble">
                 <h6 class="fw-bold mb-2 text-primary" style="font-size: 0.9rem;">
-                  <i class="fa-solid fa-user-clock me-2"></i>ইউজার এডিট/ডিলিট ও সকল অ্যাক্টিভিটি লগ (English Timestamp)
+                  <i class="fa-solid fa-user-clock me-2"></i>ইউজার এডিট/ডিলিট ও সকল অ্যাক্টিভিটি লগ
                 </h6>
                 <div class="table-responsive" style="max-height: 380px;">
                   <table class="table table-hover align-middle small mb-0">
                     <thead class="sticky-top">
                       <tr>
-                        <th>Date & Time (English)</th>
+                        <th>Date & Time</th>
                         <th>User Email</th>
                         <th>Action Status</th>
                         <th>Details</th>
@@ -550,33 +509,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  // SOAPY BUBBLE MOUSE TRAIL EFFECT
-  let lastBubbleTime = 0;
-  document.addEventListener('mousemove', (e) => {
-    const now = Date.now();
-    if (now - lastBubbleTime > 50) {
-      lastBubbleTime = now;
-      createSoapBubble(e.clientX, e.clientY);
-    }
-  });
-
-  function createSoapBubble(x, y) {
-    const bubble = document.createElement('div');
-    bubble.className = 'soap-bubble';
-    
-    const size = Math.random() * 10 + 10; // ১০px থেকে ২০px সাবানের ফেনার সাইজ
-    bubble.style.width = `${size}px`;
-    bubble.style.height = `${size}px`;
-    
-    bubble.style.left = `${x + (Math.random() * 14 - 7)}px`;
-    bubble.style.top = `${y + (Math.random() * 14 - 7)}px`;
-    
-    document.body.appendChild(bubble);
-    setTimeout(() => {
-      bubble.remove();
-    }, 800);
-  }
-
   const firebaseConfig = {
     apiKey: "AIzaSyAVj1wFqK5ZJ86aimbFJvdzbSbfBu6EH6g",
     authDomain: "store-91df0.firebaseapp.com",
@@ -771,35 +703,34 @@
       });
     }
 
-    // UPDATED AI FORECASTING & SMART INVENTORY PREDICTION
+    // EXPANDED FORECASTING DASHBOARD INSIDE CARDS
     const forecastGrid = document.getElementById('forecastGrid');
     forecastGrid.innerHTML = '';
     if (allProducts.length > 0) {
-      allProducts.slice(0, 4).forEach(pName => {
+      allProducts.forEach(pName => {
         const currentStock = (stockMapTotal[pName].in - stockMapTotal[pName].out);
         const outTotal = stockMapTotal[pName].out;
-        // রিয়েলিস্টিক ৩০ দিনের পূর্বাভাসের ক্যালকুলেশন
-        const estimatedMonthlyDemand = Math.max(Math.round(outTotal * 0.7), 5);
+        const estimatedMonthlyDemand = Math.max(Math.round(outTotal * 0.7), 4);
         const statusClass = currentStock <= 5 ? 'text-danger' : 'text-success';
-        const advice = currentStock <= 5 ? 'স্টক দ্রুত রিঅর্ডার করুন!' : 'পর্যাপ্ত স্টক আছে';
+        const advice = currentStock <= 5 ? 'ঝুঁকিপূর্ণ! রিঅর্ডার জরুরী' : 'স্টক স্থিতিশীল আছে';
 
         const fCol = document.createElement('div');
         fCol.className = 'col-md-3 col-6';
         fCol.innerHTML = `
-          <div class="p-2 border rounded-3 bg-body shadow-sm h-100 d-flex flex-column justify-content-between">
+          <div class="p-3 border rounded-3 bg-body shadow-sm h-100 d-flex flex-column justify-content-between telegram-bubble">
             <div>
-              <div class="fw-bold text-truncate small text-primary mb-1"><i class="fa-solid fa-cube me-1"></i>${pName}</div>
-              <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
+              <div class="fw-bold text-truncate small text-primary mb-2"><i class="fa-solid fa-cube me-1"></i>${pName}</div>
+              <div class="d-flex justify-content-between align-items-center mb-1" style="font-size: 0.78rem;">
                 <span class="text-muted">বর্তমান স্টক:</span>
                 <span class="fw-bold ${statusClass}">${currentStock} Pcs</span>
               </div>
-              <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
-                <span class="text-muted">মাসিক চাহিদা (আনুমানিক):</span>
+              <div class="d-flex justify-content-between align-items-center" style="font-size: 0.78rem;">
+                <span class="text-muted">প্রত্যাশিত চাহিদা:</span>
                 <span class="fw-semibold">${estimatedMonthlyDemand} Pcs</span>
               </div>
             </div>
-            <div class="mt-1 pt-1 border-top text-center" style="font-size: 0.68rem;">
-              <span class="badge ${currentStock <= 5 ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-success-subtle text-success border border-success-subtle'} w-100">${advice}</span>
+            <div class="mt-2 pt-2 border-top text-center" style="font-size: 0.72rem;">
+              <span class="badge ${currentStock <= 5 ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-success-subtle text-success border border-success-subtle'} w-100 py-1">${advice}</span>
             </div>
           </div>
         `;
@@ -876,7 +807,7 @@
       });
     }
 
-    // USER LOG TABLE (English Timestamp Format)
+    // USER LOG TABLE
     const userTbody = document.getElementById('userLogTableBody');
     userTbody.innerHTML = '';
 
@@ -890,24 +821,21 @@
         }) : item.date;
 
         const userMail = item.createdByEmail || 'Unknown';
-        
         let statusBadge = '';
         if (item.isDeleted) {
-          statusBadge = `<span class="badge bg-danger rounded-pill"><i class="fa-solid fa-trash me-1"></i>Deleted</span>`;
+          statusBadge = `<span class="badge bg-danger rounded-pill">Deleted</span>`;
         } else if (item.updatedBy) {
-          statusBadge = `<span class="badge bg-warning text-dark rounded-pill"><i class="fa-solid fa-pen me-1"></i>Edited</span>`;
+          statusBadge = `<span class="badge bg-warning text-dark rounded-pill">Edited</span>`;
         } else {
-          statusBadge = `<span class="badge bg-success rounded-pill"><i class="fa-solid fa-check me-1"></i>New Entry</span>`;
+          statusBadge = `<span class="badge bg-success rounded-pill">New</span>`;
         }
-
-        let editDetails = item.updatedBy ? `<br><small class="text-muted">Editor: ${item.updatedBy}</small>` : '';
 
         const tr = document.createElement('tr');
         if (item.isDeleted) tr.classList.add('table-light', 'text-decoration-line-through');
 
         tr.innerHTML = `
           <td>${entryTime}</td>
-          <td class="fw-semibold text-primary">${userMail}${editDetails}</td>
+          <td class="fw-semibold text-primary">${userMail}</td>
           <td>${statusBadge}</td>
           <td><b>${item.itemName}</b> (${item.quantity} Pcs) - ${item.reName || ''}</td>
         `;
@@ -921,7 +849,7 @@
       alert("দুঃখিত! আপনার ডিলিট করার অনুমতি নেই।");
       return;
     }
-    if (confirm("আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান? (ডাটা ব্যাকআপ হিসেবে আর্কাইভে সংরক্ষিত থাকবে)")) {
+    if (confirm("আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান?")) {
       toggleLoader(true);
       try {
         await _db.ref(`isp_inventory/Central/transactions/${id}`).update({
@@ -974,11 +902,14 @@
     renderUI();
   }
 
+  // দুটি আলাদা ফাইল (ডিটেইলড এবং সামারি) এক্সেল এক্সপোর্ট ফাংশন
   function exportToExcel() {
     if (_currentFilteredData.length === 0) { 
       alert("এক্সপোর্ট করার জন্য কোনো ডাটা নেই!"); 
       return; 
     }
+
+    // ১. ফাইল ১: ডিটেইলড রিপোর্ট (Detailed Transactions)
     const detailRows = _currentFilteredData.map((item, index) => ({
       "ক্রমিক নং": index + 1,
       "তারিখ": item.date || '-',
@@ -990,10 +921,69 @@
       "এন্ট্রিদাতা ইমেইল": item.createdByEmail || '-'
     }));
 
-    const workbook = XLSX.utils.book_new();
+    const workbook1 = XLSX.utils.book_new();
     const detailSheet = XLSX.utils.json_to_sheet(detailRows);
-    XLSX.utils.book_append_sheet(workbook, detailSheet, "Inventory Report");
-    XLSX.writeFile(workbook, `Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    XLSX.utils.book_append_sheet(workbook1, detailSheet, "Detailed Report");
+    XLSX.writeFile(workbook1, `Detailed_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+    // ২. ফাইল ২: স্টক সামারি ও মোট যোগফল ফাইল (Summary Report)
+    const stockMapTotal = {};
+    _currentFilteredData.forEach(item => {
+      const qty = Number(item.quantity) || 0;
+      const iName = item.itemName || 'অন্যান্য';
+      if (!stockMapTotal[iName]) stockMapTotal[iName] = { in: 0, out: 0 };
+      if (item.type === 'Stock In') stockMapTotal[iName].in += qty;
+      else stockMapTotal[iName].out += qty;
+    });
+
+    let totalInSum = 0;
+    let totalOutSum = 0;
+    let totalBalanceSum = 0;
+
+    const summaryRows = Object.keys(stockMapTotal).map((pName, index) => {
+      const totalIn = stockMapTotal[pName].in;
+      const totalOut = stockMapTotal[pName].out;
+      const balance = totalIn - totalOut;
+
+      totalInSum += totalIn;
+      totalOutSum += totalOut;
+      totalBalanceSum += balance;
+
+      return {
+        "ক্রমিক": index + 1,
+        "পণ্যের নাম": pName,
+        "মোট স্টক ইন (In)": totalIn,
+        "মোট স্টক আউট (Out)": totalOut,
+        "অবশিষ্ট স্টক (Balance)": balance
+      };
+    });
+
+    // যোগফলের রো যোগ করা হলো
+    summaryRows.push({
+      "ক্রমিক": "",
+      "পণ্যের নাম": "সর্বমোট (TOTAL)",
+      "মোট স্টক ইন (In)": totalInSum,
+      "মোট স্টক আউট (Out)": totalOutSum,
+      "অবশিষ্ট স্টক (Balance)": totalBalanceSum
+    });
+
+    const workbook2 = XLSX.utils.book_new();
+    const summarySheet = XLSX.utils.json_to_sheet(summaryRows);
+    XLSX.utils.book_append_sheet(workbook2, summarySheet, "Stock Summary");
+    XLSX.writeFile(workbook2, `Stock_Summary_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+  }
+
+  // পিডিএফ ডাউনলোড ফাংশন
+  function downloadPDF() {
+    const element = document.getElementById('printableArea');
+    const opt = {
+      margin:       0.3,
+      filename:     `Inventory_Report_${new Date().toISOString().split('T')[0]}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+    };
+    html2pdf().from(element).set(opt).save();
   }
 </script>
 </body>
