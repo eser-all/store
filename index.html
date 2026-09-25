@@ -109,12 +109,6 @@
       transition: all 0.3s ease;
     }
 
-    .forecast-card {
-      background: linear-gradient(135deg, rgba(42, 171, 238, 0.08) 0%, rgba(135, 116, 225, 0.08) 100%);
-      border: 1px solid var(--tg-primary);
-      border-radius: 14px;
-    }
-
     .form-control, .form-select {
       background-color: var(--tg-input-bg);
       border: 1px solid var(--tg-border);
@@ -131,31 +125,31 @@
       color: var(--tg-text-main);
     }
 
+    /* Grid configuration for products */
     .row-cols-grid-9 {
       display: flex;
       flex-wrap: wrap;
-      margin-right: -4px;
-      margin-left: -4px;
+      margin-right: -5px;
+      margin-left: -5px;
     }
     .row-cols-grid-9 > * {
       flex: 0 0 auto;
-      width: 11.111111%;
-      padding-right: 4px;
-      padding-left: 4px;
-      margin-bottom: 8px;
+      width: 20%;
+      padding-right: 5px;
+      padding-left: 5px;
+      margin-bottom: 10px;
     }
 
-    @media (max-width: 1400px) { .row-cols-grid-9 > * { width: 14.2857%; } }
-    @media (max-width: 1200px) { .row-cols-grid-9 > * { width: 16.6666%; } }
-    @media (max-width: 992px)  { .row-cols-grid-9 > * { width: 25%; } }
-    @media (max-width: 768px)  { .row-cols-grid-9 > * { width: 33.3333%; } }
-    @media (max-width: 576px)  { .row-cols-grid-9 > * { width: 50%; } }
+    @media (max-width: 1200px) { .row-cols-grid-9 > * { width: 25%; } }
+    @media (max-width: 992px)  { .row-cols-grid-9 > * { width: 33.3333%; } }
+    @media (max-width: 768px)  { .row-cols-grid-9 > * { width: 50%; } }
+    @media (max-width: 576px)  { .row-cols-grid-9 > * { width: 100%; } }
 
     .product-card {
       border: 1px solid var(--tg-border);
       background-color: var(--tg-card-bg);
-      border-radius: 10px;
-      padding: 8px 6px;
+      border-radius: 12px;
+      padding: 10px;
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -167,19 +161,19 @@
       transform: translateY(-2px);
     }
     .product-title {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: var(--tg-text-main);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     .stock-tag {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      padding: 2px 4px;
+      padding: 3px 6px;
       border-radius: 6px;
       display: block;
       width: 100%;
@@ -362,25 +356,13 @@
         <!-- Right Panel -->
         <div class="col-lg-9">
 
-          <!-- EXPANDED SMART INVENTORY FORECASTING DASHBOARD -->
-          <div class="card forecast-card p-4 mb-3 telegram-bubble">
-            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-primary-subtle">
-              <div class="fw-bold text-primary fs-6 d-flex align-items-center gap-2">
-                <i class="fa-solid fa-chart-line text-warning fs-4"></i>
-                <span>স্মার্ট ইনভেন্টরি পূর্বাভাস ও লাইভ ড্যাশবোর্ড (পরবর্তী ৩০ দিন)</span>
-              </div>
-              <span class="badge bg-primary text-white rounded-pill px-3 py-1">এআই অ্যানালিটিক্স সক্রিয়</span>
-            </div>
-            <div class="row g-3" id="forecastGrid"></div>
-          </div>
-
-          <!-- 1. Main Stock Live Position Cards -->
+          <!-- 1. Stock Position Summary & 30-Day Forecast Inside Cards -->
           <div class="card card-custom p-3 mb-3 telegram-bubble">
-            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
               <span class="badge bg-primary fs-6 px-3 py-2 rounded-3 shadow-sm">
-                <i class="fa-solid fa-warehouse me-2"></i>স্টক পজিশন সামারি
+                <i class="fa-solid fa-warehouse me-2"></i>স্টক পজিশন সামারি ও ৩০ দিনের পূর্বাভাস
               </span>
-              <span class="text-muted small">রিয়েল-টাইম আপডেট</span>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3">রিয়েল-টাইম এআই অ্যানালিটিক্স</span>
             </div>
             <div class="row-cols-grid-9" id="productCardGrid"></div>
           </div>
@@ -677,64 +659,47 @@
     const allProducts = Object.keys(stockMapTotal);
     
     if (allProducts.length === 0) {
-      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-2 small">কোনো স্টক ডাটা নেই</div>`;
+      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-3 small">কোনো স্টক ডাটা নেই</div>`;
     } else {
       allProducts.forEach(pName => {
         const pIn = stockMapTotal[pName].in;
         const pOut = stockMapTotal[pName].out;
         const pBal = pIn - pOut;
 
+        // ৩০ দিনের পূর্বাভাস হিসাব
+        const estimatedMonthlyDemand = Math.max(Math.round(pOut * 0.7), 4);
+        const statusClass = pBal <= 5 ? 'text-danger' : 'text-success';
+        const adviceBadge = pBal <= 5 
+          ? `<span class="badge bg-danger-subtle text-danger border border-danger-subtle w-100 py-1" style="font-size: 0.68rem;">ঝুঁকিপূর্ণ! রিঅর্ডার জরুরী</span>` 
+          : `<span class="badge bg-success-subtle text-success border border-success-subtle w-100 py-1" style="font-size: 0.68rem;">স্টক স্থিতিশীল আছে</span>`;
+
         const col = document.createElement('div');
         col.innerHTML = `
           <div class="product-card telegram-bubble">
-            <div class="product-title" title="${pName}">${pName}</div>
-            <div class="d-flex justify-content-between align-items-center my-1" style="font-size: 0.65rem;">
-              <span class="text-muted">ইন:<b class="text-success">${pIn}</b></span>
-              <span class="text-muted">আউট:<b class="text-danger">${pOut}</b></span>
-            </div>
             <div>
-              <span class="stock-tag ${pBal >= 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">
-                স্টক: ${pBal}
-              </span>
+              <div class="product-title" title="${pName}"><i class="fa-solid fa-cube me-1 text-primary"></i>${pName}</div>
+              <div class="d-flex justify-content-between align-items-center my-1 px-1" style="font-size: 0.72rem;">
+                <span class="text-muted">ইন: <b class="text-success">${pIn}</b></span>
+                <span class="text-muted">আউট: <b class="text-danger">${pOut}</b></span>
+              </div>
+              <div class="mb-2 px-1">
+                <span class="stock-tag ${pBal >= 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">
+                  স্টক: ${pBal} Pcs
+                </span>
+              </div>
+              <div class="border-top pt-2 mt-1 px-1" style="font-size: 0.72rem;">
+                <div class="d-flex justify-content-between text-muted mb-1">
+                  <span>৩০ দিনের চাহিদা:</span>
+                  <span class="fw-semibold text-body">${estimatedMonthlyDemand} Pcs</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-2 pt-1">
+              ${adviceBadge}
             </div>
           </div>
         `;
         cardGrid.appendChild(col);
-      });
-    }
-
-    // EXPANDED FORECASTING DASHBOARD INSIDE CARDS
-    const forecastGrid = document.getElementById('forecastGrid');
-    forecastGrid.innerHTML = '';
-    if (allProducts.length > 0) {
-      allProducts.forEach(pName => {
-        const currentStock = (stockMapTotal[pName].in - stockMapTotal[pName].out);
-        const outTotal = stockMapTotal[pName].out;
-        const estimatedMonthlyDemand = Math.max(Math.round(outTotal * 0.7), 4);
-        const statusClass = currentStock <= 5 ? 'text-danger' : 'text-success';
-        const advice = currentStock <= 5 ? 'ঝুঁকিপূর্ণ! রিঅর্ডার জরুরী' : 'স্টক স্থিতিশীল আছে';
-
-        const fCol = document.createElement('div');
-        fCol.className = 'col-md-3 col-6';
-        fCol.innerHTML = `
-          <div class="p-3 border rounded-3 bg-body shadow-sm h-100 d-flex flex-column justify-content-between telegram-bubble">
-            <div>
-              <div class="fw-bold text-truncate small text-primary mb-2"><i class="fa-solid fa-cube me-1"></i>${pName}</div>
-              <div class="d-flex justify-content-between align-items-center mb-1" style="font-size: 0.78rem;">
-                <span class="text-muted">বর্তমান স্টক:</span>
-                <span class="fw-bold ${statusClass}">${currentStock} Pcs</span>
-              </div>
-              <div class="d-flex justify-content-between align-items-center" style="font-size: 0.78rem;">
-                <span class="text-muted">প্রত্যাশিত চাহিদা:</span>
-                <span class="fw-semibold">${estimatedMonthlyDemand} Pcs</span>
-              </div>
-            </div>
-            <div class="mt-2 pt-2 border-top text-center" style="font-size: 0.72rem;">
-              <span class="badge ${currentStock <= 5 ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-success-subtle text-success border border-success-subtle'} w-100 py-1">${advice}</span>
-            </div>
-          </div>
-        `;
-        forecastGrid.appendChild(fCol);
       });
     }
 
@@ -902,14 +867,12 @@
     renderUI();
   }
 
-  // দুটি আলাদা ফাইল (ডিটেইলড এবং সামারি) এক্সেল এক্সপোর্ট ফাংশন
   function exportToExcel() {
     if (_currentFilteredData.length === 0) { 
       alert("এক্সপোর্ট করার জন্য কোনো ডাটা নেই!"); 
       return; 
     }
 
-    // ১. ফাইল ১: ডিটেইলড রিপোর্ট (Detailed Transactions)
     const detailRows = _currentFilteredData.map((item, index) => ({
       "ক্রমিক নং": index + 1,
       "তারিখ": item.date || '-',
@@ -926,7 +889,6 @@
     XLSX.utils.book_append_sheet(workbook1, detailSheet, "Detailed Report");
     XLSX.writeFile(workbook1, `Detailed_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
 
-    // ২. ফাইল ২: স্টক সামারি ও মোট যোগফল ফাইল (Summary Report)
     const stockMapTotal = {};
     _currentFilteredData.forEach(item => {
       const qty = Number(item.quantity) || 0;
@@ -958,7 +920,6 @@
       };
     });
 
-    // যোগফলের রো যোগ করা হলো
     summaryRows.push({
       "ক্রমিক": "",
       "পণ্যের নাম": "সর্বমোট (TOTAL)",
@@ -973,7 +934,6 @@
     XLSX.writeFile(workbook2, `Stock_Summary_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
-  // পিডিএফ ডাউনলোড ফাংশন
   function downloadPDF() {
     const element = document.getElementById('printableArea');
     const opt = {
