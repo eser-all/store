@@ -70,7 +70,7 @@
       background: var(--tg-input-bg);
       border: 1px solid var(--tg-border);
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 10px 14px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.04);
       animation: bubblePop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
     }
@@ -85,25 +85,25 @@
       background-color: var(--tg-card-bg); 
       backdrop-filter: blur(8px);
       color: var(--tg-text-main); 
-      padding: 10px 0; 
+      padding: 8px 0; 
       border-bottom: 1px solid var(--tg-border);
     }
     
     .brand-logo-box {
       border: 1px solid var(--tg-border);
-      border-radius: 12px;
-      padding: 2px 10px;
+      border-radius: 10px;
+      padding: 2px 8px;
       background: #ffffff;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .card-custom { 
       background-color: var(--tg-card-bg);
       backdrop-filter: blur(10px);
       border: 1px solid var(--tg-border); 
-      border-radius: 14px; 
+      border-radius: 12px; 
       overflow: hidden;
       transition: all 0.3s ease;
     }
@@ -111,10 +111,10 @@
     .form-control, .form-select {
       background-color: var(--tg-input-bg);
       border: 1px solid var(--tg-border);
-      border-radius: 10px;
+      border-radius: 8px;
       color: var(--tg-text-main);
-      font-size: 0.9rem;
-      padding: 8px 12px;
+      font-size: 0.85rem;
+      padding: 6px 10px;
       transition: all 0.2s ease;
     }
     .form-control:focus, .form-select:focus {
@@ -127,15 +127,15 @@
     .row-cols-grid-9 {
       display: flex;
       flex-wrap: wrap;
-      margin-right: -4px;
-      margin-left: -4px;
+      margin-right: -3px;
+      margin-left: -3px;
     }
     .row-cols-grid-9 > * {
       flex: 0 0 auto;
       width: 11.111111%;
-      padding-right: 4px;
-      padding-left: 4px;
-      margin-bottom: 8px;
+      padding-right: 3px;
+      padding-left: 3px;
+      margin-bottom: 6px;
     }
 
     @media (max-width: 1400px) { .row-cols-grid-9 > * { width: 14.2857%; } }
@@ -147,8 +147,8 @@
     .product-card {
       border: 1px solid var(--tg-border);
       background-color: var(--tg-card-bg);
-      border-radius: 10px;
-      padding: 8px 6px;
+      border-radius: 8px;
+      padding: 6px 4px;
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -160,20 +160,20 @@
       transform: translateY(-2px);
     }
     .product-title {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--tg-text-main);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
     .stock-tag {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
-      padding: 2px 4px;
-      border-radius: 6px;
+      padding: 1px 3px;
+      border-radius: 4px;
       display: block;
       width: 100%;
       text-align: center;
@@ -182,9 +182,9 @@
     .btn-tg {
       background-color: var(--tg-primary);
       color: #ffffff;
-      border-radius: 10px;
+      border-radius: 8px;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       border: none;
       transition: all 0.2s ease;
     }
@@ -195,9 +195,9 @@
       color: var(--tg-text-muted);
       border: none;
       font-weight: 600;
-      font-size: 0.85rem;
-      padding: 8px 16px;
-      border-radius: 8px 8px 0 0;
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      border-radius: 6px 6px 0 0;
     }
     .nav-tabs .nav-link.active {
       color: var(--tg-primary);
@@ -212,23 +212,23 @@
       background-color: var(--tg-card-bg); 
       color: var(--tg-text-muted); 
       text-align: center; 
-      padding: 12px 0; 
-      font-size: 0.8rem; 
+      padding: 10px 0; 
+      font-size: 0.78rem; 
       border-top: 1px solid var(--tg-border);
       margin-top: auto; 
     }
 
-    .table { color: var(--tg-text-main); font-size: 0.85rem; margin-bottom: 0; }
-    .table th, .table td { vertical-align: middle; padding: 8px 10px; }
-    .table thead th { font-weight: 600; color: var(--tg-text-muted); background-color: var(--tg-input-bg); font-size: 0.78rem; white-space: nowrap; }
+    .table { color: var(--tg-text-main); font-size: 0.82rem; margin-bottom: 0; }
+    .table th, .table td { vertical-align: middle; padding: 6px 8px; }
+    .table thead th { font-weight: 600; color: var(--tg-text-muted); background-color: var(--tg-input-bg); font-size: 0.75rem; white-space: nowrap; }
 
     .ai-badge {
       font-family: 'Orbitron', sans-serif;
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       letter-spacing: 1px;
       background: linear-gradient(45deg, #00f0ff, #7000ff);
       color: #fff;
-      padding: 2px 6px;
+      padding: 2px 5px;
       border-radius: 4px;
       display: inline-block;
     }
@@ -246,13 +246,12 @@
     <div class="card card-custom p-4 auth-container shadow-lg telegram-bubble">
       <div class="text-center mb-3">
         <div class="brand-logo-box mb-2">
-          <svg width="140" height="40" viewBox="0 0 300 80">
+          <svg width="120" height="34" viewBox="0 0 300 80">
             <path d="M 20 50 Q 30 15 60 25 Q 40 70 20 50 Z" fill="#e67e22"/>
             <text x="35" y="55" font-family="sans-serif" font-weight="900" font-size="42" fill="#0077b5">Sam</text>
             <circle cx="160" cy="40" r="16" fill="#0077b5" stroke="#ffffff" stroke-width="2"/>
             <path d="M 140 45 Q 160 20 185 30" stroke="#e67e22" stroke-width="4" fill="none"/>
             <text x="180" y="55" font-family="sans-serif" font-weight="bold" font-size="38" fill="#0077b5">nline</text>
-            <text x="55" y="72" font-family="sans-serif" font-weight="bold" font-size="12" fill="#e67e22" letter-spacing="3">EXPLORE YOUR LIFE</text>
           </svg>
         </div>
         <h6 class="fw-bold text-secondary">ইনভেন্টরি সিস্টেম পোর্টাল</h6>
@@ -274,89 +273,87 @@
 
   <!-- Dashboard Section -->
   <div id="dashboardSection" style="display: none;">
-    <div class="header-banner mb-3">
-      <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
+    <div class="header-banner mb-2">
+      <div class="container-fluid px-md-3 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-2">
           <div class="brand-logo-box">
-            <svg width="140" height="36" viewBox="0 0 300 80">
+            <svg width="120" height="30" viewBox="0 0 300 80">
               <path d="M 20 50 Q 30 15 60 25 Q 40 70 20 50 Z" fill="#e67e22"/>
               <text x="35" y="55" font-family="sans-serif" font-weight="900" font-size="42" fill="#0077b5">Sam</text>
               <circle cx="160" cy="40" r="16" fill="#0077b5" stroke="#ffffff" stroke-width="2"/>
               <path d="M 140 45 Q 160 20 185 30" stroke="#e67e22" stroke-width="4" fill="none"/>
               <text x="180" y="55" font-family="sans-serif" font-weight="bold" font-size="38" fill="#0077b5">nline</text>
-              <text x="55" y="72" font-family="sans-serif" font-weight="bold" font-size="12" fill="#e67e22" letter-spacing="3">EXPLORE YOUR LIFE</text>
             </svg>
           </div>
           <span id="themeIndicator" class="ai-badge d-none d-sm-inline-block">AI MOOD</span>
         </div>
 
         <div class="d-flex align-items-center gap-2">
-          <button onclick="cycleTheme()" id="themeBtn" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 36px; height: 36px;" title="থিম পরিবর্তন করুন">
+          <button onclick="cycleTheme()" id="themeBtn" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 32px; height: 32px;" title="থিম পরিবর্তন করুন">
             <i id="themeIcon" class="fa-solid fa-robot text-info"></i>
           </button>
-          <span id="userDisplayEmail" class="badge bg-body-tertiary text-body border d-none d-md-inline-block py-2 px-3 rounded-pill fw-normal"></span>
-          <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-semibold rounded-2 px-3">
+          <span id="userDisplayEmail" class="badge bg-body-tertiary text-body border d-none d-md-inline-block py-1 px-2 rounded-pill fw-normal small"></span>
+          <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-semibold rounded-2 px-2 py-1">
             <i class="fa-solid fa-power-off"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <div class="container-fluid px-md-4" id="printableArea">
-      <!-- Dashboard Cards (Moved to Top) -->
-      <div class="card card-custom p-3 mb-3 telegram-bubble">
-        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-          <span class="badge bg-primary fs-6 px-3 py-2 rounded-3 shadow-sm">
-            <i class="fa-solid fa-chart-pie me-2"></i>ড্যাশবোর্ড
+    <div class="container-fluid px-md-3" id="printableArea">
+      <!-- Dashboard Cards (Top Compact Grid) -->
+      <div class="card card-custom p-2 mb-2 telegram-bubble">
+        <div class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom">
+          <span class="badge bg-primary px-2 py-1 rounded-2 shadow-sm" style="font-size: 0.75rem;">
+            <i class="fa-solid fa-chart-pie me-1"></i>ড্যাশবোর্ড স্টক সামারি
           </span>
-          <span class="text-muted small">রিয়েল-টাইম আপডেট</span>
+          <span class="text-muted" style="font-size: 0.7rem;">রিয়েল-টাইম আপডেট</span>
         </div>
         <div class="row-cols-grid-9" id="productCardGrid"></div>
       </div>
 
-      <div class="row g-3">
-        <!-- Left Panel: Multi-Item Batch Stock Entry -->
+      <div class="row g-2">
+        <!-- Left Panel: Batch Entry Form -->
         <div class="col-lg-3">
-          <div class="card card-custom p-3 mb-3 telegram-bubble">
-            <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>নতুন স্টক এন্ট্রি (ব্যাচ)</h6>
+          <div class="card card-custom p-2 mb-2 telegram-bubble">
+            <h6 class="fw-bold mb-2 text-primary" style="font-size: 0.85rem;"><i class="fa-solid fa-pen-to-square me-1"></i>নতুন স্টক এন্ট্রি (ব্যাচ)</h6>
             <form id="transactionForm">
-              <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">লেনদেনের ধরন</label>
+              <div class="mb-1">
+                <label class="form-label fw-semibold small mb-0" style="font-size: 0.75rem;">লেনদেনের ধরন</label>
                 <select id="txType" class="form-select form-select-sm" required onchange="updateFormLabels()">
-                  <option value="Stock In">স্টক ইন (কেনাকাটা / রিসিভ)</option>
-                  <option value="Stock Out">স্টক আউট (বিতরণ / ব্যবহার)</option>
+                  <option value="Stock In">স্টক ইন (রিসিভ)</option>
+                  <option value="Stock Out">স্টক আউট (ব্যবহার)</option>
                 </select>
               </div>
 
-              <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">তারিখ</label>
+              <div class="mb-1">
+                <label class="form-label fw-semibold small mb-0" style="font-size: 0.75rem;">তারিখ</label>
                 <input type="date" id="txDate" class="form-control form-control-sm" required>
               </div>
 
-              <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1" id="reNameLabel">সরবরাহকারী / ভেন্ডরের নাম</label>
-                <input type="text" id="reName" class="form-control form-control-sm" placeholder="ব্যক্তি বা প্রতিষ্ঠানের নাম">
+              <div class="mb-1">
+                <label class="form-label fw-semibold small mb-0" style="font-size: 0.75rem;" id="reNameLabel">সরবরাহকারী / ভেন্ডর</label>
+                <input type="text" id="reName" class="form-control form-control-sm" placeholder="নাম">
               </div>
 
-              <div class="mb-3">
-                <label class="form-label fw-semibold small mb-1">ইউজার আইডি / নোট / লোকেশন</label>
+              <div class="mb-2">
+                <label class="form-label fw-semibold small mb-0" style="font-size: 0.75rem;">ইউজার আইডি / নোট</label>
                 <input type="text" id="userId" class="form-control form-control-sm" placeholder="নোট বা আইডি">
               </div>
 
-              <!-- Dynamic Items Container for Batch Entry -->
+              <!-- Batch Items Container -->
               <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1 text-primary">পণ্য ও পরিমাণ তালিকা</label>
-                <div id="batchItemsContainer" class="d-flex flex-column gap-2">
-                  <!-- Initial Item Row -->
+                <label class="form-label fw-semibold small mb-1 text-primary" style="font-size: 0.75rem;">পণ্য ও পরিমাণ তালিকা</label>
+                <div id="batchItemsContainer" class="d-flex flex-column gap-1">
                   <div class="batch-item-row d-flex gap-1 align-items-center">
                     <input type="text" class="form-control form-control-sm item-name-input" list="itemListOptions" placeholder="পণ্যের নাম" required>
-                    <input type="number" class="form-control form-control-sm item-qty-input" placeholder="পরিমাণ" min="1" style="width: 80px;" required>
-                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeBatchRow(this)" disabled style="padding: 4px 8px;"><i class="fa-solid fa-xmark"></i></button>
+                    <input type="number" class="form-control form-control-sm item-qty-input" placeholder="পরিমাণ" min="1" style="width: 70px;" required>
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeBatchRow(this)" disabled style="padding: 2px 6px;"><i class="fa-solid fa-xmark"></i></button>
                   </div>
                 </div>
               </div>
 
-              <button type="button" class="btn btn-outline-primary btn-sm w-100 mb-3" onclick="addBatchRow()">
+              <button type="button" class="btn btn-outline-primary btn-sm w-100 mb-2 py-1" style="font-size: 0.75rem;" onclick="addBatchRow()">
                 <i class="fa-solid fa-plus me-1"></i> আরও পণ্য যোগ করুন
               </button>
 
@@ -364,7 +361,7 @@
                 <option value="Onu"><option value="Giga Onu"><option value="SC P. Cord"><option value="TG 2 port"><option value="TG 4 port"><option value="TG 8 Port"><option value="SP 1*2"><option value="SP 1*4"><option value="F. 2 Core"><option value="F. 4 Core"><option value="Switch"><option value="Router"><option value="Tie">
               </datalist>
 
-              <button type="submit" class="btn btn-tg w-100 btn-sm py-2">
+              <button type="submit" class="btn btn-tg w-100 btn-sm py-1">
                 <i class="fa-solid fa-paper-plane me-1"></i> একসাথে সেভ করুন
               </button>
             </form>
@@ -373,72 +370,72 @@
 
         <!-- Right Panel -->
         <div class="col-lg-9">
-          <!-- 1. Smart Search Filter Box -->
-          <div class="card card-custom p-3 mb-3 telegram-bubble">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <div class="fw-bold text-primary small">
+          <!-- Smart Search Filter Box -->
+          <div class="card card-custom p-2 mb-2 telegram-bubble">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <div class="fw-bold text-primary small" style="font-size: 0.78rem;">
                 <i class="fa-solid fa-sliders me-1"></i>স্মার্ট সার্চ ফিল্টার
               </div>
-              <span id="recordCountBadge" class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3">
-                ০ টি লেনদেন পাওয়া গেছে
+              <span id="recordCountBadge" class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2" style="font-size: 0.7rem;">
+                ০ টি লেনদেন
               </span>
             </div>
 
-            <div class="row g-2 align-items-end">
+            <div class="row g-1 align-items-end">
               <div class="col-md-3">
-                <label class="form-label small fw-semibold mb-1 text-muted">প্রোডাক্ট নাম</label>
+                <label class="form-label small fw-semibold mb-0 text-muted" style="font-size: 0.72rem;">প্রোডাক্ট নাম</label>
                 <input type="text" id="searchProduct" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="Onu, Router...">
               </div>
               <div class="col-md-3">
-                <label class="form-label small fw-semibold mb-1 text-muted">গ্রহীতা / এন্ট্রিদাতা</label>
-                <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="নাম বা ইমেইল...">
+                <label class="form-label small fw-semibold mb-0 text-muted" style="font-size: 0.72rem;">গ্রহীতা / এন্ট্রিদাতা</label>
+                <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control form-control-sm" placeholder="নাম...">
               </div>
               <div class="col-md-2">
-                <label class="form-label small fw-semibold mb-1 text-muted">তারিখ হতে</label>
+                <label class="form-label small fw-semibold mb-0 text-muted" style="font-size: 0.72rem;">তারিখ হতে</label>
                 <input type="date" id="searchDateFrom" onchange="renderUI()" class="form-control form-control-sm">
               </div>
               <div class="col-md-2">
-                <label class="form-label small fw-semibold mb-1 text-muted">তারিখ পর্যন্ত</label>
+                <label class="form-label small fw-semibold mb-0 text-muted" style="font-size: 0.72rem;">তারিখ পর্যন্ত</label>
                 <input type="date" id="searchDateTo" onchange="renderUI()" class="form-control form-control-sm">
               </div>
               <div class="col-md-2">
-                <button onclick="resetFilters()" class="btn btn-outline-secondary btn-sm w-100 rounded-2">
+                <button onclick="resetFilters()" class="btn btn-outline-secondary btn-sm w-100 rounded-2 py-1" style="font-size: 0.75rem;">
                   <i class="fa-solid fa-rotate-left me-1"></i> রিসেট
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- 2. Tables Section -->
-          <ul class="nav nav-tabs border-bottom-0 mb-2" id="historyTabs" role="tablist">
+          <!-- Tables Section -->
+          <ul class="nav nav-tabs border-bottom-0 mb-1" id="historyTabs" role="tablist">
             <li class="nav-item">
-              <button class="nav-link active small" id="trans-tab" data-bs-toggle="tab" data-bs-target="#transPane" type="button">
+              <button class="nav-link active small py-1" id="trans-tab" data-bs-toggle="tab" data-bs-target="#transPane" type="button">
                 <i class="fa-solid fa-clock-rotate-left me-1"></i>লেনদেনের ইতিহাস
               </button>
             </li>
             <li class="nav-item">
-              <button class="nav-link small px-3" id="user-tab" data-bs-toggle="tab" data-bs-target="#userPane" type="button">
-                <i class="fa-solid fa-gear"></i> ইউজার অ্যাক্টিভিটি
+              <button class="nav-link small px-2 py-1" id="user-tab" data-bs-toggle="tab" data-bs-target="#userPane" type="button">
+                <i class="fa-solid fa-gear me-1"></i>ইউজার অ্যাক্টিভিটি
               </button>
             </li>
           </ul>
 
           <div class="tab-content" id="historyTabContent">
             <div class="tab-pane fade show active" id="transPane" role="tabpanel">
-              <div class="card card-custom p-3 mb-4 telegram-bubble">
-                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                  <h6 class="fw-bold mb-0" style="font-size: 0.9rem;">স্টক ফিল্টারড রেকর্ড</h6>
-                  <div class="d-flex gap-2">
-                    <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold rounded-2" style="font-size: 0.78rem;">
-                      <i class="fa-solid fa-file-excel me-1"></i> এক্সেল এক্সপোর্ট (২ ফাইল)
+              <div class="card card-custom p-2 mb-3 telegram-bubble">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-1">
+                  <h6 class="fw-bold mb-0" style="font-size: 0.82rem;">স্টক ফিল্টারড রেকর্ড</h6>
+                  <div class="d-flex gap-1">
+                    <button onclick="exportToExcel()" class="btn btn-success btn-sm fw-semibold rounded-2 py-1 px-2" style="font-size: 0.72rem;">
+                      <i class="fa-solid fa-file-excel me-1"></i> এক্সেল
                     </button>
-                    <button onclick="downloadPDF()" class="btn btn-danger btn-sm fw-semibold rounded-2" style="font-size: 0.78rem;">
-                      <i class="fa-solid fa-file-pdf me-1"></i> পিডিএফ ডাউনলোড
+                    <button onclick="downloadPDF()" class="btn btn-danger btn-sm fw-semibold rounded-2 py-1 px-2" style="font-size: 0.72rem;">
+                      <i class="fa-solid fa-file-pdf me-1"></i> পিডিএফ
                     </button>
                   </div>
                 </div>
 
-                <div class="table-responsive" style="max-height: 380px;">
+                <div class="table-responsive" style="max-height: 320px;">
                   <table class="table table-hover align-middle small mb-0">
                     <thead class="sticky-top">
                       <tr id="tableHeaderRow">
@@ -457,18 +454,18 @@
             </div>
 
             <div class="tab-pane fade" id="userPane" role="tabpanel">
-              <div class="card card-custom p-3 mb-4 telegram-bubble">
-                <h6 class="fw-bold mb-2 text-primary" style="font-size: 0.9rem;">
-                  <i class="fa-solid fa-user-clock me-2"></i>ইউজার এডিট/ডিলিট ও সকল অ্যাক্টিভিটি লগ
+              <div class="card card-custom p-2 mb-3 telegram-bubble">
+                <h6 class="fw-bold mb-2 text-primary" style="font-size: 0.82rem;">
+                  <i class="fa-solid fa-user-clock me-1"></i>ইউজার অ্যাক্টিভিটি লগ
                 </h6>
-                <div class="table-responsive" style="max-height: 380px;">
+                <div class="table-responsive" style="max-height: 320px;">
                   <table class="table table-hover align-middle small mb-0">
                     <thead class="sticky-top">
                       <tr>
-                        <th>Date & Time</th>
-                        <th>User Email</th>
-                        <th>Action Status</th>
-                        <th>Details</th>
+                        <th>তারিখ ও সময়</th>
+                        <th>ইমেইল</th>
+                        <th>স্ট্যাটাস</th>
+                        <th>বিবরণ</th>
                       </tr>
                     </thead>
                     <tbody id="userLogTableBody"></tbody>
@@ -487,7 +484,7 @@
 <footer class="app-footer">
   <div class="container">
     <p class="mb-0 fw-medium">Sam Online Inventory System | Safe & Secure Platform</p>
-    <small class="text-muted d-block mt-1">Developed by <strong>Antu</strong></small>
+    <small class="text-muted d-block mt-0">Developed by <strong>Antu</strong></small>
   </div>
 </footer>
 
@@ -560,18 +557,17 @@
 
   function updateFormLabels() {
     const type = document.getElementById('txType').value;
-    document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'সরবরাহকারী / ভেন্ডরের নাম' : 'রিসিভার / টেকনিশিয়ানের নাম';
+    document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'সরবরাহকারী / ভেন্ডর' : 'রিসিভার / টেকনিশিয়ান';
   }
 
-  // Batch Form Dynamic Rows Management
   function addBatchRow() {
     const container = document.getElementById('batchItemsContainer');
     const row = document.createElement('div');
     row.className = 'batch-item-row d-flex gap-1 align-items-center';
     row.innerHTML = `
       <input type="text" class="form-control form-control-sm item-name-input" list="itemListOptions" placeholder="পণ্যের নাম" required>
-      <input type="number" class="form-control form-control-sm item-qty-input" placeholder="পরিমাণ" min="1" style="width: 80px;" required>
-      <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeBatchRow(this)" style="padding: 4px 8px;"><i class="fa-solid fa-xmark"></i></button>
+      <input type="number" class="form-control form-control-sm item-qty-input" placeholder="পরিমাণ" min="1" style="width: 70px;" required>
+      <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeBatchRow(this)" style="padding: 2px 6px;"><i class="fa-solid fa-xmark"></i></button>
     `;
     container.appendChild(row);
     updateRemoveButtons();
@@ -584,13 +580,9 @@
 
   function updateRemoveButtons() {
     const rows = document.querySelectorAll('.batch-item-row');
-    rows.forEach((row, index) => {
+    rows.forEach((row) => {
       const delBtn = row.querySelector('button');
-      if (rows.length === 1) {
-        delBtn.disabled = true;
-      } else {
-        delBtn.disabled = false;
-      }
+      delBtn.disabled = (rows.length === 1);
     });
   }
 
@@ -629,7 +621,6 @@
 
   function logout() { _auth.signOut(); }
 
-  // Batch Form Submit Handler
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!_user) return;
@@ -674,12 +665,11 @@
       document.getElementById('transactionForm').reset();
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
       
-      // Reset batch container to 1 row
       document.getElementById('batchItemsContainer').innerHTML = `
         <div class="batch-item-row d-flex gap-1 align-items-center">
           <input type="text" class="form-control form-control-sm item-name-input" list="itemListOptions" placeholder="পণ্যের নাম" required>
-          <input type="number" class="form-control form-control-sm item-qty-input" placeholder="পরিমাণ" min="1" style="width: 80px;" required>
-          <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeBatchRow(this)" disabled style="padding: 4px 8px;"><i class="fa-solid fa-xmark"></i></button>
+          <input type="number" class="form-control form-control-sm item-qty-input" placeholder="পরিমাণ" min="1" style="width: 70px;" required>
+          <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeBatchRow(this)" disabled style="padding: 2px 6px;"><i class="fa-solid fa-xmark"></i></button>
         </div>
       `;
     } catch (err) {
@@ -728,7 +718,7 @@
     const allProducts = Object.keys(stockMapTotal);
     
     if (allProducts.length === 0) {
-      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-2 small">কোনো স্টক ডাটা নেই</div>`;
+      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-1 small">কোনো স্টক ডাটা নেই</div>`;
     } else {
       allProducts.forEach(pName => {
         const pIn = stockMapTotal[pName].in;
@@ -739,7 +729,7 @@
         col.innerHTML = `
           <div class="product-card telegram-bubble">
             <div class="product-title" title="${pName}">${pName}</div>
-            <div class="d-flex justify-content-between align-items-center my-1" style="font-size: 0.65rem;">
+            <div class="d-flex justify-content-between align-items-center my-0" style="font-size: 0.6rem;">
               <span class="text-muted">ইন:<b class="text-success">${pIn}</b></span>
               <span class="text-muted">আউট:<b class="text-danger">${pOut}</b></span>
             </div>
@@ -754,7 +744,6 @@
       });
     }
 
-    // FILTERING
     const productQuery = document.getElementById('searchProduct').value.toLowerCase().trim();
     const personQuery = document.getElementById('searchPerson').value.toLowerCase().trim();
     const dateFrom = document.getElementById('searchDateFrom').value;
@@ -774,9 +763,8 @@
       return matchProduct && matchPerson && matchDate;
     });
 
-    document.getElementById('recordCountBadge').innerText = `${_currentFilteredData.length} টি লেনদেন পাওয়া গেছে`;
+    document.getElementById('recordCountBadge').innerText = `${_currentFilteredData.length} টি লেনদেন`;
 
-    // ADMIN ACTION HEADER
     const headerRow = document.getElementById('tableHeaderRow');
     const existingActionHeader = document.getElementById('actionHeaderCol');
     if (isAdmin()) {
@@ -790,12 +778,11 @@
       if (existingActionHeader) existingActionHeader.remove();
     }
 
-    // MAIN TABLE
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
     const colCount = isAdmin() ? 7 : 6;
     if (_currentFilteredData.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="${colCount}" class="text-center text-muted py-3">কোনো লেনদেন রেকর্ড নেই</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="${colCount}" class="text-center text-muted py-2">কোনো লেনদেন রেকর্ড নেই</td></tr>`;
     } else {
       _currentFilteredData.forEach(item => {
         const badge = item.type === 'Stock In' 
@@ -804,8 +791,8 @@
 
         let actionTd = isAdmin() ? `
           <td>
-            <button onclick="editTransaction('${item.id}')" class="btn btn-sm btn-outline-primary py-0 px-2 me-1" title="এডিট"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button onclick="deleteTransaction('${item.id}')" class="btn btn-sm btn-outline-danger py-0 px-2" title="ডিলিট"><i class="fa-solid fa-trash-can"></i></button>
+            <button onclick="editTransaction('${item.id}')" class="btn btn-sm btn-outline-primary py-0 px-1 me-1" title="এডিট"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button onclick="deleteTransaction('${item.id}')" class="btn btn-sm btn-outline-danger py-0 px-1" title="ডিলিট"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         ` : '';
 
@@ -823,12 +810,11 @@
       });
     }
 
-    // USER LOG TABLE
     const userTbody = document.getElementById('userLogTableBody');
     userTbody.innerHTML = '';
 
     if (_cache.length === 0) {
-      userTbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No activity found</td></tr>`;
+      userTbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-2">কোনো অ্যাক্টিভিটি পাওয়া যায়নি</td></tr>`;
     } else {
       _cache.forEach(item => {
         const entryTime = item.timestamp ? new Date(item.timestamp).toLocaleString('en-US', {
@@ -839,11 +825,11 @@
         const userMail = item.createdByEmail || 'Unknown';
         let statusBadge = '';
         if (item.isDeleted) {
-          statusBadge = `<span class="badge bg-danger rounded-pill">Deleted</span>`;
+          statusBadge = `<span class="badge bg-danger rounded-pill">ডিলিটেড</span>`;
         } else if (item.updatedBy) {
-          statusBadge = `<span class="badge bg-warning text-dark rounded-pill">Edited</span>`;
+          statusBadge = `<span class="badge bg-warning text-dark rounded-pill">এডিটেড</span>`;
         } else {
-          statusBadge = `<span class="badge bg-success rounded-pill">New</span>`;
+          statusBadge = `<span class="badge bg-success rounded-pill">নতুন</span>`;
         }
 
         const tr = document.createElement('tr');
@@ -918,14 +904,12 @@
     renderUI();
   }
 
-  // দুটি আলাদা ফাইল (ডিটেইলড এবং সামারি) এক্সেল এক্সপোর্ট ফাংশন
   function exportToExcel() {
     if (_currentFilteredData.length === 0) { 
       alert("এক্সপোর্ট করার জন্য কোনো ডাটা নেই!"); 
       return; 
     }
 
-    // ফাইল ১: ডিটেইলড রিপোর্ট
     const detailRows = _currentFilteredData.map((item, index) => ({
       "ক্রমিক নং": index + 1,
       "তারিখ": item.date || '-',
@@ -942,7 +926,6 @@
     XLSX.utils.book_append_sheet(workbook1, detailSheet, "Detailed Report");
     XLSX.writeFile(workbook1, `Detailed_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
 
-    // ফাইল ২: স্টক সামারি ও মোট যোগফল ফাইল
     const stockMapTotal = {};
     _currentFilteredData.forEach(item => {
       const qty = Number(item.quantity) || 0;
@@ -988,7 +971,6 @@
     XLSX.writeFile(workbook2, `Stock_Summary_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
-  // পিডিএফ ডাউনলোড ফাংশন
   function downloadPDF() {
     const element = document.getElementById('printableArea');
     const opt = {
