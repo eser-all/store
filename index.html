@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="bn" data-bs-theme="light">
+<html lang="en" data-bs-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sam Online - স্মার্ট ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
+  <title>Sam Online - Smart Inventory Management System</title>
   
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Orbitron:wght@600;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- XLSX Library -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- html2pdf Library for PDF Download -->
@@ -55,7 +55,7 @@
     
     body { 
       background-color: var(--tg-bg) !important; 
-      font-family: 'Hind Siliguri', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; 
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; 
       color: var(--tg-text-main);
       min-height: 100vh;
       display: flex;
@@ -226,7 +226,6 @@
       display: inline-block;
     }
 
-    /* Modal custom styling for better theme match */
     .modal-content {
       background-color: var(--tg-card-bg) !important;
       color: var(--tg-text-main) !important;
@@ -255,19 +254,19 @@
             <text x="180" y="55" font-family="sans-serif" font-weight="bold" font-size="38" fill="#0077b5">nline</text>
           </svg>
         </div>
-        <h5 class="fw-bold text-secondary">ইনভেন্টরি সিস্টেম পোর্টাল</h5>
+        <h5 class="fw-bold text-secondary">Inventory System Portal</h5>
       </div>
       <form id="authForm">
         <div class="mb-3">
-          <label class="form-label fw-semibold">ইমেইল এড্রেস</label>
+          <label class="form-label fw-semibold">Email Address</label>
           <input type="email" id="authEmail" class="form-control" placeholder="name@domain.com" required>
         </div>
         <div class="mb-4">
-          <label class="form-label fw-semibold">পাসওয়ার্ড</label>
+          <label class="form-label fw-semibold">Password</label>
           <input type="password" id="authPassword" class="form-control" placeholder="••••••••" minlength="6" required>
         </div>
         <div id="authError" class="alert alert-danger py-2 small mb-3 text-center" style="display: none;"></div>
-        <button type="submit" class="btn btn-tg w-100 shadow-sm">প্রবেশ করুন</button>
+        <button type="submit" class="btn btn-tg w-100 shadow-sm">Sign In</button>
       </form>
     </div>
   </div>
@@ -289,18 +288,23 @@
           <span id="themeIndicator" class="ai-badge d-none d-sm-inline-block">AI MOOD</span>
         </div>
 
-        <div class="d-flex align-items-center gap-3">
-          <!-- নতুন স্টক এন্ট্রি ওপেন করার বাটন -->
+        <div class="d-flex align-items-center gap-2">
+          <!-- New Stock Entry Button -->
           <button type="button" class="btn btn-tg btn-sm shadow-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#newStockModal">
-            <i class="fa-solid fa-plus-circle me-1"></i> নতুন স্টক এন্ট্রি
+            <i class="fa-solid fa-plus-circle me-1"></i> New Stock Entry
           </button>
 
-          <button onclick="cycleTheme()" id="themeBtn" class="btn btn-outline-secondary rounded-circle" style="width: 38px; height: 38px;" title="থিম পরিবর্তন করুন">
+          <!-- Smart Search Filter Modal Trigger Button -->
+          <button type="button" class="btn btn-outline-primary btn-sm shadow-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#filterModal">
+            <i class="fa-solid fa-filter me-1"></i> Smart Filter
+          </button>
+
+          <button onclick="cycleTheme()" id="themeBtn" class="btn btn-outline-secondary rounded-circle ms-1" style="width: 38px; height: 38px;" title="Change Theme">
             <i id="themeIcon" class="fa-solid fa-robot text-info"></i>
           </button>
           <span id="userDisplayEmail" class="badge bg-body-tertiary text-body border d-none d-md-inline-block py-2 px-3 rounded-pill fw-normal"></span>
           <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-semibold rounded-2 px-3 py-2">
-            <i class="fa-solid fa-power-off"></i> লজআউট
+            <i class="fa-solid fa-power-off"></i> Logout
           </button>
         </div>
       </div>
@@ -311,59 +315,34 @@
       <div class="card card-custom p-3 mb-3 telegram-bubble">
         <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
           <span class="badge bg-primary px-3 py-2 rounded-2 shadow-sm" style="font-size: 0.9rem;">
-            <i class="fa-solid fa-chart-pie me-1"></i> ড্যাশবোর্ড স্টক সামারি
+            <i class="fa-solid fa-chart-pie me-1"></i> Dashboard Stock Summary
           </span>
-          <span class="text-muted fw-semibold" style="font-size: 0.85rem;">রিয়েল-টাইম আপডেট</span>
+          <span class="text-muted fw-semibold" style="font-size: 0.85rem;">Real-time Update</span>
         </div>
         <div class="row-cols-grid-9" id="productCardGrid"></div>
       </div>
 
-      <!-- Main Workspace Section (Full Width Now) -->
+      <!-- Main Workspace Section -->
       <div class="card card-custom p-3 mb-3 telegram-bubble">
-        <!-- Smart Search Filter Box -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="d-flex justify-content-between align-items-center mb-3">
           <div class="fw-bold text-primary" style="font-size: 1rem;">
-            <i class="fa-solid fa-sliders me-1"></i> স্মার্ট সার্চ ফিল্টার
+            <i class="fa-solid fa-list-check me-1"></i> Transactions & Activity Logs
           </div>
           <span id="recordCountBadge" class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1" style="font-size: 0.85rem;">
-            ০ টি লেনদেন
+            0 Transactions
           </span>
-        </div>
-
-        <div class="row g-2 align-items-end mb-3">
-          <div class="col-md-3">
-            <label class="form-label fw-semibold text-muted mb-1" style="font-size: 0.85rem;">প্রোডাক্ট নাম</label>
-            <input type="text" id="searchProduct" onkeyup="renderUI()" class="form-control" placeholder="Onu, Router...">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label fw-semibold text-muted mb-1" style="font-size: 0.85rem;">গ্রহীতা / এন্ট্রিদাতা</label>
-            <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control" placeholder="নাম...">
-          </div>
-          <div class="col-md-2">
-            <label class="form-label fw-semibold text-muted mb-1" style="font-size: 0.85rem;">তারিখ হতে</label>
-            <input type="date" id="searchDateFrom" onchange="renderUI()" class="form-control">
-          </div>
-          <div class="col-md-2">
-            <label class="form-label fw-semibold text-muted mb-1" style="font-size: 0.85rem;">তারিখ পর্যন্ত</label>
-            <input type="date" id="searchDateTo" onchange="renderUI()" class="form-control">
-          </div>
-          <div class="col-md-2">
-            <button onclick="resetFilters()" class="btn btn-outline-secondary w-100 rounded-2 py-2" style="font-size: 0.9rem;">
-              <i class="fa-solid fa-rotate-left me-1"></i> রিসেট
-            </button>
-          </div>
         </div>
 
         <!-- Tables Section -->
         <ul class="nav nav-tabs border-bottom-0 mb-2" id="historyTabs" role="tablist">
           <li class="nav-item">
             <button class="nav-link active py-2" id="trans-tab" data-bs-toggle="tab" data-bs-target="#transPane" type="button">
-              <i class="fa-solid fa-clock-rotate-left me-1"></i> লেনদেনের ইতিহাস
+              <i class="fa-solid fa-clock-rotate-left me-1"></i> Transaction History
             </button>
           </li>
           <li class="nav-item">
             <button class="nav-link py-2" id="user-tab" data-bs-toggle="tab" data-bs-target="#userPane" type="button">
-              <i class="fa-solid fa-gear me-1"></i> ইউজার অ্যাক্টিভিটি
+              <i class="fa-solid fa-gear me-1"></i> User Activity
             </button>
           </li>
         </ul>
@@ -371,13 +350,13 @@
         <div class="tab-content" id="historyTabContent">
           <div class="tab-pane fade show active" id="transPane" role="tabpanel">
             <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-              <h6 class="fw-bold mb-0" style="font-size: 1rem;">স্টক ফিল্টারড রেকর্ড</h6>
+              <h6 class="fw-bold mb-0" style="font-size: 1rem;">Filtered Records</h6>
               <div class="d-flex gap-2">
                 <button onclick="exportToExcel()" class="btn btn-success fw-semibold rounded-2 py-2 px-3" style="font-size: 0.85rem;">
-                  <i class="fa-solid fa-file-excel me-1"></i> এক্সেল ডাউনলোড
+                  <i class="fa-solid fa-file-excel me-1"></i> Export Excel
                 </button>
                 <button onclick="downloadPDF()" class="btn btn-danger fw-semibold rounded-2 py-2 px-3" style="font-size: 0.85rem;">
-                  <i class="fa-solid fa-file-pdf me-1"></i> পিডিএফ ডাউনলোড
+                  <i class="fa-solid fa-file-pdf me-1"></i> Download PDF
                 </button>
               </div>
             </div>
@@ -386,12 +365,12 @@
               <table class="table table-hover align-middle mb-0">
                 <thead class="sticky-top">
                   <tr id="tableHeaderRow">
-                    <th>তারিখ</th>
-                    <th>টাইপ</th>
-                    <th>প্রোডাক্ট</th>
-                    <th>পরিমাণ</th>
-                    <th>গ্রহীতা / উৎস</th>
-                    <th>আইডি / নোট</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Receiver / Vendor</th>
+                    <th>ID / Note</th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -401,16 +380,16 @@
 
           <div class="tab-pane fade" id="userPane" role="tabpanel">
             <h6 class="fw-bold mb-3 text-primary" style="font-size: 1rem;">
-              <i class="fa-solid fa-user-clock me-1"></i> ইউজার অ্যাক্টিভিটি লগ
+              <i class="fa-solid fa-user-clock me-1"></i> User Activity Log
             </h6>
             <div class="table-responsive" style="max-height: 420px;">
               <table class="table table-hover align-middle mb-0">
                 <thead class="sticky-top">
                   <tr>
-                    <th>তারিখ ও সময়</th>
-                    <th>ইমেইল</th>
-                    <th>স্ট্যাটাস</th>
-                    <th>বিবরণ</th>
+                    <th>Date & Time</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Description</th>
                   </tr>
                 </thead>
                 <tbody id="userLogTableBody"></tbody>
@@ -424,13 +403,13 @@
   </div>
 </div>
 
-<!-- ================= නව স্টক എন্ট্রি മോডাল উইন্ডো (New Stock Modal Window) ================= -->
+<!-- ================= New Stock Modal Window ================= -->
 <div class="modal fade" id="newStockModal" tabindex="-1" aria-labelledby="newStockModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content shadow-lg p-3">
       <div class="modal-header border-bottom pb-2">
         <h5 class="modal-title fw-bold text-primary" id="newStockModalLabel">
-          <i class="fa-solid fa-pen-to-square me-2"></i> নতুন স্টক এন্ট্রি (ব্যাচ ফর্ম)
+          <i class="fa-solid fa-pen-to-square me-2"></i> New Stock Entry (Batch Form)
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -438,41 +417,41 @@
         <form id="transactionForm">
           <div class="row g-3 mb-3">
             <div class="col-md-4">
-              <label class="form-label fw-semibold">লেনদেনের ধরন</label>
+              <label class="form-label fw-semibold">Transaction Type</label>
               <select id="txType" class="form-select" required onchange="updateFormLabels()">
-                <option value="Stock In">স্টক ইন (রিসিভ)</option>
-                <option value="Stock Out">স্টক আউট (ব্যবহার)</option>
+                <option value="Stock In">Stock In (Receive)</option>
+                <option value="Stock Out">Stock Out (Issue)</option>
               </select>
             </div>
             <div class="col-md-4">
-              <label class="form-label fw-semibold">তারিখ</label>
+              <label class="form-label fw-semibold">Date</label>
               <input type="date" id="txDate" class="form-control" required>
             </div>
             <div class="col-md-4">
-              <label class="form-label fw-semibold" id="reNameLabel">সরবরাহকারী / ভেন্ডর</label>
-              <input type="text" id="reName" class="form-control" placeholder="নাম লিখুন">
+              <label class="form-label fw-semibold" id="reNameLabel">Vendor / Supplier</label>
+              <input type="text" id="reName" class="form-control" placeholder="Enter name">
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label fw-semibold">ইউজার আইডি / নোট</label>
-            <input type="text" id="userId" class="form-control" placeholder="প্রয়োজনীয় নোট বা আইডি দিন">
+            <label class="form-label fw-semibold">User ID / Note</label>
+            <input type="text" id="userId" class="form-control" placeholder="Required note or ID">
           </div>
 
           <!-- Batch Items Container -->
           <div class="mb-3">
-            <label class="form-label fw-semibold text-primary">পণ্য ও পরিমাণ তালিকা</label>
+            <label class="form-label fw-semibold text-primary">Products & Quantity List</label>
             <div id="batchItemsContainer" class="d-flex flex-column gap-2">
               <div class="batch-item-row d-flex gap-2 align-items-center">
-                <input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="পণ্যের নাম নির্বাচন করুন বা লিখুন" required>
-                <input type="number" class="form-control item-qty-input" placeholder="পরিমাণ" min="1" style="width: 120px;" required>
+                <input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="Select or type product name" required>
+                <input type="number" class="form-control item-qty-input" placeholder="Qty" min="1" style="width: 120px;" required>
                 <button type="button" class="btn btn-outline-danger" onclick="removeBatchRow(this)" disabled style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button>
               </div>
             </div>
           </div>
 
           <button type="button" class="btn btn-outline-primary w-100 mb-4 py-2" onclick="addBatchRow()">
-            <i class="fa-solid fa-plus me-1"></i> আরও পণ্য যোগ করুন
+            <i class="fa-solid fa-plus me-1"></i> Add More Products
           </button>
 
           <datalist id="itemListOptions">
@@ -480,12 +459,52 @@
           </datalist>
 
           <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal">বাতিল</button>
+            <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-tg px-5 py-2">
-              <i class="fa-solid fa-paper-plane me-1"></i> একসাথে সেভ করুন
+              <i class="fa-solid fa-paper-plane me-1"></i> Save All
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Smart Filter Popup Modal ================= -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg p-3">
+      <div class="modal-header border-bottom pb-2">
+        <h5 class="modal-title fw-bold text-primary" id="filterModalLabel">
+          <i class="fa-solid fa-sliders me-2"></i> Smart Search Filter
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Product Name</label>
+          <input type="text" id="searchProduct" onkeyup="renderUI()" class="form-control" placeholder="Onu, Router...">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Receiver / Entry Person</label>
+          <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control" placeholder="Name...">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date From</label>
+          <input type="date" id="searchDateFrom" onchange="renderUI()" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date To</label>
+          <input type="date" id="searchDateTo" onchange="renderUI()" class="form-control">
+        </div>
+        <div class="d-flex justify-content-between gap-2 mt-4">
+          <button onclick="resetFilters()" class="btn btn-outline-secondary w-50 py-2" style="font-size: 0.9rem;">
+            <i class="fa-solid fa-rotate-left me-1"></i> Reset
+          </button>
+          <button type="button" class="btn btn-tg w-50 py-2" data-bs-dismiss="modal">
+            Apply Filters
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -567,7 +586,7 @@
 
   function updateFormLabels() {
     const type = document.getElementById('txType').value;
-    document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'সরবরাহকারী / ভেন্ডর' : 'রিসিভার / টেকনিশিয়ান';
+    document.getElementById('reNameLabel').innerText = type === 'Stock In' ? 'Vendor / Supplier' : 'Receiver / Technician';
   }
 
   function addBatchRow() {
@@ -575,8 +594,8 @@
     const row = document.createElement('div');
     row.className = 'batch-item-row d-flex gap-2 align-items-center';
     row.innerHTML = `
-      <input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="পণ্যের নাম নির্বাচন করুন বা লিখুন" required>
-      <input type="number" class="form-control item-qty-input" placeholder="পরিমাণ" min="1" style="width: 120px;" required>
+      <input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="Select or type product name" required>
+      <input type="number" class="form-control item-qty-input" placeholder="Qty" min="1" style="width: 120px;" required>
       <button type="button" class="btn btn-outline-danger" onclick="removeBatchRow(this)" style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button>
     `;
     container.appendChild(row);
@@ -623,7 +642,7 @@
     } catch (e) {
       const errorEl = document.getElementById('authError');
       errorEl.style.display = 'block';
-      errorEl.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক ইমেইল ও পাসওয়ার্ড দিন।";
+      errorEl.innerText = "Login failed! Please check your email and password.";
     } finally {
       toggleLoader(false);
     }
@@ -665,7 +684,7 @@
     });
 
     if (Object.keys(batchUpdates).length === 0) {
-      alert("দয়া করে অন্তত একটি সঠিক পণ্যের নাম ও পরিমাণ দিন।");
+      alert("Please provide at least one valid product name and quantity.");
       return;
     }
 
@@ -677,19 +696,18 @@
       
       document.getElementById('batchItemsContainer').innerHTML = `
         <div class="batch-item-row d-flex gap-2 align-items-center">
-          <input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="পণ্যের নাম নির্বাচন করুন বা লিখুন" required>
-          <input type="number" class="form-control item-qty-input" placeholder="পরিমাণ" min="1" style="width: 120px;" required>
+          <input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="Select or type product name" required>
+          <input type="number" class="form-control item-qty-input" placeholder="Qty" min="1" style="width: 120px;" required>
           <button type="button" class="btn btn-outline-danger" onclick="removeBatchRow(this)" disabled style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button>
         </div>
       `;
 
-      // মডাল অটো বন্ধ করা
       const modalEl = document.getElementById('newStockModal');
       const modalInstance = bootstrap.Modal.getInstance(modalEl);
       if(modalInstance) modalInstance.hide();
 
     } catch (err) {
-      alert("ত্রুটি: " + err.message);
+      alert("Error: " + err.message);
     } finally {
       toggleLoader(false);
     }
@@ -723,7 +741,7 @@
     const stockMapTotal = {};
     activeCache.forEach(item => {
       const qty = Number(item.quantity) || 0;
-      const iName = item.itemName || 'অন্যান্য';
+      const iName = item.itemName || 'Other';
       if (!stockMapTotal[iName]) stockMapTotal[iName] = { in: 0, out: 0 };
       if (item.type === 'Stock In') stockMapTotal[iName].in += qty;
       else stockMapTotal[iName].out += qty;
@@ -734,7 +752,7 @@
     const allProducts = Object.keys(stockMapTotal);
     
     if (allProducts.length === 0) {
-      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-2">কোনো স্টক ডাটা নেই</div>`;
+      cardGrid.innerHTML = `<div class="col-12 text-center text-muted py-2">No stock data available</div>`;
     } else {
       allProducts.forEach(pName => {
         const pIn = stockMapTotal[pName].in;
@@ -746,12 +764,12 @@
           <div class="product-card telegram-bubble">
             <div class="product-title" title="${pName}">${pName}</div>
             <div class="d-flex justify-content-between align-items-center my-1" style="font-size: 0.75rem;">
-              <span class="text-muted">ইন:<b class="text-success">${pIn}</b></span>
-              <span class="text-muted">আউট:<b class="text-danger">${pOut}</b></span>
+              <span class="text-muted">In:<b class="text-success">${pIn}</b></span>
+              <span class="text-muted">Out:<b class="text-danger">${pOut}</b></span>
             </div>
             <div>
               <span class="stock-tag ${pBal >= 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">
-                স্টক: ${pBal}
+                Stock: ${pBal}
               </span>
             </div>
           </div>
@@ -779,7 +797,7 @@
       return matchProduct && matchPerson && matchDate;
     });
 
-    document.getElementById('recordCountBadge').innerText = `${_currentFilteredData.length} টি লেনদেন`;
+    document.getElementById('recordCountBadge').innerText = `${_currentFilteredData.length} Transactions`;
 
     const headerRow = document.getElementById('tableHeaderRow');
     const existingActionHeader = document.getElementById('actionHeaderCol');
@@ -787,7 +805,7 @@
       if (!existingActionHeader) {
         const th = document.createElement('th');
         th.id = 'actionHeaderCol';
-        th.innerText = 'অ্যাকশন';
+        th.innerText = 'Actions';
         headerRow.appendChild(th);
       }
     } else {
@@ -798,17 +816,17 @@
     tbody.innerHTML = '';
     const colCount = isAdmin() ? 7 : 6;
     if (_currentFilteredData.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="${colCount}" class="text-center text-muted py-3">কোনো লেনদেন রেকর্ড নেই</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="${colCount}" class="text-center text-muted py-3">No transaction records found</td></tr>`;
     } else {
       _currentFilteredData.forEach(item => {
         const badge = item.type === 'Stock In' 
-          ? `<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2">ইন</span>` 
-          : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2">আউট</span>`;
+          ? `<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2">In</span>` 
+          : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2">Out</span>`;
 
         let actionTd = isAdmin() ? `
           <td>
-            <button onclick="editTransaction('${item.id}')" class="btn btn-sm btn-outline-primary py-1 px-2 me-1" title="এডিট"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button onclick="deleteTransaction('${item.id}')" class="btn btn-sm btn-outline-danger py-1 px-2" title="ডিলিট"><i class="fa-solid fa-trash-can"></i></button>
+            <button onclick="editTransaction('${item.id}')" class="btn btn-sm btn-outline-primary py-1 px-2 me-1" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button onclick="deleteTransaction('${item.id}')" class="btn btn-sm btn-outline-danger py-1 px-2" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         ` : '';
 
@@ -830,7 +848,7 @@
     userTbody.innerHTML = '';
 
     if (_cache.length === 0) {
-      userTbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">কোনো অ্যাক্টিভিটি পাওয়া যায়নি</td></tr>`;
+      userTbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No activity logs found</td></tr>`;
     } else {
       _cache.forEach(item => {
         const entryTime = item.timestamp ? new Date(item.timestamp).toLocaleString('en-US', {
@@ -841,11 +859,11 @@
         const userMail = item.createdByEmail || 'Unknown';
         let statusBadge = '';
         if (item.isDeleted) {
-          statusBadge = `<span class="badge bg-danger rounded-pill px-2">ডিলিটেড</span>`;
+          statusBadge = `<span class="badge bg-danger rounded-pill px-2">Deleted</span>`;
         } else if (item.updatedBy) {
-          statusBadge = `<span class="badge bg-warning text-dark rounded-pill px-2">এডিটেড</span>`;
+          statusBadge = `<span class="badge bg-warning text-dark rounded-pill px-2">Edited</span>`;
         } else {
-          statusBadge = `<span class="badge bg-success rounded-pill px-2">নতুন</span>`;
+          statusBadge = `<span class="badge bg-success rounded-pill px-2">New</span>`;
         }
 
         const tr = document.createElement('tr');
@@ -864,10 +882,10 @@
 
   async function deleteTransaction(id) {
     if (!isAdmin()) {
-      alert("দুঃখিত! আপনার ডিলিট করার অনুমতি নেই।");
+      alert("Sorry! You do not have permission to delete.");
       return;
     }
-    if (confirm("আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান?")) {
+    if (confirm("Are you sure you want to delete this entry?")) {
       toggleLoader(true);
       try {
         await _db.ref(`isp_inventory/Central/transactions/${id}`).update({
@@ -876,7 +894,7 @@
           deletedAt: Date.now()
         });
       } catch (error) {
-        alert("ত্রুটি: " + error.message);
+        alert("Error: " + error.message);
       } finally {
         toggleLoader(false);
       }
@@ -885,16 +903,16 @@
 
   async function editTransaction(id) {
     if (!isAdmin()) {
-      alert("দুঃখিত! আপনার এডিট করার অনুমতি নেই।");
+      alert("Sorry! You do not have permission to edit.");
       return;
     }
     const targetItem = _cache.find(item => item.id === id);
     if (!targetItem) return;
 
-    const newQty = prompt("নতুন পরিমাণ (Qty) লিখুন:", targetItem.quantity);
+    const newQty = prompt("Enter new quantity (Qty):", targetItem.quantity);
     if (newQty === null) return; 
 
-    const newReName = prompt("নতুন গ্রহীতা / ভেন্ডরের নাম লিখুন:", targetItem.reName || '');
+    const newReName = prompt("Enter new receiver / vendor name:", targetItem.reName || '');
     if (newReName === null) return;
 
     toggleLoader(true);
@@ -906,7 +924,7 @@
         lastUpdated: Date.now()
       });
     } catch (error) {
-      alert("ত্রুটি: " + error.message);
+      alert("Error: " + error.message);
     } finally {
       toggleLoader(false);
     }
@@ -922,19 +940,19 @@
 
   function exportToExcel() {
     if (_currentFilteredData.length === 0) { 
-      alert("এক্সপোর্ট করার জন্য কোনো ডাটা নেই!"); 
+      alert("No data available to export!"); 
       return; 
     }
 
     const detailRows = _currentFilteredData.map((item, index) => ({
-      "ক্রমিক নং": index + 1,
-      "তারিখ": item.date || '-',
-      "লেনদেনের ধরন": item.type || '-',
-      "পণ্যের নাম": item.itemName || '-',
-      "পরিমাণ (Qty)": item.quantity || 0,
-      "গ্রহীতা / ভেন্ডরের নাম": item.reName || '-',
-      "ইউজার আইডি / নোট": item.userId || '-',
-      "এন্ট্রিদাতা ইমেইল": item.createdByEmail || '-'
+      "Serial No": index + 1,
+      "Date": item.date || '-',
+      "Type": item.type || '-',
+      "Product Name": item.itemName || '-',
+      "Quantity (Qty)": item.quantity || 0,
+      "Receiver / Vendor": item.reName || '-',
+      "User ID / Note": item.userId || '-',
+      "Creator Email": item.createdByEmail || '-'
     }));
 
     const workbook1 = XLSX.utils.book_new();
@@ -945,7 +963,7 @@
     const stockMapTotal = {};
     _currentFilteredData.forEach(item => {
       const qty = Number(item.quantity) || 0;
-      const iName = item.itemName || 'অন্যান্য';
+      const iName = item.itemName || 'Other';
       if (!stockMapTotal[iName]) stockMapTotal[iName] = { in: 0, out: 0 };
       if (item.type === 'Stock In') stockMapTotal[iName].in += qty;
       else stockMapTotal[iName].out += qty;
@@ -965,20 +983,20 @@
       totalBalanceSum += balance;
 
       return {
-        "ক্রমিক": index + 1,
-        "পণ্যের নাম": pName,
-        "মোট স্টক ইন (In)": totalIn,
-        "মোট স্টক আউট (Out)": totalOut,
-        "অবশিষ্ট স্টক (Balance)": balance
+        "Serial": index + 1,
+        "Product Name": pName,
+        "Total Stock In": totalIn,
+        "Total Stock Out": totalOut,
+        "Balance Stock": balance
       };
     });
 
     summaryRows.push({
-      "ক্রমিক": "",
-      "পণ্যের নাম": "সর্বমোট (TOTAL)",
-      "মোট স্টক ইন (In)": totalInSum,
-      "মোট স্টক আউট (Out)": totalOutSum,
-      "অবশিষ্ট স্টক (Balance)": totalBalanceSum
+      "Serial": "",
+      "Product Name": "TOTAL",
+      "Total Stock In": totalInSum,
+      "Total Stock Out": totalOutSum,
+      "Balance Stock": totalBalanceSum
     });
 
     const workbook2 = XLSX.utils.book_new();
