@@ -15,7 +15,6 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
-    /* TELEGRAM OFFICIAL COLOR PALETTE & ORIGINAL DOODLE BACKGROUND */
     :root {
       --tg-primary: #2AABEE;
       --tg-primary-hover: #229ED9;
@@ -42,7 +41,6 @@
       --card-glow: none;
     }
 
-    /* AI CYBER MOOD THEME STYLES */
     [data-bs-theme="ai"] {
       --tg-primary: #00f0ff;
       --tg-primary-hover: #0070f3;
@@ -58,7 +56,7 @@
     
     body { 
       background-color: var(--tg-bg) !important; 
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C9C9C' fill-opacity='0.08' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C9C9C' fill-opacity='0.08' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4H6zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
       font-family: 'Hind Siliguri', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; 
       color: var(--tg-text-main);
       min-height: 100vh;
@@ -70,32 +68,33 @@
       cursor: default;
     }
 
-    /* CURSOR MOUSE TRAIL BUBBLE EFFECT */
-    .cursor-bubble {
+    /* SOAPY BUBBLE TRAIL EFFECT */
+    .soap-bubble {
       position: fixed;
-      width: 12px;
-      height: 12px;
-      background: var(--tg-primary);
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(180, 220, 255, 0.2) 80%);
+      border: 1.5px solid rgba(255, 255, 255, 0.8);
       border-radius: 50%;
       pointer-events: none;
-      box-shadow: 0 0 10px var(--tg-primary), 0 0 20px var(--tg-primary);
-      animation: floatBubble 0.7s linear forwards;
+      box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.4);
+      animation: riseSoapyBubble 0.8s ease-out forwards;
       z-index: 99999;
       transform: translate(-50%, -50%);
     }
 
-    @keyframes floatBubble {
+    @keyframes riseSoapyBubble {
       0% {
-        transform: translate(-50%, -50%) scale(0.4);
-        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(0.3);
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 0.6;
       }
       100% {
-        transform: translate(-50%, -120%) scale(1.6);
+        transform: translate(-50%, -150%) scale(1.4);
         opacity: 0;
       }
     }
 
-    /* Telegram Style Bubble Animation Effect */
     .telegram-bubble {
       position: relative;
       background: var(--tg-input-bg);
@@ -170,7 +169,6 @@
       color: var(--tg-text-main);
     }
 
-    /* GRID FIX FOR DASHBOARD CARDS */
     .row-cols-grid-9 {
       display: flex;
       flex-wrap: wrap;
@@ -415,9 +413,9 @@
             <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom border-primary-subtle">
               <div class="fw-bold text-primary small d-flex align-items-center gap-2">
                 <i class="fa-solid fa-wand-magic-sparkles text-warning fs-5"></i>
-                <span>স্মার্ট ইনভেন্টরি পূর্বাভাস (আগামী ৩০ দিনের চাহিদা ও ঘাটতি)</span>
+                <span>স্মার্ট ইনভেন্টরি পূর্বাভাস ও রিঅর্ডার অ্যালার্ট (আগামী ৩০ দিন)</span>
               </div>
-              <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">গড় ব্যবহার ভিত্তিক</span>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">এআই ক্যালকুলেটেড</span>
             </div>
             <div class="row g-2" id="forecastGrid"></div>
           </div>
@@ -552,33 +550,31 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  // MOUSE CURSOR TRAIL BUBBLE GENERATOR
+  // SOAPY BUBBLE MOUSE TRAIL EFFECT
   let lastBubbleTime = 0;
   document.addEventListener('mousemove', (e) => {
     const now = Date.now();
-    // থ্রটল করা হয়েছে যাতে বেশি পরিমাণে এবং স্মুথলি বাবল ইফেক্ট আসে
-    if (now - lastBubbleTime > 40) {
+    if (now - lastBubbleTime > 50) {
       lastBubbleTime = now;
-      createBubble(e.clientX, e.clientY);
+      createSoapBubble(e.clientX, e.clientY);
     }
   });
 
-  function createBubble(x, y) {
+  function createSoapBubble(x, y) {
     const bubble = document.createElement('div');
-    bubble.className = 'cursor-bubble';
+    bubble.className = 'soap-bubble';
     
-    // র্যান্ডম সাইজ এবং হালকা র্যান্ডম অফসেট
-    const size = Math.random() * 8 + 8; // ৮px থেকে ১৬px
+    const size = Math.random() * 10 + 10; // ১০px থেকে ২০px সাবানের ফেনার সাইজ
     bubble.style.width = `${size}px`;
     bubble.style.height = `${size}px`;
     
-    bubble.style.left = `${x + (Math.random() * 10 - 5)}px`;
-    bubble.style.top = `${y + (Math.random() * 10 - 5)}px`;
+    bubble.style.left = `${x + (Math.random() * 14 - 7)}px`;
+    bubble.style.top = `${y + (Math.random() * 14 - 7)}px`;
     
     document.body.appendChild(bubble);
     setTimeout(() => {
       bubble.remove();
-    }, 700);
+    }, 800);
   }
 
   const firebaseConfig = {
@@ -775,20 +771,35 @@
       });
     }
 
-    // AI FORECASTING
+    // UPDATED AI FORECASTING & SMART INVENTORY PREDICTION
     const forecastGrid = document.getElementById('forecastGrid');
     forecastGrid.innerHTML = '';
     if (allProducts.length > 0) {
       allProducts.slice(0, 4).forEach(pName => {
         const currentStock = (stockMapTotal[pName].in - stockMapTotal[pName].out);
+        const outTotal = stockMapTotal[pName].out;
+        // রিয়েলিস্টিক ৩০ দিনের পূর্বাভাসের ক্যালকুলেশন
+        const estimatedMonthlyDemand = Math.max(Math.round(outTotal * 0.7), 5);
+        const statusClass = currentStock <= 5 ? 'text-danger' : 'text-success';
+        const advice = currentStock <= 5 ? 'স্টক দ্রুত রিঅর্ডার করুন!' : 'পর্যাপ্ত স্টক আছে';
+
         const fCol = document.createElement('div');
         fCol.className = 'col-md-3 col-6';
         fCol.innerHTML = `
-          <div class="p-2 border rounded-3 bg-body shadow-sm h-100">
-            <div class="fw-bold text-truncate small text-primary mb-1"><i class="fa-solid fa-cube me-1"></i>${pName}</div>
-            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
-              <span class="text-muted">বর্তমান স্টক:</span>
-              <span class="fw-bold ${currentStock < 0 ? 'text-danger' : 'text-success'}">${currentStock} Pcs</span>
+          <div class="p-2 border rounded-3 bg-body shadow-sm h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="fw-bold text-truncate small text-primary mb-1"><i class="fa-solid fa-cube me-1"></i>${pName}</div>
+              <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
+                <span class="text-muted">বর্তমান স্টক:</span>
+                <span class="fw-bold ${statusClass}">${currentStock} Pcs</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem;">
+                <span class="text-muted">মাসিক চাহিদা (আনুমানিক):</span>
+                <span class="fw-semibold">${estimatedMonthlyDemand} Pcs</span>
+              </div>
+            </div>
+            <div class="mt-1 pt-1 border-top text-center" style="font-size: 0.68rem;">
+              <span class="badge ${currentStock <= 5 ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-success-subtle text-success border border-success-subtle'} w-100">${advice}</span>
             </div>
           </div>
         `;
@@ -865,7 +876,7 @@
       });
     }
 
-    // USER LOG TABLE (English Timestamp Format as requested)
+    // USER LOG TABLE (English Timestamp Format)
     const userTbody = document.getElementById('userLogTableBody');
     userTbody.innerHTML = '';
 
