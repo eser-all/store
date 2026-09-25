@@ -108,12 +108,6 @@
       transition: all 0.3s ease;
     }
 
-    .forecast-card {
-      background: linear-gradient(135deg, rgba(42, 171, 238, 0.08) 0%, rgba(135, 116, 225, 0.08) 100%);
-      border: 1px solid var(--tg-primary);
-      border-radius: 14px;
-    }
-
     .form-control, .form-select {
       background-color: var(--tg-input-bg);
       border: 1px solid var(--tg-border);
@@ -309,6 +303,17 @@
     </div>
 
     <div class="container-fluid px-md-4" id="printableArea">
+      <!-- Dashboard Cards (Moved to Top) -->
+      <div class="card card-custom p-3 mb-3 telegram-bubble">
+        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+          <span class="badge bg-primary fs-6 px-3 py-2 rounded-3 shadow-sm">
+            <i class="fa-solid fa-chart-pie me-2"></i>ড্যাশবোর্ড
+          </span>
+          <span class="text-muted small">রিয়েল-টাইম আপডেট</span>
+        </div>
+        <div class="row-cols-grid-9" id="productCardGrid"></div>
+      </div>
+
       <div class="row g-3">
         <!-- Left Panel: Multi-Item Batch Stock Entry -->
         <div class="col-lg-3">
@@ -368,31 +373,7 @@
 
         <!-- Right Panel -->
         <div class="col-lg-9">
-
-          <!-- EXPANDED SMART INVENTORY FORECASTING DASHBOARD -->
-          <div class="card forecast-card p-4 mb-3 telegram-bubble">
-            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-primary-subtle">
-              <div class="fw-bold text-primary fs-6 d-flex align-items-center gap-2">
-                <i class="fa-solid fa-chart-line text-warning fs-4"></i>
-                <span>স্মার্ট ইনভেন্টরি পূর্বাভাস ও লাইভ ড্যাশবোর্ড (পরবর্তী ৩০ দিন)</span>
-              </div>
-              <span class="badge bg-primary text-white rounded-pill px-3 py-1">এআই অ্যানালিটিক্স সক্রিয়</span>
-            </div>
-            <div class="row g-3" id="forecastGrid"></div>
-          </div>
-
-          <!-- 1. Main Stock Live Position Cards -->
-          <div class="card card-custom p-3 mb-3 telegram-bubble">
-            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-              <span class="badge bg-primary fs-6 px-3 py-2 rounded-3 shadow-sm">
-                <i class="fa-solid fa-warehouse me-2"></i>স্টক পজিশন সামারি
-              </span>
-              <span class="text-muted small">রিয়েল-টাইম আপডেট</span>
-            </div>
-            <div class="row-cols-grid-9" id="productCardGrid"></div>
-          </div>
-
-          <!-- 2. Smart Search Filter Box -->
+          <!-- 1. Smart Search Filter Box -->
           <div class="card card-custom p-3 mb-3 telegram-bubble">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div class="fw-bold text-primary small">
@@ -428,7 +409,7 @@
             </div>
           </div>
 
-          <!-- 3. Tables Section -->
+          <!-- 2. Tables Section -->
           <ul class="nav nav-tabs border-bottom-0 mb-2" id="historyTabs" role="tablist">
             <li class="nav-item">
               <button class="nav-link active small" id="trans-tab" data-bs-toggle="tab" data-bs-target="#transPane" type="button">
@@ -770,41 +751,6 @@
           </div>
         `;
         cardGrid.appendChild(col);
-      });
-    }
-
-    // FORECASTING DASHBOARD
-    const forecastGrid = document.getElementById('forecastGrid');
-    forecastGrid.innerHTML = '';
-    if (allProducts.length > 0) {
-      allProducts.forEach(pName => {
-        const currentStock = (stockMapTotal[pName].in - stockMapTotal[pName].out);
-        const outTotal = stockMapTotal[pName].out;
-        const estimatedMonthlyDemand = Math.max(Math.round(outTotal * 0.7), 4);
-        const statusClass = currentStock <= 5 ? 'text-danger' : 'text-success';
-        const advice = currentStock <= 5 ? 'ঝুঁকিপূর্ণ! রিঅর্ডার জরুরী' : 'স্টক স্থিতিশীল আছে';
-
-        const fCol = document.createElement('div');
-        fCol.className = 'col-md-3 col-6';
-        fCol.innerHTML = `
-          <div class="p-3 border rounded-3 bg-body shadow-sm h-100 d-flex flex-column justify-content-between telegram-bubble">
-            <div>
-              <div class="fw-bold text-truncate small text-primary mb-2"><i class="fa-solid fa-cube me-1"></i>${pName}</div>
-              <div class="d-flex justify-content-between align-items-center mb-1" style="font-size: 0.78rem;">
-                <span class="text-muted">বর্তমান স্টক:</span>
-                <span class="fw-bold ${statusClass}">${currentStock} Pcs</span>
-              </div>
-              <div class="d-flex justify-content-between align-items-center" style="font-size: 0.78rem;">
-                <span class="text-muted">প্রত্যাশিত চাহিদা:</span>
-                <span class="fw-semibold">${estimatedMonthlyDemand} Pcs</span>
-              </div>
-            </div>
-            <div class="mt-2 pt-2 border-top text-center" style="font-size: 0.72rem;">
-              <span class="badge ${currentStock <= 5 ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-success-subtle text-success border border-success-subtle'} w-100 py-1">${advice}</span>
-            </div>
-          </div>
-        `;
-        forecastGrid.appendChild(fCol);
       });
     }
 
