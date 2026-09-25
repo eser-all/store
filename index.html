@@ -489,6 +489,11 @@
           <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Receiver / Entry Person</label>
           <input type="text" id="searchPerson" onkeyup="renderUI()" class="form-control" placeholder="Name...">
         </div>
+        <!-- User ID or Note Filter Field Added -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">User ID / Note</label>
+          <input type="text" id="searchUserId" onkeyup="renderUI()" class="form-control" placeholder="ID or note keywords...">
+        </div>
         <div class="mb-3">
           <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date From</label>
           <input type="date" id="searchDateFrom" onchange="renderUI()" class="form-control">
@@ -780,21 +785,21 @@
 
     const productQuery = document.getElementById('searchProduct').value.toLowerCase().trim();
     const personQuery = document.getElementById('searchPerson').value.toLowerCase().trim();
+    const userIdQuery = document.getElementById('searchUserId').value.toLowerCase().trim();
     const dateFrom = document.getElementById('searchDateFrom').value;
     const dateTo = document.getElementById('searchDateTo').value;
 
     _currentFilteredData = activeCache.filter(item => {
       const matchProduct = !productQuery || (item.itemName && item.itemName.toLowerCase().includes(productQuery));
-      const matchPerson = !personQuery || 
-                          (item.reName && item.reName.toLowerCase().includes(personQuery)) || 
-                          (item.userId && item.userId.toLowerCase().includes(personQuery)) ||
-                          (item.createdByEmail && item.createdByEmail.toLowerCase().includes(personQuery));
+      const matchPerson = !personQuery || (item.reName && item.reName.toLowerCase().includes(personQuery));
+      const matchUserId = !userIdQuery || (item.userId && item.userId.toLowerCase().includes(userIdQuery));
+      
       let matchDate = true;
       if (item.date) {
         if (dateFrom && item.date < dateFrom) matchDate = false;
         if (dateTo && item.date > dateTo) matchDate = false;
       }
-      return matchProduct && matchPerson && matchDate;
+      return matchProduct && matchPerson && matchUserId && matchDate;
     });
 
     document.getElementById('recordCountBadge').innerText = `${_currentFilteredData.length} Transactions`;
@@ -933,6 +938,7 @@
   function resetFilters() {
     document.getElementById('searchProduct').value = '';
     document.getElementById('searchPerson').value = '';
+    document.getElementById('searchUserId').value = '';
     document.getElementById('searchDateFrom').value = '';
     document.getElementById('searchDateTo').value = '';
     renderUI();
