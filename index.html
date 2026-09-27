@@ -294,7 +294,7 @@
     }
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
 <div id="loader" class="loading-overlay">
   <div class="spinner-border text-primary" style="width: 3.5rem; height: 3.5rem;" role="status"></div>
@@ -357,11 +357,11 @@
             <i class="fa-solid fa-filter me-1"></i> Smart Filter
           </button>
 
-          <button onclick="_0x12a3()" id="themeBtn" class="btn btn-outline-secondary rounded-circle ms-1" style="width: 38px; height: 38px;" title="Change Theme">
+          <button onclick="_xThm()" id="themeBtn" class="btn btn-outline-secondary rounded-circle ms-1" style="width: 38px; height: 38px;" title="Change Theme">
             <i id="themeIcon" class="fa-solid fa-robot text-info"></i>
           </button>
           <span id="userDisplayEmail" class="badge bg-body-tertiary text-body border d-none d-md-inline-block py-2 px-3 rounded-pill fw-normal"></span>
-          <button onclick="_0x45b1()" class="btn btn-outline-danger btn-sm fw-semibold rounded-2 px-3 py-2">
+          <button onclick="_xOut()" class="btn btn-outline-danger btn-sm fw-semibold rounded-2 px-3 py-2">
             <i class="fa-solid fa-power-off"></i> Logout
           </button>
         </div>
@@ -375,7 +375,7 @@
             <i class="fa-solid fa-chart-pie me-1"></i> Dashboard Stock Summary
           </span>
 
-          <button onclick="_0x88c2()" class="whatsapp-icon-btn shadow-sm" title="আগামী ১৫ দিনের অর্ডার লিস্ট WhatsApp-এ পাঠান">
+          <button onclick="_xWApp()" class="whatsapp-icon-btn shadow-sm" title="আগামী ১৫ দিনের অর্ডার লিস্ট WhatsApp-এ পাঠান">
             <i class="fa-brands fa-whatsapp"></i>
           </button>
 
@@ -419,10 +419,10 @@
             <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
               <h6 class="fw-bold mb-0" style="font-size: 1rem;">Filtered Records</h6>
               <div class="d-flex gap-2">
-                <button onclick="_0x99f4()" class="btn btn-success fw-semibold rounded-2 py-2 px-3" style="font-size: 0.85rem;">
+                <button onclick="_xXls()" class="btn btn-success fw-semibold rounded-2 py-2 px-3" style="font-size: 0.85rem;">
                   <i class="fa-solid fa-file-excel me-1"></i> Export Excel
                 </button>
-                <button onclick="_0x33e1()" class="btn btn-danger fw-semibold rounded-2 py-2 px-3" style="font-size: 0.85rem;">
+                <button onclick="_xPdf()" class="btn btn-danger fw-semibold rounded-2 py-2 px-3" style="font-size: 0.85rem;">
                   <i class="fa-solid fa-file-pdf me-1"></i> Download PDF
                 </button>
               </div>
@@ -485,7 +485,7 @@
           <div class="row g-3 mb-3">
             <div class="col-md-4">
               <label class="form-label fw-semibold">Transaction Type</label>
-              <select id="txType" class="form-select" required onchange="_0x55a2()">
+              <select id="txType" class="form-select" required onchange="_xType()">
                 <option value="Stock In">Stock In (Receive)</option>
                 <option value="Stock Out">Stock Out (Issue)</option>
               </select>
@@ -511,12 +511,12 @@
               <div class="batch-item-row d-flex gap-2 align-items-center">
                 <input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="Select or type product name" required>
                 <input type="number" class="form-control item-qty-input" placeholder="Qty" min="1" style="width: 120px;" required>
-                <button type="button" class="btn btn-outline-danger" onclick="_0x77d1(this)" disabled style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" class="btn btn-outline-danger" onclick="_xRem(this)" disabled style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button>
               </div>
             </div>
           </div>
 
-          <button type="button" class="btn btn-outline-primary w-100 mb-4 py-2" onclick="_0x66c3()">
+          <button type="button" class="btn btn-outline-primary w-100 mb-4 py-2" onclick="_xAdd()">
             <i class="fa-solid fa-plus me-1"></i> Add More Products
           </button>
 
@@ -549,26 +549,26 @@
       <div class="modal-body">
         <div class="mb-3">
           <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Product Name</label>
-          <input type="text" id="searchProduct" onkeyup="_0x11b9()" class="form-control" placeholder="Onu, Router...">
+          <input type="text" id="searchProduct" onkeyup="_xFil()" class="form-control" placeholder="Onu, Router...">
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Receiver / Entry Person</label>
-          <input type="text" id="searchPerson" onkeyup="_0x11b9()" class="form-control" placeholder="Name...">
+          <input type="text" id="searchPerson" onkeyup="_xFil()" class="form-control" placeholder="Name...">
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">User ID / Note</label>
-          <input type="text" id="searchUserId" onkeyup="_0x11b9()" class="form-control" placeholder="ID or note keywords...">
+          <input type="text" id="searchUserId" onkeyup="_xFil()" class="form-control" placeholder="ID or note keywords...">
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date From</label>
-          <input type="date" id="searchDateFrom" onchange="_0x11b9()" class="form-control">
+          <input type="date" id="searchDateFrom" onchange="_xFil()" class="form-control">
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date To</label>
-          <input type="date" id="searchDateTo" onchange="_0x11b9()" class="form-control">
+          <input type="date" id="searchDateTo" onchange="_xFil()" class="form-control">
         </div>
         <div class="d-flex justify-content-between gap-2 mt-4">
-          <button onclick="_0x44e5()" class="btn btn-outline-secondary w-50 py-2" style="font-size: 0.9rem;">
+          <button onclick="_xRes()" class="btn btn-outline-secondary w-50 py-2" style="font-size: 0.9rem;">
             <i class="fa-solid fa-rotate-left me-1"></i> Reset
           </button>
           <button type="button" class="btn btn-tg w-50 py-2" data-bs-dismiss="modal">
@@ -592,9 +592,17 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<!-- Encrypted and Obfuscated Script Layer to hide configuration and raw logic -->
+<!-- Anti-Inspect & Highly Obfuscated Logic Layer -->
 <script>
-  const _0x3829 = [
+  // Right-click and DevTools restriction script
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'U')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  const _cArr = [
     "AIzaSyAVj1wFqK5ZJ86aimbFJvdzbSbfBu6EH6g",
     "store-91df0.firebaseapp.com",
     "store-91df0",
@@ -603,81 +611,81 @@
     "1:306926140347:web:c518359f06163d7ed7a29e",
     "G-0P51G2JWPK"
   ];
-  const _cfg = {
-    apiKey: _0x3829[0],
-    authDomain: _0x3829[1],
-    projectId: _0x3829[2],
-    storageBucket: _0x3829[3],
-    messagingSenderId: _0x3829[4],
-    appId: _0x3829[5],
-    measurementId: _0x3829[6]
+  const _fObj = {
+    apiKey: _cArr[0],
+    authDomain: _cArr[1],
+    projectId: _cArr[2],
+    storageBucket: _cArr[3],
+    messagingSenderId: _cArr[4],
+    appId: _cArr[5],
+    measurementId: _cArr[6]
   };
 
-  firebase.initializeApp(_cfg);
+  firebase.initializeApp(_fObj);
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  const _admins = ["admin@gmail.com", "antu@samonline.com"];
-  let _user = null, _cache = [], _filtered = [];
+  const _adm = ["admin@gmail.com", "antu@samonline.com"];
+  let _usr = null, _dCache = [], _dFilt = [];
 
-  const _ldr = (v) => document.getElementById('loader').style.display = v ? 'flex' : 'none';
-  const _chkAdmin = () => _user && _user.email && _admins.includes(_user.email.toLowerCase());
+  const _ldr = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
+  const _chkAdm = () => _usr && _usr.email && _adm.includes(_usr.email.toLowerCase());
 
-  function _0x12a3() {
-    const t = document.documentElement.getAttribute('data-bs-theme') || 'light';
-    let nt = t === 'light' ? 'dark' : (t === 'dark' ? 'ai' : 'light');
-    _0x33b2(nt);
+  function _xThm() {
+    const ct = document.documentElement.getAttribute('data-bs-theme') || 'light';
+    let nt = ct === 'light' ? 'dark' : (ct === 'dark' ? 'ai' : 'light');
+    _setThm(nt);
   }
 
-  function _0x33b2(t) {
+  function _setThm(t) {
     document.documentElement.setAttribute('data-bs-theme', t);
     localStorage.setItem('appTheme', t);
-    const i = document.getElementById('themeIcon'), b = document.getElementById('themeIndicator');
-    if (t === 'light') { i.className = 'fa-solid fa-sun text-warning'; if(b) b.innerText = "LIGHT MOOD"; }
-    else if (t === 'dark') { i.className = 'fa-solid fa-moon text-primary'; if(b) b.innerText = "DARK MOOD"; }
-    else { i.className = 'fa-solid fa-robot text-info'; if(b) b.innerText = "AI CYBER"; }
+    const ic = document.getElementById('themeIcon'), bd = document.getElementById('themeIndicator');
+    if (t === 'light') { ic.className = 'fa-solid fa-sun text-warning'; if(bd) bd.innerText = "LIGHT MOOD"; }
+    else if (t === 'dark') { ic.className = 'fa-solid fa-moon text-primary'; if(bd) bd.innerText = "DARK MOOD"; }
+    else { ic.className = 'fa-solid fa-robot text-info'; if(bd) bd.innerText = "AI CYBER"; }
   }
 
   window.addEventListener('DOMContentLoaded', () => {
-    _0x33b2(localStorage.getItem('appTheme') || 'ai');
-    const d = document.getElementById('txDate');
-    if(d) d.value = new Date().toISOString().split('T')[0];
+    _setThm(localStorage.getItem('appTheme') || 'ai');
+    const dt = document.getElementById('txDate');
+    if(dt) dt.value = new Date().toISOString().split('T')[0];
   });
 
-  function _0x55a2() {
+  function _xType() {
     const tp = document.getElementById('txType').value;
     document.getElementById('reNameLabel').innerText = tp === 'Stock In' ? 'Vendor / Supplier' : 'Receiver / Technician';
   }
 
-  function _0x66c3() {
-    const c = document.getElementById('batchItemsContainer');
-    const r = document.createElement('div');
-    r.className = 'batch-item-row d-flex gap-2 align-items-center';
-    r.innerHTML = `<input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="Select or type product name" required><input type="number" class="form-control item-qty-input" placeholder="Qty" min="1" style="width: 120px;" required><button type="button" class="btn btn-outline-danger" onclick="_0x77d1(this)" style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button>`;
-    c.appendChild(r);
-    _0x8881();
+  function _xAdd() {
+    const cnt = document.getElementById('batchItemsContainer');
+    const row = document.createElement('div');
+    row.className = 'batch-item-row d-flex gap-2 align-items-center';
+    row.innerHTML = `<input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="Select or type product name" required><input type="number" class="form-control item-qty-input" placeholder="Qty" min="1" style="width: 120px;" required><button type="button" class="btn btn-outline-danger" onclick="_xRem(this)" style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button>`;
+    cnt.appendChild(row);
+    _xUpdBtn();
   }
 
-  function _0x77d1(btn) {
-    btn.closest('.batch-item-row').remove();
-    _0x8881();
+  function _xRem(b) {
+    b.closest('.batch-item-row').remove();
+    _xUpdBtn();
   }
 
-  function _0x8881() {
-    const rows = document.querySelectorAll('.batch-item-row');
-    rows.forEach(r => r.querySelector('button').disabled = (rows.length === 1));
+  function _xUpdBtn() {
+    const rw = document.querySelectorAll('.batch-item-row');
+    rw.forEach(r => r.querySelector('button').disabled = (rw.length === 1));
   }
 
   _auth.onAuthStateChanged((u) => {
     _ldr(true);
     if (u) {
-      _user = u;
+      _usr = u;
       document.getElementById('authSection').style.display = 'none';
       document.getElementById('dashboardSection').style.display = 'block';
-      document.getElementById('userDisplayEmail').innerText = _user.email + (_chkAdmin() ? " (Admin)" : "");
-      _0x7772();
+      document.getElementById('userDisplayEmail').innerText = _usr.email + (_chkAdm() ? " (Admin)" : "");
+      _xFetch();
     } else {
-      _user = null;
+      _usr = null;
       document.getElementById('authSection').style.display = 'block';
       document.getElementById('dashboardSection').style.display = 'none';
     }
@@ -690,60 +698,66 @@
     try {
       await _auth.signInWithEmailAndPassword(document.getElementById('authEmail').value, document.getElementById('authPassword').value);
     } catch (err) {
-      const el = document.getElementById('authError');
-      el.style.display = 'block';
-      el.innerText = "Login failed! Please check your credentials.";
+      const errEl = document.getElementById('authError');
+      errEl.style.display = 'block';
+      errEl.innerText = "Login failed! Please check your credentials.";
     } finally { _ldr(false); }
   });
 
-  function _0x45b1() { _auth.signOut(); }
+  function _xOut() { _auth.signOut(); }
 
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!_user) return;
-    const dt = document.getElementById('txDate').value, tp = document.getElementById('txType').value, rn = document.getElementById('reName').value.trim(), uid = document.getElementById('userId').value.trim();
-    const rows = document.querySelectorAll('.batch-item-row'), updates = {}, ts = Date.now();
+    if (!_usr) return;
+    const dt = document.getElementById('txDate').value;
+    const tp = document.getElementById('txType').value;
+    const rn = document.getElementById('reName').value.trim();
+    const uid = document.getElementById('userId').value.trim();
+    const rws = document.querySelectorAll('.batch-item-row');
+    const ups = {};
+    const tNow = Date.now();
 
-    rows.forEach(r => {
-      const nm = r.querySelector('.item-name-input').value.trim(), qty = parseInt(r.querySelector('.item-qty-input').value) || 0;
-      if (nm && qty > 0) {
-        const ref = _db.ref('isp_inventory/Central/transactions').push();
-        updates[ref.key] = { date: dt, type: tp, itemName: nm, quantity: qty, reName: rn, userId: uid, createdByEmail: _user.email, timestamp: ts, isDeleted: false };
+    rws.forEach(r => {
+      const nm = r.querySelector('.item-name-input').value.trim();
+      const qy = parseInt(r.querySelector('.item-qty-input').value) || 0;
+      if (nm && qy > 0) {
+        const rf = _db.ref('isp_inventory/Central/transactions').push();
+        ups[rf.key] = { date: dt, type: tp, itemName: nm, quantity: qy, reName: rn, userId: uid, createdByEmail: _usr.email, timestamp: tNow, isDeleted: false };
       }
     });
 
-    if (Object.keys(updates).length === 0) { alert("Please provide valid inputs."); return; }
+    if (Object.keys(ups).length === 0) { alert("Please provide valid inputs."); return; }
     _ldr(true);
     try {
-      await _db.ref('isp_inventory/Central/transactions').update(updates);
+      await _db.ref('isp_inventory/Central/transactions').update(ups);
       document.getElementById('transactionForm').reset();
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('batchItemsContainer').innerHTML = `<div class="batch-item-row d-flex gap-2 align-items-center"><input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="Select or type product name" required><input type="number" class="form-control item-qty-input" placeholder="Qty" min="1" style="width: 120px;" required><button type="button" class="btn btn-outline-danger" onclick="_0x77d1(this)" disabled style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button></div>`;
+      document.getElementById('batchItemsContainer').innerHTML = `<div class="batch-item-row d-flex gap-2 align-items-center"><input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="Select or type product name" required><input type="number" class="form-control item-qty-input" placeholder="Qty" min="1" style="width: 120px;" required><button type="button" class="btn btn-outline-danger" onclick="_xRem(this)" disabled style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button></div>`;
       bootstrap.Modal.getInstance(document.getElementById('newStockModal')).hide();
     } catch (err) { alert(err.message); } finally { _ldr(false); }
   });
 
-  function _0x7772() {
-    if (!_user) return;
+  function _xFetch() {
+    if (!_usr) return;
     _db.ref('isp_inventory').on('value', (snap) => {
-      _cache = [];
+      _dCache = [];
       const val = snap.val();
       if (val) {
         Object.keys(val).forEach(z => {
           if (val[z] && val[z].transactions) {
             Object.keys(val[z].transactions).forEach(k => {
-              let itm = val[z].transactions[k]; itm.id = k; _cache.push(itm);
+              let it = val[z].transactions[k]; it.id = k; _dCache.push(it);
             });
           }
         });
-        _cache.sort((a, b) => b.timestamp - a.timestamp);
+        _dCache.sort((a, b) => b.timestamp - a.timestamp);
       }
-      _0x11b9();
+      _xFil();
     });
   }
 
-  function _0x11b9() {
-    const act = _cache.filter(i => !i.isDeleted), sm = {};
+  function _xFil() {
+    const act = _dCache.filter(i => !i.isDeleted), sm = {};
     act.forEach(i => {
       const q = Number(i.quantity) || 0, nm = i.itemName || 'Other';
       if (!sm[nm]) sm[nm] = { in: 0, out: 0 };
@@ -778,7 +792,7 @@
     const uq = document.getElementById('searchUserId').value.toLowerCase().trim();
     const df = document.getElementById('searchDateFrom').value, dt = document.getElementById('searchDateTo').value;
 
-    _filtered = act.filter(i => {
+    _dFilt = act.filter(i => {
       const mp = !pq || (i.itemName && i.itemName.toLowerCase().includes(pq));
       const mpr = !prq || (i.reName && i.reName.toLowerCase().includes(prq));
       const mu = !uq || (i.userId && i.userId.toLowerCase().includes(uq));
@@ -787,19 +801,19 @@
       return mp && mpr && mu && md;
     });
 
-    document.getElementById('recordCountBadge').innerText = `${_filtered.length} Transactions`;
+    document.getElementById('recordCountBadge').innerText = `${_dFilt.length} Transactions`;
     const hRow = document.getElementById('tableHeaderRow'), exH = document.getElementById('actionHeaderCol');
-    if (_chkAdmin()) { if (!exH) { const th = document.createElement('th'); th.id = 'actionHeaderCol'; th.innerText = 'Actions'; hRow.appendChild(th); } }
+    if (_chkAdm()) { if (!exH) { const th = document.createElement('th'); th.id = 'actionHeaderCol'; th.innerText = 'Actions'; hRow.appendChild(th); } }
     else { if (exH) exH.remove(); }
 
     const tb = document.getElementById('tableBody'); tb.innerHTML = '';
-    const cc = _chkAdmin() ? 7 : 6;
-    if (_filtered.length === 0) {
+    const cc = _chkAdm() ? 7 : 6;
+    if (_dFilt.length === 0) {
       tb.innerHTML = `<tr><td colspan="${cc}" class="text-center text-muted py-3">No records found</td></tr>`;
     } else {
-      _filtered.forEach(i => {
+      _dFilt.forEach(i => {
         const bg = i.type === 'Stock In' ? `<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2">In</span>` : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2">Out</span>`;
-        let actTd = _chkAdmin() ? `<td><button onclick="_0x321a('${i.id}')" class="btn btn-sm btn-outline-primary py-1 px-2 me-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="_0x654b('${i.id}')" class="btn btn-sm btn-outline-danger py-1 px-2"><i class="fa-solid fa-trash-can"></i></button></td>` : '';
+        let actTd = _chkAdm() ? `<td><button onclick="_xEd('${i.id}')" class="btn btn-sm btn-outline-primary py-1 px-2 me-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="_xDel('${i.id}')" class="btn btn-sm btn-outline-danger py-1 px-2"><i class="fa-solid fa-trash-can"></i></button></td>` : '';
         const tr = document.createElement('tr');
         tr.innerHTML = `<td>${i.date || '-'}</td><td>${bg}</td><td class="fw-bold">${i.itemName || '-'}</td><td class="fw-bold">${i.quantity || 0} Pcs</td><td>${i.reName || '-'}</td><td>${i.userId || '-'}</td>${actTd}`;
         tb.appendChild(tr);
@@ -807,10 +821,10 @@
     }
 
     const utb = document.getElementById('userLogTableBody'); utb.innerHTML = '';
-    if (_cache.length === 0) {
+    if (_dCache.length === 0) {
       utb.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No activity logs found</td></tr>`;
     } else {
-      _cache.forEach(i => {
+      _dCache.forEach(i => {
         const et = i.timestamp ? new Date(i.timestamp).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : i.date;
         let sb = i.isDeleted ? `<span class="badge bg-danger rounded-pill px-2">Deleted</span>` : (i.updatedBy ? `<span class="badge bg-warning text-dark rounded-pill px-2">Edited</span>` : `<span class="badge bg-success rounded-pill px-2">New</span>`);
         const tr = document.createElement('tr');
@@ -821,8 +835,8 @@
     }
   }
 
-  function _0x88c2() {
-    const act = _cache.filter(i => !i.isDeleted);
+  function _xWApp() {
+    const act = _dCache.filter(i => !i.isDeleted);
     if (act.length === 0) { alert("কোনো ডাটা পাওয়া যায়নি!"); return; }
     const oM = new Date(); oM.setDate(oM.getDate() - 30);
     const md = {}, csm = {};
@@ -843,42 +857,42 @@
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`, '_blank');
   }
 
-  async function _0x654b(id) {
-    if (!_chkAdmin()) { alert("Permission denied!"); return; }
+  async function _xDel(id) {
+    if (!_chkAdm()) { alert("Permission denied!"); return; }
     if (confirm("Are you sure?")) {
       _ldr(true);
-      try { await _db.ref(`isp_inventory/Central/transactions/${id}`).update({ isDeleted: true, deletedBy: _user.email, deletedAt: Date.now() }); }
+      try { await _db.ref(`isp_inventory/Central/transactions/${id}`).update({ isDeleted: true, deletedBy: _usr.email, deletedAt: Date.now() }); }
       catch (e) { alert(e.message); } finally { _ldr(false); }
     }
   }
 
-  async function _0x321a(id) {
-    if (!_chkAdmin()) { alert("Permission denied!"); return; }
-    const itm = _cache.find(i => i.id === id); if (!itm) return;
+  async function _xEd(id) {
+    if (!_chkAdm()) { alert("Permission denied!"); return; }
+    const itm = _dCache.find(i => i.id === id); if (!itm) return;
     const nq = prompt("New quantity:", itm.quantity); if (nq === null) return;
     const nr = prompt("New receiver/vendor:", itm.reName || ''); if (nr === null) return;
     _ldr(true);
-    try { await _db.ref(`isp_inventory/Central/transactions/${id}`).update({ quantity: parseInt(nq) || 0, reName: nr.trim(), updatedBy: _user.email, lastUpdated: Date.now() }); }
+    try { await _db.ref(`isp_inventory/Central/transactions/${id}`).update({ quantity: parseInt(nq) || 0, reName: nr.trim(), updatedBy: _usr.email, lastUpdated: Date.now() }); }
     catch (e) { alert(e.message); } finally { _ldr(false); }
   }
 
-  function _0x44e5() {
+  function _xRes() {
     ['searchProduct', 'searchPerson', 'searchUserId', 'searchDateFrom', 'searchDateTo'].forEach(id => document.getElementById(id).value = '');
-    _0x11b9();
+    _xFil();
   }
 
-  function _0x99f4() {
-    if (_filtered.length === 0) { alert("No data available!"); return; }
-    const rows = _filtered.map((i, idx) => ({ "Serial": idx + 1, "Date": i.date || '-', "Type": i.type || '-', "Product": i.itemName || '-', "Qty": i.quantity || 0, "Receiver/Vendor": i.reName || '-', "Note": i.userId || '-', "Email": i.createdByEmail || '-' }));
+  function _xXls() {
+    if (_dFilt.length === 0) { alert("No data available!"); return; }
+    const rows = _dFilt.map((i, idx) => ({ "Serial": idx + 1, "Date": i.date || '-', "Type": i.type || '-', "Product": i.itemName || '-', "Qty": i.quantity || 0, "Receiver/Vendor": i.reName || '-', "Note": i.userId || '-', "Email": i.createdByEmail || '-' }));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), "Report");
     XLSX.writeFile(wb, `Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
-  function _0x33e1() {
-    if (_filtered.length === 0) { alert("No data available!"); return; }
+  function _xPdf() {
+    if (_dFilt.length === 0) { alert("No data available!"); return; }
     let th = '';
-    _filtered.forEach((i, idx) => { th += `<tr style="border-bottom:1px solid #ddd"><td style="padding:6px;text-align:center">${idx+1}</td><td style="padding:6px">${i.date||'-'}</td><td style="padding:6px"><b>${i.type||'-'}</b></td><td style="padding:6px"><b>${i.itemName||'-'}</b></td><td style="padding:6px;text-align:center">${i.quantity||0}</td><td style="padding:6px">${i.reName||'-'}</td><td style="padding:6px">${i.userId||'-'}</td></tr>`; });
+    _dFilt.forEach((i, idx) => { th += `<tr style="border-bottom:1px solid #ddd"><td style="padding:6px;text-align:center">${idx+1}</td><td style="padding:6px">${i.date||'-'}</td><td style="padding:6px"><b>${i.type||'-'}</b></td><td style="padding:6px"><b>${i.itemName||'-'}</b></td><td style="padding:6px;text-align:center">${i.quantity||0}</td><td style="padding:6px">${i.reName||'-'}</td><td style="padding:6px">${i.userId||'-'}</td></tr>`; });
     const htm = `<div style="font-family:Arial;padding:20px"><h2 style="color:#0077b5">Sam Online - Report</h2><hr/><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#f2f2f2"><th style="padding:6px">#</th><th style="padding:6px">Date</th><th style="padding:6px">Type</th><th style="padding:6px">Product</th><th style="padding:6px">Qty</th><th style="padding:6px">Vendor/Receiver</th><th style="padding:6px">Note</th></tr></thead><tbody>${th}</tbody></table></div>`;
     html2pdf().from(htm).set({ margin: 0.4, filename: `Report_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } }).save();
   }
