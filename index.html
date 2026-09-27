@@ -376,9 +376,9 @@
             <i class="fa-solid fa-chart-pie me-1"></i> Dashboard Stock Summary
           </span>
 
-          <!-- WhatsApp Order Icon & Button (Added right above Billboard/Notice bar) -->
-          <button onclick="generateWhatsAppOrder()" class="whatsapp-order-btn shadow-sm" title="আগামী ২০ দিনের অর্ডার লিস্ট তৈরি করুন">
-            <i class="fa-brands fa-whatsapp fs-5"></i> আগামী ২০ দিনের অর্ডার লিস্ট (WhatsApp)
+          <!-- WhatsApp Order Icon & Button (15 Days Short Format) -->
+          <button onclick="generateWhatsAppOrder()" class="whatsapp-order-btn shadow-sm" title="আগামী ১৫ দিনের অর্ডার লিস্ট তৈরি করুন">
+            <i class="fa-brands fa-whatsapp fs-5"></i> আগামী ১৫ দিনের অর্ডার লিস্ট (WhatsApp)
           </button>
 
           <span class="text-muted fw-semibold" style="font-size: 0.85rem;">Real-time Update</span>
@@ -971,7 +971,7 @@
     }
   }
 
-  // ================= WhatsApp Order Generator Logic ================= //
+  // ================= WhatsApp Order Generator Logic (15 Days Short Format) ================= //
   function generateWhatsAppOrder() {
     const activeCache = _cache.filter(i => !i.isDeleted);
     if (activeCache.length === 0) {
@@ -979,11 +979,10 @@
       return;
     }
 
-    // হিসাবের জন্য বিগত ৩০ দিন (১ মাস) আগের তারিখ বের করা
+    // গত ৩০ দিন (১ মাস) আগের তারিখ বের করা
     const oneMonthAgo = new Date();
     oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
 
-    // ১. গত ১ মাসের 'Stock Out' (ব্যবহার/চাহিদা) হিসাব করা
     const monthlyDemand = {};
     const currentStockMap = {};
 
@@ -1005,43 +1004,34 @@
       }
     });
 
-    let orderListText = `*🛒 Sam Online - আগামী ২০ দিনের স্টক অর্ডার লিস্ট*\n`;
-    orderListText += `📅 তারিখ: ${new Date().toLocaleDateString('bn-BD')}\n`;
-    orderListText += `------------------------------------------\n`;
-
+    let orderListText = `10-15 Days er jonno\n\n`;
     let itemCount = 0;
 
-    // প্রতিটি পণ্যের ১ দিনের গড় চাহিদা বের করে আগামী ২০ দিনের চাহিদা হিসাব করা এবং বর্তমান স্টক বাদ দেওয়া
+    // প্রতিটি পণ্যের ১ দিনের গড় চাহিদা বের করে আগামী ১৫ দিনের চাহিদা হিসাব করা এবং বর্তমান স্টক বাদ দেওয়া
     Object.keys(currentStockMap).forEach(pName => {
       const consumedLastMonth = monthlyDemand[pName] || 0; // গত ১ মাসের মোট চাহিদা
       const dailyAverageDemand = consumedLastMonth / 30;    // ১ দিনের গড় চাহিদা
-      const requiredFor20Days = Math.ceil(dailyAverageDemand * 20); // আগামী ২০ দিনের চাহিদা
+      const requiredFor15Days = Math.ceil(dailyAverageDemand * 15); // আগামী ১৫ দিনের চাহিদা
 
       const currentIn = currentStockMap[pName].in;
       const currentOut = currentStockMap[pName].out;
       const stockBalance = currentIn - currentOut; // বর্তমান স্টক
 
-      // ২০ দিনের চাহিদার জন্য কত পিস অর্ডার দিতে হবে (যদি বর্তমান স্টক ২০ দিনের চাহিদার চেয়ে কম হয়)
-      let orderNeeded = requiredFor20Days - stockBalance;
+      // ১৫ দিনের চাহিদার জন্য কত পিস অর্ডার দিতে হবে (যদি বর্তমান স্টক ১৫ দিনের চাহিদার চেয়ে কম হয়)
+      let orderNeeded = requiredFor15Days - stockBalance;
       if (orderNeeded < 0) orderNeeded = 0;
 
-      // যদি গত ১ মাসে কিছু ব্যবহার হয়ে থাকে বা বর্তমান স্টক কম থাকে তবেই লিস্টে দেখাবে
-      if (requiredFor20Days > 0) {
+      // যদি অর্ডার দেওয়ার প্রয়োজন হয় (অর্ডার সংখ্যা > ০) তবেই লিস্টে দেখাবে
+      if (orderNeeded > 0) {
         itemCount++;
-        orderListText += `${itemCount}. *${pName}*\n`;
-        orderListText += `   • বর্তমান স্টক: ${stockBalance} পিস\n`;
-        orderListText += `   • ২০ দিনের চাহিদা: ${requiredFor20Days} পিস\n`;
-        orderListText += `   • *অর্ডার করতে হবে: ${orderNeeded} পিস*\n\n`;
+        orderListText += `${pName} ${orderNeeded}p\n`;
       }
     });
 
     if (itemCount === 0) {
-      alert("গত ১ মাসের ট্রানজেকশন অনুযায়ী নতুন কোনো পণ্যের অর্ডার প্রয়োজন নেই।");
+      alert("গত ১ মাসের ট্রানজেকশন অনুযায়ী আগামী ১৫ দিনের জন্য নতুন কোনো পণ্যের অর্ডার প্রয়োজন নেই।");
       return;
     }
-
-    orderListText += `------------------------------------------\n`;
-    orderListText += `_দয়া করে উপরোক্ত পণ্যগুলো দ্রুত সরবরাহ নিশ্চিত করুন। ধন্যবাদ!_`;
 
     // WhatsApp-এ সরাসরি পাঠানোর জন্য Link তৈরি
     const encodedText = encodeURIComponent(orderListText);
