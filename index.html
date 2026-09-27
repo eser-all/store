@@ -272,25 +272,27 @@
       100% { transform: translate(-100%, 0); }
     }
 
-    /* WhatsApp Order Button Style */
-    .whatsapp-order-btn {
+    /* WhatsApp Order Icon Button Style */
+    .whatsapp-icon-btn {
       background-color: #25D366;
       color: #ffffff;
       border: none;
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 0.85rem;
-      font-weight: 600;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      font-size: 1.25rem;
       transition: all 0.2s ease;
       text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(37, 211, 102, 0.3);
     }
-    .whatsapp-order-btn:hover {
+    .whatsapp-icon-btn:hover {
       background-color: #20ba5a;
       color: #ffffff;
-      transform: translateY(-1px);
+      transform: scale(1.08);
     }
   </style>
 </head>
@@ -376,9 +378,9 @@
             <i class="fa-solid fa-chart-pie me-1"></i> Dashboard Stock Summary
           </span>
 
-          <!-- WhatsApp Order Icon & Button (15 Days Short Format) -->
-          <button onclick="generateWhatsAppOrder()" class="whatsapp-order-btn shadow-sm" title="আগামী ১৫ দিনের অর্ডার লিস্ট তৈরি করুন">
-            <i class="fa-brands fa-whatsapp fs-5"></i> আগামী ১৫ দিনের অর্ডার লিস্ট (WhatsApp)
+          <!-- WhatsApp Order Icon Only (15 Days Short Format) -->
+          <button onclick="generateWhatsAppOrder()" class="whatsapp-icon-btn shadow-sm" title="আগামী ১৫ দিনের অর্ডার লিস্ট WhatsApp-এ পাঠান (কোনো ডাটা যেন হারিয়ে না যায়)">
+            <i class="fa-brands fa-whatsapp"></i>
           </button>
 
           <span class="text-muted fw-semibold" style="font-size: 0.85rem;">Real-time Update</span>
@@ -979,7 +981,6 @@
       return;
     }
 
-    // গত ৩০ দিন (১ মাস) আগের তারিখ বের করা
     const oneMonthAgo = new Date();
     oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
 
@@ -990,12 +991,10 @@
       const qty = Number(item.quantity) || 0;
       const iName = item.itemName || 'Other';
 
-      // বর্তমান স্টক হিসাব
       if (!currentStockMap[iName]) currentStockMap[iName] = { in: 0, out: 0 };
       if (item.type === 'Stock In') currentStockMap[iName].in += qty;
       else currentStockMap[iName].out += qty;
 
-      // গত ১ মাসের আউটগোয়িং (চাহিদা) হিসাব
       if (item.type === 'Stock Out' && item.date) {
         const itemDate = new Date(item.date);
         if (itemDate >= oneMonthAgo) {
@@ -1007,21 +1006,18 @@
     let orderListText = `10-15 Days er jonno\n\n`;
     let itemCount = 0;
 
-    // প্রতিটি পণ্যের ১ দিনের গড় চাহিদা বের করে আগামী ১৫ দিনের চাহিদা হিসাব করা এবং বর্তমান স্টক বাদ দেওয়া
     Object.keys(currentStockMap).forEach(pName => {
-      const consumedLastMonth = monthlyDemand[pName] || 0; // গত ১ মাসের মোট চাহিদা
-      const dailyAverageDemand = consumedLastMonth / 30;    // ১ দিনের গড় চাহিদা
-      const requiredFor15Days = Math.ceil(dailyAverageDemand * 15); // আগামী ১৫ দিনের চাহিদা
+      const consumedLastMonth = monthlyDemand[pName] || 0;
+      const dailyAverageDemand = consumedLastMonth / 30;
+      const requiredFor15Days = Math.ceil(dailyAverageDemand * 15);
 
       const currentIn = currentStockMap[pName].in;
       const currentOut = currentStockMap[pName].out;
-      const stockBalance = currentIn - currentOut; // বর্তমান স্টক
+      const stockBalance = currentIn - currentOut;
 
-      // ১৫ দিনের চাহিদার জন্য কত পিস অর্ডার দিতে হবে (যদি বর্তমান স্টক ১৫ দিনের চাহিদার চেয়ে কম হয়)
       let orderNeeded = requiredFor15Days - stockBalance;
       if (orderNeeded < 0) orderNeeded = 0;
 
-      // যদি অর্ডার দেওয়ার প্রয়োজন হয় (অর্ডার সংখ্যা > ০) তবেই লিস্টে দেখাবে
       if (orderNeeded > 0) {
         itemCount++;
         orderListText += `${pName} ${orderNeeded}p\n`;
@@ -1033,11 +1029,8 @@
       return;
     }
 
-    // WhatsApp-এ সরাসরি পাঠানোর জন্য Link তৈরি
     const encodedText = encodeURIComponent(orderListText);
     const whatsappURL = `https://api.whatsapp.com/send?text=${encodedText}`;
-
-    // নতুন ট্যাবে WhatsApp ওপেন হবে
     window.open(whatsappURL, '_blank');
   }
 
