@@ -420,7 +420,7 @@
               <h6 class="fw-bold mb-0" style="font-size: 1rem;">Filtered Records</h6>
               <div class="d-flex gap-2">
                 <button onclick="_xXls()" class="btn btn-success fw-semibold rounded-2 py-2 px-3" style="font-size: 0.85rem;">
-                  <i class="fa-solid fa-file-excel me-1"></i> Export Excel
+                  <i class="fa-solid fa-file-excel me-1"></i> Export Excel (2 Sheets)
                 </button>
                 <button onclick="_xPdf()" class="btn btn-danger fw-semibold rounded-2 py-2 px-3" style="font-size: 0.85rem;">
                   <i class="fa-solid fa-file-pdf me-1"></i> Download PDF
@@ -538,57 +538,44 @@
 
 <!-- ================= Smart Filter Popup Modal ================= -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow-lg p-3">
       <div class="modal-header border-bottom pb-2">
         <h5 class="modal-title fw-bold text-primary" id="filterModalLabel">
-          <i class="fa-solid fa-sliders me-2"></i> Smart Search Filter & In/Out Summary
+          <i class="fa-solid fa-sliders me-2"></i> Smart Search Filter
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="row g-3 mb-3">
-          <div class="col-md-4">
-            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Product Name</label>
-            <input type="text" id="searchProduct" onkeyup="_xFil()" class="form-control" placeholder="Onu, Router...">
-          </div>
-          <div class="col-md-4">
-            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Receiver / Entry Person</label>
-            <input type="text" id="searchPerson" onkeyup="_xFil()" class="form-control" placeholder="Name...">
-          </div>
-          <div class="col-md-4">
-            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">User ID / Note</label>
-            <input type="text" id="searchUserId" onkeyup="_xFil()" class="form-control" placeholder="ID or note keywords...">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date From</label>
-            <input type="date" id="searchDateFrom" onchange="_xFil()" class="form-control">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date To</label>
-            <input type="date" id="searchDateTo" onchange="_xFil()" class="form-control">
-          </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Transaction Type (In/Out)</label>
+          <select id="searchType" onchange="_xFil()" class="form-select">
+            <option value="">All Types (In & Out)</option>
+            <option value="Stock In">Stock In Only</option>
+            <option value="Stock Out">Stock Out Only</option>
+          </select>
         </div>
-
-        <!-- Filtered In/Out Summary Table inside Modal -->
-        <div class="card card-custom p-2 mb-3">
-          <h6 class="fw-bold text-primary mb-2" style="font-size: 0.9rem;"><i class="fa-solid fa-table me-1"></i> Filtered In/Out & Stock Overview</h6>
-          <div class="table-responsive" style="max-height: 200px;">
-            <table class="table table-bordered table-sm align-middle mb-0" style="font-size: 0.85rem;">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Total In</th>
-                  <th>Total Out</th>
-                  <th>Current Balance</th>
-                </tr>
-              </thead>
-              <tbody id="filterSummaryTableBody"></tbody>
-            </table>
-          </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Product Name</label>
+          <input type="text" id="searchProduct" onkeyup="_xFil()" class="form-control" placeholder="Onu, Router...">
         </div>
-
-        <div class="d-flex justify-content-between gap-2 mt-2">
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Receiver / Entry Person</label>
+          <input type="text" id="searchPerson" onkeyup="_xFil()" class="form-control" placeholder="Name...">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">User ID / Note</label>
+          <input type="text" id="searchUserId" onkeyup="_xFil()" class="form-control" placeholder="ID or note keywords...">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date From</label>
+          <input type="date" id="searchDateFrom" onchange="_xFil()" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date To</label>
+          <input type="date" id="searchDateTo" onchange="_xFil()" class="form-control">
+        </div>
+        <div class="d-flex justify-content-between gap-2 mt-4">
           <button onclick="_xRes()" class="btn btn-outline-secondary w-50 py-2" style="font-size: 0.9rem;">
             <i class="fa-solid fa-rotate-left me-1"></i> Reset
           </button>
@@ -613,20 +600,25 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<!-- Advanced Protection & Obfuscated Logic Layer -->
+<!-- Strict Anti-Inspect & DevTools Protection Layer -->
 <script>
-  // Complete DevTools, Right-Click, and Shortcut Blocking
+  // Block Right Click, F12 and Common DevTools shortcuts
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', function(e) {
-    if (
-      e.key === 'F12' || 
-      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
-      (e.ctrlKey && (e.key === 'U' || e.key === 'S' || e.key === 'H'))
-    ) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'U')) {
       e.preventDefault();
       return false;
     }
   });
+
+  // Anti-debugging loop (Debugger trigger)
+  setInterval(() => {
+    const startTime = performance.now();
+    debugger;
+    if (performance.now() - startTime > 100) {
+      document.body.innerHTML = "<h2 style='text-align:center;margin-top:20vh;color:red;'>Access Denied! Developer Tools Detected.</h2>";
+    }
+  }, 1000);
 
   const _cArr = [
     "AIzaSyAVj1wFqK5ZJ86aimbFJvdzbSbfBu6EH6g",
@@ -782,13 +774,18 @@
     });
   }
 
-  function _xFil() {
+  function _xGetSummary() {
     const act = _dCache.filter(i => !i.isDeleted), sm = {};
     act.forEach(i => {
       const q = Number(i.quantity) || 0, nm = i.itemName || 'Other';
       if (!sm[nm]) sm[nm] = { in: 0, out: 0 };
       if (i.type === 'Stock In') sm[nm].in += q; else sm[nm].out += q;
     });
+    return sm;
+  }
+
+  function _xFil() {
+    const act = _dCache.filter(i => !i.isDeleted), sm = _xGetSummary();
 
     const low = [];
     Object.keys(sm).forEach(p => {
@@ -813,38 +810,21 @@
       });
     }
 
+    const st = document.getElementById('searchType').value;
     const pq = document.getElementById('searchProduct').value.toLowerCase().trim();
     const prq = document.getElementById('searchPerson').value.toLowerCase().trim();
     const uq = document.getElementById('searchUserId').value.toLowerCase().trim();
     const df = document.getElementById('searchDateFrom').value, dt = document.getElementById('searchDateTo').value;
 
     _dFilt = act.filter(i => {
+      const mt = !st || (i.type && i.type === st);
       const mp = !pq || (i.itemName && i.itemName.toLowerCase().includes(pq));
       const mpr = !prq || (i.reName && i.reName.toLowerCase().includes(prq));
       const mu = !uq || (i.userId && i.userId.toLowerCase().includes(uq));
       let md = true;
       if (i.date) { if (df && i.date < df) md = false; if (dt && i.date > dt) md = false; }
-      return mp && mpr && mu && md;
+      return mt && mp && mpr && mu && md;
     });
-
-    // Populate Filter Modal Summary Table
-    const fsm = {};
-    _dFilt.forEach(i => {
-      const q = Number(i.quantity) || 0, nm = i.itemName || 'Other';
-      if (!fsm[nm]) fsm[nm] = { in: 0, out: 0 };
-      if (i.type === 'Stock In') fsm[nm].in += q; else fsm[nm].out += q;
-    });
-
-    const ftb = document.getElementById('filterSummaryTableBody'); ftb.innerHTML = '';
-    const fkeys = Object.keys(fsm);
-    if (fkeys.length === 0) {
-      ftb.innerHTML = `<tr><td colspan="4" class="text-center text-muted">No records match the filter</td></tr>`;
-    } else {
-      fkeys.forEach(p => {
-        const pin = fsm[p].in, pout = fsm[p].out, pbal = pin - pout;
-        ftb.innerHTML += `<tr><td class="fw-bold">${p}</td><td class="text-success">${pin}</td><td class="text-danger">${pout}</td><td class="fw-bold text-primary">${pbal}</td></tr>`;
-      });
-    }
 
     document.getElementById('recordCountBadge').innerText = `${_dFilt.length} Transactions`;
     const hRow = document.getElementById('tableHeaderRow'), exH = document.getElementById('actionHeaderCol');
@@ -922,15 +902,15 @@
   }
 
   function _xRes() {
-    ['searchProduct', 'searchPerson', 'searchUserId', 'searchDateFrom', 'searchDateTo'].forEach(id => document.getElementById(id).value = '');
+    ['searchType', 'searchProduct', 'searchPerson', 'searchUserId', 'searchDateFrom', 'searchDateTo'].forEach(id => document.getElementById(id).value = '');
     _xFil();
   }
 
   function _xXls() {
     if (_dFilt.length === 0) { alert("No data available!"); return; }
     
-    // Sheet 1: Transaction Details
-    const detailsRows = _dFilt.map((i, idx) => ({ 
+    // Sheet 1: Filtered Transaction Details
+    const rowsTrans = _dFilt.map((i, idx) => ({ 
       "Serial": idx + 1, 
       "Date": i.date || '-', 
       "Type": i.type || '-', 
@@ -942,29 +922,26 @@
     }));
 
     // Sheet 2: Dashboard Stock Summary
-    const sm = {};
-    _dFilt.forEach(i => {
-      const q = Number(i.quantity) || 0, nm = i.itemName || 'Other';
-      if (!sm[nm]) sm[nm] = { in: 0, out: 0 };
-      if (i.type === 'Stock In') sm[nm].in += q; else sm[nm].out += q;
+    const sm = _xGetSummary();
+    const rowsSummary = Object.keys(sm).map((p, idx) => {
+      const pin = sm[p].in, pout = sm[p].out, pbal = pin - pout;
+      return {
+        "Serial": idx + 1,
+        "Product Name": p,
+        "Total In": pin,
+        "Total Out": pout,
+        "Current Stock": pbal
+      };
     });
 
-    const summaryRows = Object.keys(sm).map((p, idx) => ({
-      "Serial": idx + 1,
-      "Product Name": p,
-      "Total In": sm[p].in,
-      "Total Out": sm[p].out,
-      "Current Stock Balance": sm[p].in - sm[p].out
-    }));
-
     const wb = XLSX.utils.book_new();
-    const wsDetails = XLSX.utils.json_to_sheet(detailsRows);
-    const wsSummary = XLSX.utils.json_to_sheet(summaryRows);
+    const ws1 = XLSX.utils.json_to_sheet(rowsTrans);
+    const ws2 = XLSX.utils.json_to_sheet(rowsSummary);
 
-    XLSX.utils.book_append_sheet(wb, wsDetails, "Transaction Details");
-    XLSX.utils.book_append_sheet(wb, wsSummary, "Stock Summary");
+    XLSX.utils.book_append_sheet(wb, ws1, "Transactions");
+    XLSX.utils.book_append_sheet(wb, ws2, "Stock Summary");
 
-    XLSX.writeFile(wb, `SamOnline_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    XLSX.writeFile(wb, `Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
   function _xPdf() {
