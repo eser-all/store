@@ -538,36 +538,57 @@
 
 <!-- ================= Smart Filter Popup Modal ================= -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content shadow-lg p-3">
       <div class="modal-header border-bottom pb-2">
         <h5 class="modal-title fw-bold text-primary" id="filterModalLabel">
-          <i class="fa-solid fa-sliders me-2"></i> Smart Search Filter
+          <i class="fa-solid fa-sliders me-2"></i> Smart Search Filter & In/Out Summary
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Product Name</label>
-          <input type="text" id="searchProduct" onkeyup="_xFil()" class="form-control" placeholder="Onu, Router...">
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Product Name</label>
+            <input type="text" id="searchProduct" onkeyup="_xFil()" class="form-control" placeholder="Onu, Router...">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Receiver / Entry Person</label>
+            <input type="text" id="searchPerson" onkeyup="_xFil()" class="form-control" placeholder="Name...">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">User ID / Note</label>
+            <input type="text" id="searchUserId" onkeyup="_xFil()" class="form-control" placeholder="ID or note keywords...">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date From</label>
+            <input type="date" id="searchDateFrom" onchange="_xFil()" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date To</label>
+            <input type="date" id="searchDateTo" onchange="_xFil()" class="form-control">
+          </div>
         </div>
-        <div class="mb-3">
-          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Receiver / Entry Person</label>
-          <input type="text" id="searchPerson" onkeyup="_xFil()" class="form-control" placeholder="Name...">
+
+        <!-- Filtered In/Out Summary Table inside Modal -->
+        <div class="card card-custom p-2 mb-3">
+          <h6 class="fw-bold text-primary mb-2" style="font-size: 0.9rem;"><i class="fa-solid fa-table me-1"></i> Filtered In/Out & Stock Overview</h6>
+          <div class="table-responsive" style="max-height: 200px;">
+            <table class="table table-bordered table-sm align-middle mb-0" style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Total In</th>
+                  <th>Total Out</th>
+                  <th>Current Balance</th>
+                </tr>
+              </thead>
+              <tbody id="filterSummaryTableBody"></tbody>
+            </table>
+          </div>
         </div>
-        <div class="mb-3">
-          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">User ID / Note</label>
-          <input type="text" id="searchUserId" onkeyup="_xFil()" class="form-control" placeholder="ID or note keywords...">
-        </div>
-        <div class="mb-3">
-          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date From</label>
-          <input type="date" id="searchDateFrom" onchange="_xFil()" class="form-control">
-        </div>
-        <div class="mb-3">
-          <label class="form-label fw-semibold text-muted" style="font-size: 0.85rem;">Date To</label>
-          <input type="date" id="searchDateTo" onchange="_xFil()" class="form-control">
-        </div>
-        <div class="d-flex justify-content-between gap-2 mt-4">
+
+        <div class="d-flex justify-content-between gap-2 mt-2">
           <button onclick="_xRes()" class="btn btn-outline-secondary w-50 py-2" style="font-size: 0.9rem;">
             <i class="fa-solid fa-rotate-left me-1"></i> Reset
           </button>
@@ -592,11 +613,16 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<!-- Anti-Inspect & Highly Obfuscated Logic Layer -->
+<!-- Advanced Protection & Obfuscated Logic Layer -->
 <script>
-  // Right-click and DevTools restriction script
+  // Complete DevTools, Right-Click, and Shortcut Blocking
+  document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'U')) {
+    if (
+      e.key === 'F12' || 
+      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
+      (e.ctrlKey && (e.key === 'U' || e.key === 'S' || e.key === 'H'))
+    ) {
       e.preventDefault();
       return false;
     }
@@ -801,6 +827,25 @@
       return mp && mpr && mu && md;
     });
 
+    // Populate Filter Modal Summary Table
+    const fsm = {};
+    _dFilt.forEach(i => {
+      const q = Number(i.quantity) || 0, nm = i.itemName || 'Other';
+      if (!fsm[nm]) fsm[nm] = { in: 0, out: 0 };
+      if (i.type === 'Stock In') fsm[nm].in += q; else fsm[nm].out += q;
+    });
+
+    const ftb = document.getElementById('filterSummaryTableBody'); ftb.innerHTML = '';
+    const fkeys = Object.keys(fsm);
+    if (fkeys.length === 0) {
+      ftb.innerHTML = `<tr><td colspan="4" class="text-center text-muted">No records match the filter</td></tr>`;
+    } else {
+      fkeys.forEach(p => {
+        const pin = fsm[p].in, pout = fsm[p].out, pbal = pin - pout;
+        ftb.innerHTML += `<tr><td class="fw-bold">${p}</td><td class="text-success">${pin}</td><td class="text-danger">${pout}</td><td class="fw-bold text-primary">${pbal}</td></tr>`;
+      });
+    }
+
     document.getElementById('recordCountBadge').innerText = `${_dFilt.length} Transactions`;
     const hRow = document.getElementById('tableHeaderRow'), exH = document.getElementById('actionHeaderCol');
     if (_chkAdm()) { if (!exH) { const th = document.createElement('th'); th.id = 'actionHeaderCol'; th.innerText = 'Actions'; hRow.appendChild(th); } }
@@ -883,10 +928,43 @@
 
   function _xXls() {
     if (_dFilt.length === 0) { alert("No data available!"); return; }
-    const rows = _dFilt.map((i, idx) => ({ "Serial": idx + 1, "Date": i.date || '-', "Type": i.type || '-', "Product": i.itemName || '-', "Qty": i.quantity || 0, "Receiver/Vendor": i.reName || '-', "Note": i.userId || '-', "Email": i.createdByEmail || '-' }));
+    
+    // Sheet 1: Transaction Details
+    const detailsRows = _dFilt.map((i, idx) => ({ 
+      "Serial": idx + 1, 
+      "Date": i.date || '-', 
+      "Type": i.type || '-', 
+      "Product": i.itemName || '-', 
+      "Qty": i.quantity || 0, 
+      "Receiver/Vendor": i.reName || '-', 
+      "Note": i.userId || '-', 
+      "Email": i.createdByEmail || '-' 
+    }));
+
+    // Sheet 2: Dashboard Stock Summary
+    const sm = {};
+    _dFilt.forEach(i => {
+      const q = Number(i.quantity) || 0, nm = i.itemName || 'Other';
+      if (!sm[nm]) sm[nm] = { in: 0, out: 0 };
+      if (i.type === 'Stock In') sm[nm].in += q; else sm[nm].out += q;
+    });
+
+    const summaryRows = Object.keys(sm).map((p, idx) => ({
+      "Serial": idx + 1,
+      "Product Name": p,
+      "Total In": sm[p].in,
+      "Total Out": sm[p].out,
+      "Current Stock Balance": sm[p].in - sm[p].out
+    }));
+
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), "Report");
-    XLSX.writeFile(wb, `Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    const wsDetails = XLSX.utils.json_to_sheet(detailsRows);
+    const wsSummary = XLSX.utils.json_to_sheet(summaryRows);
+
+    XLSX.utils.book_append_sheet(wb, wsDetails, "Transaction Details");
+    XLSX.utils.book_append_sheet(wb, wsSummary, "Stock Summary");
+
+    XLSX.writeFile(wb, `SamOnline_Inventory_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 
   function _xPdf() {
