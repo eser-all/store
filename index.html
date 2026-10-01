@@ -16,6 +16,9 @@
   <!-- html2pdf Library for PDF Download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+  <!-- Canvas Confetti Library for Particle Effects -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <style>
     :root {
       --tg-primary: #2AABEE;
@@ -291,6 +294,45 @@
       background-color: #20ba5a;
       color: #ffffff;
       transform: scale(1.08);
+    }
+
+    /* TELEGRAM DUST / DISSOLVE ANIMATION CLASSES */
+    .tg-dust-dissolve {
+      animation: tgDustDissolve 0.7s forwards ease-in-out;
+      pointer-events: none;
+    }
+    @keyframes tgDustDissolve {
+      0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0px);
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(0.98) translateY(-4px);
+        filter: blur(2px);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.9) translateY(-10px);
+        filter: blur(8px);
+      }
+    }
+
+    .tg-dust-appear {
+      animation: tgDustAppear 0.6s forwards ease-out;
+    }
+    @keyframes tgDustAppear {
+      0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(10px);
+        filter: blur(8px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0px);
+      }
     }
   </style>
 </head>
@@ -724,6 +766,26 @@
 
   function _xOut() { _auth.signOut(); }
 
+  // TELEGRAM STYLE DUST / PARTICLE EFFECT TRIGGER FUNCTIONS
+  function _triggerDustParticleEffect(x, y, isDelete = true) {
+    if (typeof confetti === 'function') {
+      confetti({
+        particleCount: isDelete ? 35 : 50,
+        spread: isDelete ? 60 : 80,
+        startVelocity: isDelete ? 15 : 25,
+        origin: {
+          x: x / window.innerWidth,
+          y: y / window.innerHeight
+        },
+        colors: isDelete ? ['#8a8a8a', '#555555', '#222222', '#dc3545'] : ['#00f0ff', '#2AABEE', '#39ff14', '#ffffff'],
+        ticks: 80,
+        gravity: 0.6,
+        scalar: 0.7,
+        shapes: ['circle']
+      });
+    }
+  }
+
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!_usr) return;
@@ -752,6 +814,9 @@
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
       document.getElementById('batchItemsContainer').innerHTML = `<div class="batch-item-row d-flex gap-2 align-items-center"><input type="text" class="form-control item-name-input" list="itemListOptions" placeholder="Select or type product name" required><input type="number" class="form-control item-qty-input" placeholder="Qty" min="1" style="width: 120px;" required><button type="button" class="btn btn-outline-danger" onclick="_xRem(this)" disabled style="padding: 10px 14px;"><i class="fa-solid fa-xmark"></i></button></div>`;
       bootstrap.Modal.getInstance(document.getElementById('newStockModal')).hide();
+      
+      // Trigger New Entry Dust/Glow Effect at Center Screen
+      _triggerDustParticleEffect(window.innerWidth / 2, window.innerHeight / 2, false);
     } catch (err) { alert(err.message); } finally { _ldr(false); }
   });
 
@@ -805,6 +870,7 @@
       prods.forEach(p => {
         const pin = sm[p].in, pout = sm[p].out, pbal = pin - pout;
         const col = document.createElement('div');
+        col.className = 'tg-dust-appear';
         col.innerHTML = `<div class="product-card telegram-bubble"><div class="product-title" title="${p}">${p}</div><div class="d-flex justify-content-between align-items-center my-1" style="font-size: 0.75rem;"><span class="text-muted">In:<b class="text-success">${pin}</b></span><span class="text-muted">Out:<b class="text-danger">${pout}</b></span></div><div><span class="stock-tag ${pbal >= 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">Stock: ${pbal}</span></div></div>`;
         grid.appendChild(col);
       });
@@ -838,8 +904,10 @@
     } else {
       _dFilt.forEach(i => {
         const bg = i.type === 'Stock In' ? `<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2">In</span>` : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2">Out</span>`;
-        let actTd = _chkAdm() ? `<td><button onclick="_xEd('${i.id}')" class="btn btn-sm btn-outline-primary py-1 px-2 me-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="_xDel('${i.id}')" class="btn btn-sm btn-outline-danger py-1 px-2"><i class="fa-solid fa-trash-can"></i></button></td>` : '';
+        let actTd = _chkAdm() ? `<td><button onclick="_xEd('${i.id}')" class="btn btn-sm btn-outline-primary py-1 px-2 me-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="_xDel(event, '${i.id}')" class="btn btn-sm btn-outline-danger py-1 px-2"><i class="fa-solid fa-trash-can"></i></button></td>` : '';
         const tr = document.createElement('tr');
+        tr.id = `tr-row-${i.id}`;
+        tr.className = 'tg-dust-appear';
         tr.innerHTML = `<td>${i.date || '-'}</td><td>${bg}</td><td class="fw-bold">${i.itemName || '-'}</td><td class="fw-bold">${i.quantity || 0} Pcs</td><td>${i.reName || '-'}</td><td>${i.userId || '-'}</td>${actTd}`;
         tb.appendChild(tr);
       });
@@ -882,12 +950,28 @@
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`, '_blank');
   }
 
-  async function _xDel(id) {
+  async function _xDel(e, id) {
     if (!_chkAdm()) { alert("Permission denied!"); return; }
     if (confirm("Are you sure?")) {
-      _ldr(true);
-      try { await _db.ref(`isp_inventory/Central/transactions/${id}`).update({ isDeleted: true, deletedBy: _usr.email, deletedAt: Date.now() }); }
-      catch (e) { alert(e.message); } finally { _ldr(false); }
+      const row = document.getElementById(`tr-row-${id}`);
+      const rect = e.target.getBoundingClientRect();
+      const clickX = rect.left + rect.width / 2;
+      const clickY = rect.top + rect.height / 2;
+
+      // Add Telegram Dust Animation Effect
+      if (row) row.classList.add('tg-dust-dissolve');
+      _triggerDustParticleEffect(clickX, clickY, true);
+
+      setTimeout(async () => {
+        _ldr(true);
+        try { 
+          await _db.ref(`isp_inventory/Central/transactions/${id}`).update({ isDeleted: true, deletedBy: _usr.email, deletedAt: Date.now() }); 
+        } catch (err) { 
+          alert(err.message); 
+        } finally { 
+          _ldr(false); 
+        }
+      }, 500);
     }
   }
 
