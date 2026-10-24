@@ -27,6 +27,9 @@
       --tg-border: #D1D8E0;
       --tg-input-bg: #FFFFFF;
       --tg-focus-shadow: rgba(42, 171, 238, 0.25);
+      --alert-bg: rgba(255, 193, 7, 0.15);
+      --alert-border: rgba(255, 193, 7, 0.4);
+      --alert-text: #1C1C1E;
     }
     
     [data-bs-theme="dark"] {
@@ -39,6 +42,9 @@
       --tg-border: #2A3B4C;
       --tg-input-bg: #1E293B;
       --tg-focus-shadow: rgba(135, 116, 225, 0.25);
+      --alert-bg: rgba(255, 193, 7, 0.1);
+      --alert-border: rgba(255, 193, 7, 0.3);
+      --alert-text: #F5F5F7;
     }
 
     [data-bs-theme="ai"] {
@@ -51,6 +57,9 @@
       --tg-border: rgba(0, 240, 255, 0.3);
       --tg-input-bg: rgba(15, 23, 42, 0.9);
       --tg-focus-shadow: rgba(0, 240, 255, 0.4);
+      --alert-bg: rgba(0, 240, 255, 0.08);
+      --alert-border: rgba(0, 240, 255, 0.3);
+      --alert-text: #E0F7FC;
     }
     
     body { 
@@ -248,34 +257,30 @@
       border-radius: 16px !important;
     }
 
-    /* Eye-Comfortable Billboard Box (Bottom Positioned) */
+    /* Elegant Fade-In/Out Billboard Box (Theme-Adaptive Text) */
     .billboard-container {
-      background: rgba(255, 193, 7, 0.12);
-      border: 1px dashed rgba(255, 193, 7, 0.5);
-      border-radius: 8px;
-      overflow: hidden;
-      white-space: nowrap;
-      position: relative;
-      padding: 6px 12px;
+      background: var(--alert-bg);
+      border: 1px dashed var(--alert-border);
+      border-radius: 10px;
+      padding: 10px 16px;
       display: none;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
+    
+    .billboard-container.show-alert {
+      display: block !important;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
     .billboard-text {
-      display: inline-block;
-      padding-left: 100%;
-      animation: marqueeAnimation 22s linear infinite;
       font-weight: 600;
-      color: #d97706;
-      font-size: 0.88rem;
-    }
-    [data-bs-theme="dark"] .billboard-text {
-      color: #fbbf24;
-    }
-    [data-bs-theme="ai"] .billboard-text {
-      color: #ffcc00;
-    }
-    @keyframes marqueeAnimation {
-      0%   { transform: translate(0, 0); }
-      100% { transform: translate(-100%, 0); }
+      color: var(--alert-text);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      text-align: center;
     }
 
     .whatsapp-icon-btn {
@@ -393,10 +398,10 @@
         <!-- Product Cards Grid -->
         <div class="row-cols-grid-9 mb-2" id="productCardGrid"></div>
 
-        <!-- Low Stock Billboard (Shifted to Bottom of Dashboard Card) -->
+        <!-- Low Stock Billboard (Fade-in & Fade-out after 30 sec) -->
         <div id="lowStockBillboard" class="billboard-container mt-2">
           <div class="billboard-text" id="billboardTextContent">
-            <i class="fa-solid fa-triangle-exclamation me-2"></i> সাবধান! কিছু পণ্যের স্টক কমে গেছে। অনুগ্রহ করে স্টক চেক করুন।
+            <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> সাবধান! কিছু পণ্যের স্টক কমে গেছে। অনুগ্রহ করে স্টক চেক করুন।
           </div>
         </div>
       </div>
@@ -655,6 +660,7 @@
 
   const _adm = ["admin@gmail.com", "antu@samonline.com"];
   let _usr = null, _dCache = [], _dFilt = [];
+  let _alertTimer = null; // Timer variable for 30-second fade out
 
   const _ldr = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
   const _chkAdm = () => _usr && _usr.email && _adm.includes(_usr.email.toLowerCase());
@@ -804,8 +810,20 @@
     });
 
     const bb = document.getElementById('lowStockBillboard'), bbt = document.getElementById('billboardTextContent');
-    if (low.length > 0) { bb.style.display = 'block'; bbt.innerHTML = `<i class="fa-solid fa-triangle-exclamation me-2"></i> সতর্কতা: ` + low.join(' &nbsp;&nbsp;|&nbsp;&nbsp; '); }
-    else { bb.style.display = 'none'; }
+    if (low.length > 0) { 
+      bbt.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> <b>সতর্কতা:</b> ` + low.join(' &nbsp;|&nbsp; '); 
+      
+      // Trigger Fade-In & Auto-Fade-Out Timer (30 Seconds)
+      if (_alertTimer) clearTimeout(_alertTimer);
+      bb.classList.add('show-alert');
+      
+      _alertTimer = setTimeout(() => {
+        bb.classList.remove('show-alert');
+      }, 30000); // 30000ms = 30 seconds
+    } else { 
+      bb.classList.remove('show-alert'); 
+      if (_alertTimer) clearTimeout(_alertTimer);
+    }
 
     const grid = document.getElementById('productCardGrid'); grid.innerHTML = '';
     const prods = Object.keys(sm);
