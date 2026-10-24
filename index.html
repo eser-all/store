@@ -388,7 +388,7 @@
             <i class="fa-solid fa-chart-pie me-1"></i> Dashboard Stock Summary
           </span>
 
-          <button onclick="_xWApp()" class="whatsapp-icon-btn shadow-sm" title="আগামী ১৫ দিনের অর্ডার লিস্ট WhatsApp-এ পাঠান">
+          <button onclick="_xWApp()" class="whatsapp-icon-btn shadow-sm" title="গত ৩ মাসের গড় অনুযায়ী আগামী ১৫ দিনের অর্ডার লিস্ট WhatsApp-এ পাঠান">
             <i class="fa-brands fa-whatsapp"></i>
           </button>
 
@@ -906,27 +906,58 @@
     }
   }
 
+  // Updated WhatsApp Order Calculation (Based on Last 3 Months Outgoing Average)
   function _xWApp() {
     const act = _dCache.filter(i => !i.isDeleted);
     if (act.length === 0) { alert("কোনো ডাটা পাওয়া যায়নি!"); return; }
-    const oM = new Date(); oM.setDate(oM.getDate() - 30);
-    const md = {}, csm = {};
+    
+    // Calculate cutoff date for last 3 months (90 days)
+    const threeMonthsAgo = new Date(); 
+    threeMonthsAgo.setDate(threeMonthsAgo.getDate() - 90);
+    
+    const outLast3Months = {}, csm = {};
+    
     act.forEach(i => {
       const q = Number(i.quantity) || 0, nm = i.itemName || 'Other';
       if (!csm[nm]) csm[nm] = { in: 0, out: 0 };
-      if (i.type === 'Stock In') csm[nm].in += q; else csm[nm].out += q;
-      if (i.type === 'Stock Out' && i.date && new Date(i.date) >= oM) md[nm] = (md[nm] || 0) + q;
+      
+      // Overall Stock In vs Stock Out Calculation
+      if (i.type === 'Stock In') {
+        csm[nm].in += q; 
+      } else {
+        csm[nm].out += q;
+        // Check if Stock Out happened in last 90 days
+        if (i.date && new Date(i.date) >= threeMonthsAgo) {
+          outLast3Months[nm] = (outLast3Months[nm] || 0) + q;
+        }
+      }
     });
 
     let txt = `10-15 Days er jonno\n\n`, cnt = 0;
+    
     Object.keys(csm).forEach(p => {
-      const req = Math.ceil(((md[p] || 0) / 30) * 15), bal = csm[p].in - csm[p].out;
-      let need = req - bal; if (need < 0) need = 0;
+      const totalOut3M = outLast3Months[p] || 0;
+      const dailyAvg = totalOut3M / 90; // Average consumption per day based on last 90 days
+      const req15Days = Math.ceil(dailyAvg * 15); // Projected requirement for next 15 days
+      
+      const currentBalance = csm[p].in - csm[p].out;
+      let need = req15Days - currentBalance; 
+      if (need < 0) need = 0;
+      
       const unit = _getUnit(p);
       const unitLabel = unit === 'Meter' ? 'm' : 'p';
-      if (need > 0) { cnt++; txt += `${p} ${need}${unitLabel}\n`; }
+      
+      if (need > 0) { 
+        cnt++; 
+        txt += `${p} ${need}${unitLabel}\n`; 
+      }
     });
-    if (cnt === 0) { alert("আগামী ১৫ দিনের জন্য নতুন কোনো পণ্যের অর্ডার প্রয়োজন নেই।"); return; }
+
+    if (cnt === 0) { 
+      alert("গত ৩ মাসের গড় অনুযায়ী আগামী ১৫ দিনের জন্য নতুন কোনো পণ্যের অর্ডার প্রয়োজন নেই।"); 
+      return; 
+    }
+    
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`, '_blank');
   }
 
