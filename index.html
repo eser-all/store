@@ -248,23 +248,30 @@
       border-radius: 16px !important;
     }
 
+    /* Eye-Comfortable Billboard Box (Bottom Positioned) */
     .billboard-container {
-      background: rgba(220, 53, 69, 0.1);
-      border: 1px dashed #dc3545;
-      border-radius: 10px;
+      background: rgba(255, 193, 7, 0.12);
+      border: 1px dashed rgba(255, 193, 7, 0.5);
+      border-radius: 8px;
       overflow: hidden;
       white-space: nowrap;
       position: relative;
-      padding: 8px 12px;
+      padding: 6px 12px;
       display: none;
     }
     .billboard-text {
       display: inline-block;
       padding-left: 100%;
-      animation: marqueeAnimation 18s linear infinite;
-      font-weight: 700;
-      color: #dc3545;
-      font-size: 0.95rem;
+      animation: marqueeAnimation 22s linear infinite;
+      font-weight: 600;
+      color: #d97706;
+      font-size: 0.88rem;
+    }
+    [data-bs-theme="dark"] .billboard-text {
+      color: #fbbf24;
+    }
+    [data-bs-theme="ai"] .billboard-text {
+      color: #ffcc00;
     }
     @keyframes marqueeAnimation {
       0%   { transform: translate(0, 0); }
@@ -369,6 +376,7 @@
     </div>
 
     <div class="container-fluid px-md-4">
+      <!-- Stock Summary Card -->
       <div class="card card-custom p-3 mb-3 telegram-bubble">
         <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom flex-wrap gap-2">
           <span class="badge bg-primary px-3 py-2 rounded-2 shadow-sm" style="font-size: 0.9rem;">
@@ -382,13 +390,15 @@
           <span class="text-muted fw-semibold" style="font-size: 0.85rem;">Real-time Update</span>
         </div>
 
-        <div id="lowStockBillboard" class="billboard-container mb-3">
+        <!-- Product Cards Grid -->
+        <div class="row-cols-grid-9 mb-2" id="productCardGrid"></div>
+
+        <!-- Low Stock Billboard (Shifted to Bottom of Dashboard Card) -->
+        <div id="lowStockBillboard" class="billboard-container mt-2">
           <div class="billboard-text" id="billboardTextContent">
             <i class="fa-solid fa-triangle-exclamation me-2"></i> সাবধান! কিছু পণ্যের স্টক কমে গেছে। অনুগ্রহ করে স্টক চেক করুন।
           </div>
         </div>
-
-        <div class="row-cols-grid-9" id="productCardGrid"></div>
       </div>
 
       <div class="card card-custom p-3 mb-3 telegram-bubble">
