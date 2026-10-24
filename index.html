@@ -665,6 +665,16 @@
   const _ldr = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
   const _chkAdm = () => _usr && _usr.email && _adm.includes(_usr.email.toLowerCase());
 
+  // Helper function to get appropriate unit (Meter vs Pcs)
+  function _getUnit(productName) {
+    if (!productName) return 'Pcs';
+    const nm = productName.trim().toLowerCase();
+    if (nm === 'f. 2 core' || nm === 'f. 4 core' || nm === 'f.2 core' || nm === 'f.4 core' || nm.includes('2 core') || nm.includes('4 core')) {
+      return 'Meter';
+    }
+    return 'Pcs';
+  }
+
   function _xThm() {
     const ct = document.documentElement.getAttribute('data-bs-theme') || 'light';
     let nt = ct === 'light' ? 'dark' : (ct === 'dark' ? 'ai' : 'light');
@@ -806,7 +816,12 @@
     const low = [];
     Object.keys(sm).forEach(p => {
       const bal = sm[p].in - sm[p].out;
-      if (bal < 6) low.push(`${p} (স্টক: ${bal} পিস) - অর্ডার দিন!`);
+      const unit = _getUnit(p);
+      const threshold = unit === 'Meter' ? 1000 : 6;
+      
+      if (bal < threshold) {
+        low.push(`${p} (স্টক: ${bal} ${unit}) - অর্ডার দিন!`);
+      }
     });
 
     const bb = document.getElementById('lowStockBillboard'), bbt = document.getElementById('billboardTextContent');
@@ -832,8 +847,9 @@
     } else {
       prods.forEach(p => {
         const pin = sm[p].in, pout = sm[p].out, pbal = pin - pout;
+        const unit = _getUnit(p);
         const col = document.createElement('div');
-        col.innerHTML = `<div class="product-card telegram-bubble"><div class="product-title" title="${p}">${p}</div><div class="d-flex justify-content-between align-items-center my-1" style="font-size: 0.75rem;"><span class="text-muted">In:<b class="text-success">${pin}</b></span><span class="text-muted">Out:<b class="text-danger">${pout}</b></span></div><div><span class="stock-tag ${pbal >= 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">Stock: ${pbal}</span></div></div>`;
+        col.innerHTML = `<div class="product-card telegram-bubble"><div class="product-title" title="${p}">${p}</div><div class="d-flex justify-content-between align-items-center my-1" style="font-size: 0.75rem;"><span class="text-muted">In:<b class="text-success">${pin}</b></span><span class="text-muted">Out:<b class="text-danger">${pout}</b></span></div><div><span class="stock-tag ${pbal >= 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">Stock: ${pbal} ${unit}</span></div></div>`;
         grid.appendChild(col);
       });
     }
@@ -867,8 +883,9 @@
       _dFilt.forEach(i => {
         const bg = i.type === 'Stock In' ? `<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2">In</span>` : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2">Out</span>`;
         let actTd = _chkAdm() ? `<td><button onclick="_xEd('${i.id}')" class="btn btn-sm btn-outline-primary py-1 px-2 me-1"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="_xDel('${i.id}')" class="btn btn-sm btn-outline-danger py-1 px-2"><i class="fa-solid fa-trash-can"></i></button></td>` : '';
+        const unit = _getUnit(i.itemName);
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i.date || '-'}</td><td>${bg}</td><td class="fw-bold">${i.itemName || '-'}</td><td class="fw-bold">${i.quantity || 0} Pcs</td><td>${i.reName || '-'}</td><td>${i.userId || '-'}</td>${actTd}`;
+        tr.innerHTML = `<td>${i.date || '-'}</td><td>${bg}</td><td class="fw-bold">${i.itemName || '-'}</td><td class="fw-bold">${i.quantity || 0} ${unit}</td><td>${i.reName || '-'}</td><td>${i.userId || '-'}</td>${actTd}`;
         tb.appendChild(tr);
       });
     }
@@ -880,9 +897,10 @@
       _dCache.forEach(i => {
         const et = i.timestamp ? new Date(i.timestamp).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) : i.date;
         let sb = i.isDeleted ? `<span class="badge bg-danger rounded-pill px-2">Deleted</span>` : (i.updatedBy ? `<span class="badge bg-warning text-dark rounded-pill px-2">Edited</span>` : `<span class="badge bg-success rounded-pill px-2">New</span>`);
+        const unit = _getUnit(i.itemName);
         const tr = document.createElement('tr');
         if (i.isDeleted) tr.classList.add('table-light', 'text-decoration-line-through');
-        tr.innerHTML = `<td>${et}</td><td class="fw-semibold text-primary">${i.createdByEmail || 'Unknown'}</td><td>${sb}</td><td><b>${i.itemName}</b> (${i.quantity} Pcs) - ${i.reName || ''}</td>`;
+        tr.innerHTML = `<td>${et}</td><td class="fw-semibold text-primary">${i.createdByEmail || 'Unknown'}</td><td>${sb}</td><td><b>${i.itemName}</b> (${i.quantity} ${unit}) - ${i.reName || ''}</td>`;
         utb.appendChild(tr);
       });
     }
@@ -904,7 +922,9 @@
     Object.keys(csm).forEach(p => {
       const req = Math.ceil(((md[p] || 0) / 30) * 15), bal = csm[p].in - csm[p].out;
       let need = req - bal; if (need < 0) need = 0;
-      if (need > 0) { cnt++; txt += `${p} ${need}p\n`; }
+      const unit = _getUnit(p);
+      const unitLabel = unit === 'Meter' ? 'm' : 'p';
+      if (need > 0) { cnt++; txt += `${p} ${need}${unitLabel}\n`; }
     });
     if (cnt === 0) { alert("আগামী ১৫ দিনের জন্য নতুন কোনো পণ্যের অর্ডার প্রয়োজন নেই।"); return; }
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`, '_blank');
@@ -937,24 +957,40 @@
   function _xXls() {
     if (_dFilt.length === 0) { alert("No data available!"); return; }
     
-    // Calculate total quantity for filtered transactions
-    let totalQty = 0;
-
     // Sheet 1: Filtered Transaction Details
+    let totalPcs = 0;
+    let totalMeter = 0;
+
     const rowsTrans = _dFilt.map((i, idx) => {
       const q = Number(i.quantity) || 0;
-      totalQty += q;
+      const unit = _getUnit(i.itemName);
+      if (unit === 'Meter') {
+        totalMeter += q;
+      } else {
+        totalPcs += q;
+      }
+
       return { 
         "Serial": idx + 1, 
         "Date": i.date || '-', 
         "Type": i.type || '-', 
         "Product": i.itemName || '-', 
-        "Qty": q, 
+        "Qty": `${q} ${unit}`, 
         "Receiver/Vendor": i.reName || '-', 
         "Note": i.userId || '-', 
         "Email": i.createdByEmail || '-' 
       };
     });
+
+    // Constructing Summary Text for Sheet 1 Total Row
+    let totalSummaryText = "";
+    if (totalPcs > 0 && totalMeter > 0) {
+      totalSummaryText = `${totalPcs} Pcs & ${totalMeter} Meter`;
+    } else if (totalMeter > 0) {
+      totalSummaryText = `${totalMeter} Meter`;
+    } else {
+      totalSummaryText = `${totalPcs} Pcs`;
+    }
 
     // Add Total Row at the end of Sheet 1
     rowsTrans.push({
@@ -962,7 +998,7 @@
       "Date": "",
       "Type": "",
       "Product": "Total Quantity:",
-      "Qty": totalQty,
+      "Qty": totalSummaryText,
       "Receiver/Vendor": "",
       "Note": "",
       "Email": ""
@@ -972,12 +1008,13 @@
     const sm = _xGetSummary();
     const rowsSummary = Object.keys(sm).map((p, idx) => {
       const pin = sm[p].in, pout = sm[p].out, pbal = pin - pout;
+      const unit = _getUnit(p);
       return {
         "Serial": idx + 1,
         "Product Name": p,
-        "Total In": pin,
-        "Total Out": pout,
-        "Current Stock": pbal
+        "Total In": `${pin} ${unit}`,
+        "Total Out": `${pout} ${unit}`,
+        "Current Stock": `${pbal} ${unit}`
       };
     });
 
@@ -994,7 +1031,10 @@
   function _xPdf() {
     if (_dFilt.length === 0) { alert("No data available!"); return; }
     let th = '';
-    _dFilt.forEach((i, idx) => { th += `<tr style="border-bottom:1px solid #ddd"><td style="padding:6px;text-align:center">${idx+1}</td><td style="padding:6px">${i.date||'-'}</td><td style="padding:6px"><b>${i.type||'-'}</b></td><td style="padding:6px"><b>${i.itemName||'-'}</b></td><td style="padding:6px;text-align:center">${i.quantity||0}</td><td style="padding:6px">${i.reName||'-'}</td><td style="padding:6px">${i.userId||'-'}</td></tr>`; });
+    _dFilt.forEach((i, idx) => { 
+      const unit = _getUnit(i.itemName);
+      th += `<tr style="border-bottom:1px solid #ddd"><td style="padding:6px;text-align:center">${idx+1}</td><td style="padding:6px">${i.date||'-'}</td><td style="padding:6px"><b>${i.type||'-'}</b></td><td style="padding:6px"><b>${i.itemName||'-'}</b></td><td style="padding:6px;text-align:center">${i.quantity||0} ${unit}</td><td style="padding:6px">${i.reName||'-'}</td><td style="padding:6px">${i.userId||'-'}</td></tr>`; 
+    });
     const htm = `<div style="font-family:Arial;padding:20px"><h2 style="color:#0077b5">Sam Online - Report</h2><hr/><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#f2f2f2"><th style="padding:6px">#</th><th style="padding:6px">Date</th><th style="padding:6px">Type</th><th style="padding:6px">Product</th><th style="padding:6px">Qty</th><th style="padding:6px">Vendor/Receiver</th><th style="padding:6px">Note</th></tr></thead><tbody>${th}</tbody></table></div>`;
     html2pdf().from(htm).set({ margin: 0.4, filename: `Report_${new Date().toISOString().split('T')[0]}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } }).save();
   }
