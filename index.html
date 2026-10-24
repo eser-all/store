@@ -937,19 +937,38 @@
   function _xXls() {
     if (_dFilt.length === 0) { alert("No data available!"); return; }
     
-    // Sheet 1: Filtered Transaction Details
-    const rowsTrans = _dFilt.map((i, idx) => ({ 
-      "Serial": idx + 1, 
-      "Date": i.date || '-', 
-      "Type": i.type || '-', 
-      "Product": i.itemName || '-', 
-      "Qty": i.quantity || 0, 
-      "Receiver/Vendor": i.reName || '-', 
-      "Note": i.userId || '-', 
-      "Email": i.createdByEmail || '-' 
-    }));
+    // Calculate total quantity for filtered transactions
+    let totalQty = 0;
 
-    // Sheet 2: Dashboard Stock Summary
+    // Sheet 1: Filtered Transaction Details
+    const rowsTrans = _dFilt.map((i, idx) => {
+      const q = Number(i.quantity) || 0;
+      totalQty += q;
+      return { 
+        "Serial": idx + 1, 
+        "Date": i.date || '-', 
+        "Type": i.type || '-', 
+        "Product": i.itemName || '-', 
+        "Qty": q, 
+        "Receiver/Vendor": i.reName || '-', 
+        "Note": i.userId || '-', 
+        "Email": i.createdByEmail || '-' 
+      };
+    });
+
+    // Add Total Row at the end of Sheet 1
+    rowsTrans.push({
+      "Serial": "",
+      "Date": "",
+      "Type": "",
+      "Product": "Total Quantity:",
+      "Qty": totalQty,
+      "Receiver/Vendor": "",
+      "Note": "",
+      "Email": ""
+    });
+
+    // Sheet 2: Dashboard Stock Summary (Unchanged)
     const sm = _xGetSummary();
     const rowsSummary = Object.keys(sm).map((p, idx) => {
       const pin = sm[p].in, pout = sm[p].out, pbal = pin - pout;
