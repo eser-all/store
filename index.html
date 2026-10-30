@@ -800,8 +800,9 @@
     });
   }
 
-  function _xGetSummary() {
-    const act = _dCache.filter(i => !i.isDeleted), sm = {};
+  // Get Summary (Optionally accepts custom dataset array, defaults to full _dCache)
+  function _xGetSummary(dataSet = _dCache) {
+    const act = dataSet.filter(i => !i.isDeleted), sm = {};
     act.forEach(i => {
       const q = Number(i.quantity) || 0, nm = i.itemName || 'Other';
       if (!sm[nm]) sm[nm] = { in: 0, out: 0 };
@@ -1035,8 +1036,8 @@
       "Email": ""
     });
 
-    // Sheet 2: Dashboard Stock Summary (Unchanged)
-    const sm = _xGetSummary();
+    // Sheet 2: Stock Summary (Dynamically generated based on filtered records _dFilt)
+    const sm = _xGetSummary(_dFilt);
     const rowsSummary = Object.keys(sm).map((p, idx) => {
       const pin = sm[p].in, pout = sm[p].out, pbal = pin - pout;
       const unit = _getUnit(p);
