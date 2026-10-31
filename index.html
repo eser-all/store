@@ -989,11 +989,19 @@
   function _xXls() {
     if (_dFilt.length === 0) { alert("No data available!"); return; }
     
+    // Sort transactions by date (Oldest first -> Newest last)
+    const sortedData = [..._dFilt].sort((a, b) => {
+      if (a.date === b.date) {
+        return (a.timestamp || 0) - (b.timestamp || 0);
+      }
+      return (a.date || '').localeCompare(b.date || '');
+    });
+
     // Sheet 1: Filtered Transaction Details
     let totalPcs = 0;
     let totalMeter = 0;
 
-    const rowsTrans = _dFilt.map((i, idx) => {
+    const rowsTrans = sortedData.map((i, idx) => {
       const q = Number(i.quantity) || 0;
       const unit = _getUnit(i.itemName);
       if (unit === 'Meter') {
@@ -1007,7 +1015,7 @@
         "Date": i.date || '-', 
         "Type": i.type || '-', 
         "Product": i.itemName || '-', 
-        "Qty": `${q} ${unit}`, 
+        "Qty": q, // Pure Number for Excel Filtering and Math operations
         "Receiver/Vendor": i.reName || '-', 
         "Note": i.userId || '-', 
         "Email": i.createdByEmail || '-' 
@@ -1044,9 +1052,10 @@
       return {
         "Serial": idx + 1,
         "Product Name": p,
-        "Total In": `${pin} ${unit}`,
-        "Total Out": `${pout} ${unit}`,
-        "Current Stock": `${pbal} ${unit}`
+        "Total In": pin,
+        "Total Out": pout,
+        "Current Stock": pbal,
+        "Unit": unit
       };
     });
 
